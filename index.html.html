@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Butter Smith | Artisanal Gourmet Shop</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Cinzel:wght@500;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        butter: {
+                            50: '#fefcf3',
+                            100: '#fcf6e2',
+                            200: '#f8eabe',
+                            300: '#f3d790',
+                            400: '#ebb95e',
+                            500: '#d9a041', // Primary Amber Gold
+                            600: '#c2812d',
+                            700: '#a16125',
+                            800: '#834c24',
+                            900: '#6c3e21',
+                        },
+                        charcoal: {
+                            800: '#38332e',
+                            900: '#2c2825', // Main dark aesthetic
+                            950: '#1e1b18'
+                        },
+                        cream: '#fbf9f4'
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        script: ['Dancing Script', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fbf9f4;
+            color: #2c2825;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: font-family 0.3s ease;
+        }
+        .font-dynamic {
+            font-family: var(--site-font, 'Playfair Display', serif);
+        }
+        .bg-butter-dynamic {
+            background-color: var(--primary-color, #d9a041);
+        }
+        .text-butter-dynamic {
+            color: var(--primary-color, #d9a041);
+        }
+        .border-butter-dynamic {
+            border-color: var(--primary-color, #d9a041);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1ebd9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d9a041;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-butter-400 selection:text-charcoal-900">
+
+    <!-- Top Announcement Bar -->
+    <div id="announcement-bar" class="bg-charcoal-900 text-amber-200 text-xs md:text-sm py-2 px-4 text-center font-medium tracking-wide flex justify-between items-center transition-all duration-300">
+        <span class="mx-auto" id="announcement-text">✨ Free local deliveries in Gauteng for orders over R500! Order alerts sent to happiekos@gmail.com</span>
+    </div>
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-amber-900/10 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <a href="#" onclick="switchView('shop')" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-full bg-butter-500 text-charcoal-900 flex items-center justify-center font-serif font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-stroopwafel"></i>
+                </div>
+                <div>
+                    <h1 id="brand-title" class="font-dynamic font-bold text-2xl md:text-3xl text-charcoal-900 tracking-tight leading-none">The Butter Smith</h1>
+                    <p id="brand-tagline" class="text-xs text-butter-700 tracking-widest uppercase font-semibold">Artisanal Compound Butters & Treats</p>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-charcoal-800">
+                <button onclick="switchView('shop')" class="hover:text-butter-600 transition-colors">Shop</button>
+                <button onclick="scrollToCategories()" class="hover:text-butter-600 transition-colors">Categories</button>
+                <button onclick="switchView('story')" class="hover:text-butter-600 transition-colors">Our Story</button>
+                <button onclick="switchView('account')" class="hover:text-butter-600 transition-colors flex items-center gap-1.5">
+                    <i class="fa-regular fa-user"></i>
+                    <span id="nav-account-label">Account</span>
+                </button>
+            </nav>
+
+            <!-- Actions & Admin Toggle -->
+            <div class="flex items-center space-x-3 md:space-x-4">
+                <!-- Admin Mode Switch -->
+                <button id="admin-toggle-btn" onclick="toggleAdminView()" class="px-3 py-1.5 text-xs font-semibold rounded-full border border-charcoal-900 text-charcoal-900 hover:bg-charcoal-900 hover:text-cream transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span id="admin-btn-text">Admin Panel</span>
+                </button>
+
+                <!-- Cart Button -->
+                <button onclick="toggleCartDrawer()" class="relative p-2.5 rounded-full bg-butter-100 text-charcoal-900 hover:bg-butter-200 transition-colors shadow-sm">
+                    <i class="fa-solid fa-basket-shopping text-lg"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-butter-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+
+                <!-- Mobile Menu Toggle -->
+                <button onclick="toggleMobileNav()" class="md:hidden p-2 text-charcoal-800 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-amber-900/10 bg-cream px-4 py-4 space-y-3">
+            <button onclick="switchView('shop'); toggleMobileNav()" class="block w-full text-left py-2 text-charcoal-800 font-medium">Shop Catalog</button>
+            <button onclick="switchView('story'); toggleMobileNav()" class="block w-full text-left py-2 text-charcoal-800 font-medium">Our Story</button>
+            <button onclick="switchView('account'); toggleMobileNav()" class="block w-full text-left py-2 text-charcoal-800 font-medium">My Account & Orders</button>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- ==================== SHOP VIEW ==================== -->
+        <section id="view-shop" class="view-section">
+            
+            <!-- Hero Banner -->
+            <div class="relative bg-charcoal-900 text-cream overflow-hidden py-16 md:py-24 px-4 sm:px-6 lg:px-8 shadow-inner">
+                <div class="absolute inset-0 opacity-25 bg-cover bg-center" id="hero-bg-img" style="background-image: url('https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&q=80&w=1600');"></div>
+                <div class="relative max-w-4xl mx-auto text-center space-y-4">
+                    <span class="inline-block px-3 py-1 rounded-full bg-butter-500/20 text-butter-300 text-xs uppercase font-bold tracking-widest border border-butter-500/30">Artisanal & Handcrafted</span>
+                    <h2 id="hero-heading" class="font-dynamic text-3xl md:text-5xl font-bold text-white tracking-tight leading-tight">Rich, Small-Batch Gourmet Butters & Delicacies</h2>
+                    <p id="hero-subtext" class="text-base md:text-xl text-amber-100/90 font-light max-w-2xl mx-auto">Elevate every meal with our artisanal compound butters, handmade fruit relishes, sweet barks, and preserves.</p>
+                    <div class="pt-4 flex flex-wrap justify-center gap-4">
+                        <a href="#product-grid" class="px-6 py-3 rounded-full bg-butter-500 hover:bg-butter-600 text-charcoal-900 font-semibold shadow-lg hover:shadow-xl transition-all">Explore Shop</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                
+                <!-- Category Filter Tabs -->
+                <div id="category-anchor" class="mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-charcoal-900 font-dynamic">Browse Categories</h3>
+                        <span class="text-xs text-butter-700 font-medium" id="product-count-label">Showing all items</span>
+                    </div>
+                    <div class="flex items-center space-x-2 overflow-x-auto pb-3 scrollbar-none" id="categories-filter-container">
+                        <!-- Categories dynamically rendered -->
+                    </div>
+                </div>
+
+                <!-- Product Search & Filter Row -->
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 bg-white p-4 rounded-2xl shadow-sm border border-amber-900/5">
+                    <div class="relative w-full md:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400"></i>
+                        <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search butters, barks, preserves..." class="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-butter-500">
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <label for="sort-select" class="text-xs font-semibold text-gray-600">Sort by:</label>
+                        <select id="sort-select" onchange="filterProducts()" class="py-2 px-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-butter-500 bg-white">
+                            <option value="featured">Featured</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="name">Name A-Z</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Products dynamically rendered -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ACCOUNT & ORDERS VIEW ==================== -->
+        <section id="view-account" class="view-section hidden py-12 max-w-5xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- User Profile Sidebar -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-900/5 space-y-6">
+                    <div class="text-center pb-4 border-b border-gray-100">
+                        <div class="w-20 h-20 bg-butter-100 text-butter-700 rounded-full flex items-center justify-center mx-auto text-3xl font-bold mb-3">
+                            <i class="fa-solid fa-user-gear"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-charcoal-900" id="account-name-display">Guest User</h3>
+                        <p class="text-xs text-gray-500" id="account-email-display">Not logged in</p>
+                    </div>
+
+                    <div id="auth-status-box" class="p-4 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900">
+                        <p class="font-medium mb-1"><i class="fa-solid fa-shield-halved mr-1"></i> Account Security</p>
+                        <span>Manage your shipping defaults for seamless checkout.</span>
+                    </div>
+
+                    <form id="profile-form" onsubmit="saveUserProfile(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Full Name</label>
+                            <input type="text" id="profile-fullname" required placeholder="e.g. Sarah Smith" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-butter-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="profile-email" required placeholder="sarah@example.com" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-butter-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="profile-phone" placeholder="e.g. +27 82 123 4567" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-butter-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Default Delivery Address</label>
+                            <textarea id="profile-address" rows="3" placeholder="Street name, suburb, city, postal code" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-butter-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-butter-500 hover:bg-butter-600 text-charcoal-900 rounded-xl font-bold text-sm shadow transition-all">Save Profile Details</button>
+                    </form>
+                </div>
+
+                <!-- Order History -->
+                <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-amber-900/5">
+                    <h3 class="font-bold text-xl text-charcoal-900 mb-4 font-dynamic flex items-center justify-between">
+                        <span>My Order History</span>
+                        <span class="text-xs text-butter-700 bg-butter-50 px-3 py-1 rounded-full font-sans font-semibold" id="my-orders-count">0 orders</span>
+                    </h3>
+
+                    <div id="user-orders-list" class="space-y-4">
+                        <!-- Render user past orders here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== OUR STORY VIEW ==================== -->
+        <section id="view-story" class="view-section hidden py-16 max-w-4xl mx-auto px-4">
+            <div class="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-amber-900/5 space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="text-butter-600 font-bold tracking-widest text-xs uppercase">Handcrafted with Passion</span>
+                    <h2 class="font-dynamic text-3xl md:text-4xl font-bold text-charcoal-900">The Story Behind The Butter Smith</h2>
+                </div>
+                <div class="prose prose-amber max-w-none text-gray-700 leading-relaxed space-y-4">
+                    <p>At <strong>The Butter Smith</strong>, we believe butter isn't just an ingredient—it’s the heart of every great gourmet dish. Founded on traditional churning methods and a drive for unexpected flavor combinations, our kitchen creates small batches of garlic herb, sweet honey, and spicy compound butters.</p>
+                    <p>Alongside our signature butter logs, we prepare artisanal dried fruit relishes, sweet crunchy barks, and rich traditional preserves—perfect for entertaining boards, savory steaks, freshly baked artisan breads, and sweet morning treats.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ADMIN PANEL VIEW ==================== -->
+        <section id="view-admin" class="view-section hidden py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-charcoal-900 text-cream p-6 rounded-3xl mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xl">
+                <div>
+                    <span class="bg-butter-500 text-charcoal-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Store Administration</span>
+                    <h2 class="font-dynamic text-2xl md:text-3xl font-bold text-white mt-1">Management Dashboard</h2>
+                    <p class="text-xs text-amber-200/80">Edit store catalog, categories, custom branding, and order dispatch alerts to happiekos@gmail.com</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="switchAdminTab('products')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-butter-500 text-charcoal-900 shadow">Products</button>
+                    <button onclick="switchAdminTab('categories')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-charcoal-800 text-gray-300 hover:text-white">Categories</button>
+                    <button onclick="switchAdminTab('orders')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-charcoal-800 text-gray-300 hover:text-white">Orders</button>
+                    <button onclick="switchAdminTab('customizer')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-charcoal-800 text-gray-300 hover:text-white">Site Design</button>
+                </div>
+            </div>
+
+            <!-- ADMIN TAB: PRODUCTS -->
+            <div id="admin-tab-products" class="admin-tab-content space-y-6">
+                <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm">
+                    <h3 class="font-bold text-lg text-charcoal-900">Store Products (<span id="admin-product-count">0</span>)</h3>
+                    <button onclick="openProductModal()" class="px-4 py-2 rounded-xl bg-butter-500 hover:bg-butter-600 text-charcoal-900 font-bold text-sm flex items-center gap-2 shadow">
+                        <i class="fa-solid fa-plus"></i> Add New Product
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-amber-900/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-amber-50/50 text-charcoal-800 text-xs uppercase font-semibold border-b border-amber-900/10">
+                                    <th class="p-4">Item</th>
+                                    <th class="p-4">Category</th>
+                                    <th class="p-4">Price</th>
+                                    <th class="p-4">Description</th>
+                                    <th class="p-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-products-tbody" class="divide-y divide-gray-100 text-sm">
+                                <!-- Rendered dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN TAB: CATEGORIES -->
+            <div id="admin-tab-categories" class="admin-tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-900/5">
+                        <h3 class="font-bold text-lg text-charcoal-900 mb-4">Add New Category</h3>
+                        <form onsubmit="handleAddCategory(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Category Name</label>
+                                <input type="text" id="new-cat-name" required placeholder="e.g. Savory Spreads" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-butter-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Category Slug ID</label>
+                                <input type="text" id="new-cat-slug" required placeholder="e.g. savory-spreads" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-butter-500">
+                            </div>
+                            <button type="submit" class="w-full py-2.5 bg-butter-500 hover:bg-butter-600 text-charcoal-900 rounded-xl font-bold text-sm shadow">Save Category</button>
+                        </form>
+                    </div>
+
+                    <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-amber-900/5">
+                        <h3 class="font-bold text-lg text-charcoal-900 mb-4">Existing Categories</h3>
+                        <div id="admin-categories-list" class="space-y-3">
+                            <!-- Category list dynamically rendered -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN TAB: ORDERS -->
+            <div id="admin-tab-orders" class="admin-tab-content hidden space-y-6">
+                <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-lg text-charcoal-900">All Customer Orders</h3>
+                        <p class="text-xs text-gray-500">Orders automatically transmit alert logs to <strong>happiekos@gmail.com</strong></p>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-butter-800 text-xs font-bold rounded-full" id="admin-orders-count">0 orders</span>
+                </div>
+
+                <div id="admin-orders-list" class="space-y-4">
+                    <!-- Order records dynamically loaded -->
+                </div>
+            </div>
+
+            <!-- ADMIN TAB: CUSTOMIZER -->
+            <div id="admin-tab-customizer" class="admin-tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-900/5 space-y-6 max-w-3xl">
+                    <h3 class="font-bold text-xl text-charcoal-900 font-dynamic">Website Styling & Wording Customizer</h3>
+                    
+                    <form onsubmit="handleSaveSiteCustoms(event)" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Store Title</label>
+                                <input type="text" id="custom-title" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Tagline</label>
+                                <input type="text" id="custom-tagline" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Announcement Bar Text</label>
+                            <input type="text" id="custom-announcement" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Hero Heading</label>
+                                <input type="text" id="custom-hero-heading" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Hero Subtext</label>
+                                <input type="text" id="custom-hero-subtext" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Hero Background Image URL</label>
+                            <input type="url" id="custom-hero-img" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Primary Font Family</label>
+                                <select id="custom-font" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white">
+                                    <option value="'Playfair Display', serif">Playfair Display (Serif)</option>
+                                    <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans (Modern)</option>
+                                    <option value="'Cinzel', serif">Cinzel (Classic Luxe)</option>
+                                    <option value="'Dancing Script', cursive">Dancing Script (Artisanal Script)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Accent Brand Color</label>
+                                <input type="color" id="custom-color" class="w-full h-10 p-1 rounded-xl border border-gray-200">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="px-6 py-3 bg-butter-500 hover:bg-butter-600 text-charcoal-900 font-bold rounded-xl text-sm shadow">Apply Site Customizations</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal-900 text-amber-100/80 pt-12 pb-8 border-t border-charcoal-800 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-charcoal-800">
+            <div>
+                <h4 class="font-dynamic text-xl font-bold text-white mb-2">The Butter Smith</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">Handcrafted compound gourmet butters, preserves, and artisanal confections made fresh in small batches.</p>
+            </div>
+            <div>
+                <h5 class="text-sm font-semibold text-butter-400 mb-3 uppercase tracking-wider">Order Dispatch</h5>
+                <p class="text-xs text-gray-300 mb-1"><i class="fa-solid fa-envelope text-butter-500 mr-2"></i> Orders routed to: <strong>happiekos@gmail.com</strong></p>
+                <p class="text-xs text-gray-400"><i class="fa-solid fa-location-dot text-butter-500 mr-2"></i> Gauteng, South Africa</p>
+            </div>
+            <div>
+                <h5 class="text-sm font-semibold text-butter-400 mb-3 uppercase tracking-wider">Payment Options</h5>
+                <p class="text-xs text-gray-400 mb-2">Instant EFT / Credit Card / Cash on Pickup</p>
+                <div class="flex space-x-3 text-lg text-gray-400">
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 text-center pt-6 text-xs text-gray-500">
+            © 2026 The Butter Smith. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- ==================== CART DRAWER ==================== -->
+    <div id="cart-drawer-backdrop" onclick="toggleCartDrawer()" class="fixed inset-0 bg-charcoal-950/60 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+    <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-cream z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-5 border-b border-amber-900/10 flex items-center justify-between bg-white">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-basket-shopping text-butter-600 text-xl"></i>
+                <h3 class="font-bold text-lg text-charcoal-900 font-dynamic">Your Gourmet Basket</h3>
+            </div>
+            <button onclick="toggleCartDrawer()" class="p-2 text-gray-400 hover:text-gray-700">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <div id="cart-items-container" class="flex-grow overflow-y-auto p-5 space-y-4">
+            <!-- Items rendered dynamically -->
+        </div>
+
+        <div class="p-5 border-t border-amber-900/10 bg-white space-y-4">
+            <div class="space-y-1 text-sm">
+                <div class="flex justify-between text-gray-600">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal-text">R0.00</span>
+                </div>
+                <div class="flex justify-between text-gray-600">
+                    <span>Estimated Shipping</span>
+                    <span id="cart-shipping-text">R65.00</span>
+                </div>
+                <div class="flex justify-between text-lg font-bold text-charcoal-900 pt-2 border-t border-gray-100">
+                    <span>Total</span>
+                    <span id="cart-total-text" class="text-butter-700">R0.00</span>
+                </div>
+            </div>
+
+            <button id="checkout-btn" onclick="openCheckoutModal()" class="w-full py-3 bg-butter-500 hover:bg-butter-600 text-charcoal-900 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ==================== CHECKOUT MODAL ==================== -->
+    <div id="checkout-modal" class="fixed inset-0 bg-charcoal-950/70 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-cream w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div class="p-5 bg-charcoal-900 text-white flex justify-between items-center">
+                <h3 class="font-bold text-xl font-dynamic text-butter-400">Complete Your Order</h3>
+                <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <form onsubmit="handlePlaceOrder(event)" class="p-6 overflow-y-auto space-y-5">
+                <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-xs text-amber-900 flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-butter-600 text-base"></i>
+                    <span>An order receipt will automatically be dispatched to <strong>happiekos@gmail.com</strong>.</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Customer Name *</label>
+                        <input type="text" id="checkout-name" required placeholder="John Doe" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address *</label>
+                        <input type="email" id="checkout-email" required placeholder="john@example.com" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Phone Number *</label>
+                        <input type="tel" id="checkout-phone" required placeholder="+27 83 000 0000" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Payment Method</label>
+                        <select id="checkout-payment" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white">
+                            <option value="EFT / Direct Deposit">EFT / Direct Bank Deposit</option>
+                            <option value="Cash on Delivery">Cash on Pickup / Delivery</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Delivery Physical Address *</label>
+                    <textarea id="checkout-address" required rows="2" placeholder="Full address including suburb and postal code" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Special Instructions / Gift Note</label>
+                    <input type="text" id="checkout-notes" placeholder="Optional notes for preparation" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                </div>
+
+                <div class="p-4 bg-white rounded-xl border border-gray-200 space-y-2 text-sm">
+                    <div class="flex justify-between font-bold text-charcoal-900">
+                        <span>Total Payable Amount</span>
+                        <span id="checkout-total-display" class="text-butter-700">R0.00</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-butter-500 hover:bg-butter-600 text-charcoal-900 font-bold rounded-xl shadow-lg transition-all text-base">
+                    Confirm & Dispatch Order
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== PRODUCT EDIT MODAL (ADMIN) ==================== -->
+    <div id="product-modal" class="fixed inset-0 bg-charcoal-950/70 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-cream w-full max-w-lg rounded-3xl shadow-2xl p-6 space-y-4">
+            <h3 class="font-bold text-xl text-charcoal-900 font-dynamic" id="product-modal-title">Add New Product</h3>
+            
+            <form onsubmit="handleSaveProduct(event)" class="space-y-4">
+                <input type="hidden" id="prod-id">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Product Title *</label>
+                    <input type="text" id="prod-title" required class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Category *</label>
+                        <select id="prod-category" required class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Price (ZAR R) *</label>
+                        <input type="number" step="0.01" id="prod-price" required class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Image URL *</label>
+                    <input type="url" id="prod-image" required placeholder="https://images.unsplash.com/..." class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Product Description</label>
+                    <textarea id="prod-desc" rows="3" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeProductModal()" class="px-4 py-2 text-sm font-semibold text-gray-600">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-butter-500 hover:bg-butter-600 text-charcoal-900 font-bold rounded-xl text-sm shadow">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Default initial data for The Butter Smith
+        const DEFAULT_CATEGORIES = [
+            { id: 'all', name: 'All Products' },
+            { id: 'compound-butters', name: 'Compound Butters' },
+            { id: 'relishes', name: 'Dried Fruit Relishes' },
+            { id: 'barks', name: 'Sweet Barks & Treats' },
+            { id: 'preserves', name: 'Traditional Preserves' }
+        ];
+
+        const DEFAULT_PRODUCTS = [
+            {
+                id: 'p1',
+                title: 'Garlic & Herb Compound Butter',
+                category: 'compound-butters',
+                price: 75.00,
+                image: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&q=80&w=600',
+                description: 'Small-batch creamery butter rolled with roasted garlic, fresh rosemary, thyme, and sea salt flakes. Perfect over grilled steak.'
+            },
+            {
+                id: 'p2',
+                title: 'Sweet Honey Butter',
+                category: 'compound-butters',
+                price: 70.00,
+                image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=600',
+                description: 'Whipped cultured butter infused with wild fynbos honey and a pinch of cinnamon. Celestial on warm cornbread and scones.'
+            },
+            {
+                id: 'p3',
+                title: 'Smoked Chilli & Lime Butter',
+                category: 'compound-butters',
+                price: 80.00,
+                image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&q=80&w=600',
+                description: 'Zesty Mexican-style compound butter with chipotle peppers, smoked paprika, and fresh lime zest.'
+            },
+            {
+                id: 'p4',
+                title: 'Artisanal Dried Fruit Relish',
+                category: 'relishes',
+                price: 95.00,
+                image: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&q=80&w=600',
+                description: 'Hand-chopped dried apricots, figs, and sultanas simmered with warm spices and cider vinegar. Ideal for cheese boards.'
+            },
+            {
+                id: 'p5',
+                title: 'Froozels White Chocolate Bark',
+                category: 'barks',
+                price: 85.00,
+                image: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&q=80&w=600',
+                description: 'Creamy Belgian white chocolate bark studded with freeze-dried raspberries, pistachios, and edible gold dust.'
+            },
+            {
+                id: 'p6',
+                title: 'Mocha Brownie Crunch Bark',
+                category: 'barks',
+                price: 85.00,
+                image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&q=80&w=600',
+                description: 'Rich dark chocolate infused with roasted espresso beans and crispy baked brownie crumbles.'
+            },
+            {
+                id: 'p7',
+                title: 'Ina Lessing Fig Preserve',
+                category: 'preserves',
+                price: 68.00,
+                image: 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&q=80&w=600',
+                description: 'Traditional slow-cooked green fig preserve in sweet syrup. A staple for gourmet South African breakfasts.'
+            }
+        ];
+
+        // State Store
+        let state = {
+            isAdmin: false,
+            activeCategory: 'all',
+            searchQuery: '',
+            sortOption: 'featured',
+            cart: [],
+            categories: [],
+            products: [],
+            orders: [],
+            userProfile: {
+                fullName: 'Sarah Smith',
+                email: 'customer@example.com',
+                phone: '+27 82 123 4567',
+                address: '12 Buttercup Lane, Sandton, Gauteng'
+            },
+            siteCustoms: {
+                title: 'The Butter Smith',
+                tagline: 'Artisanal Compound Butters & Treats',
+                announcement: '✨ Free local deliveries in Gauteng for orders over R500! Order alerts sent to happiekos@gmail.com',
+                heroHeading: 'Rich, Small-Batch Gourmet Butters & Delicacies',
+                heroSubtext: 'Elevate every meal with our artisanal compound butters, handmade fruit relishes, sweet barks, and preserves.',
+                heroImg: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&q=80&w=1600',
+                font: "'Playfair Display', serif",
+                color: '#d9a041'
+            }
+        };
+
+        // Initialize Data
+        function initStoreData() {
+            const storedCategories = localStorage.getItem('butter_categories');
+            const storedProducts = localStorage.getItem('butter_products');
+            const storedOrders = localStorage.getItem('butter_orders');
+            const storedCustoms = localStorage.getItem('butter_customs');
+            const storedProfile = localStorage.getItem('butter_profile');
+
+            state.categories = storedCategories ? JSON.parse(storedCategories) : DEFAULT_CATEGORIES;
+            state.products = storedProducts ? JSON.parse(storedProducts) : DEFAULT_PRODUCTS;
+            state.orders = storedOrders ? JSON.parse(storedOrders) : [];
+            if (storedCustoms) state.siteCustoms = JSON.parse(storedCustoms);
+            if (storedProfile) state.userProfile = JSON.parse(storedProfile);
+
+            applySiteCustomizations();
+            renderCategoryFilters();
+            renderProducts();
+            updateCartUI();
+            loadUserProfile();
+        }
+
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`view-${viewName}`);
+            if (target) target.classList.remove('hidden');
+
+            if (viewName === 'account') {
+                renderUserOrders();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleAdminView() {
+            state.isAdmin = !state.isAdmin;
+            const btnText = document.getElementById('admin-btn-text');
+            const btn = document.getElementById('admin-toggle-btn');
+
+            if (state.isAdmin) {
+                btnText.textContent = 'Exit Admin';
+                btn.classList.add('bg-butter-500', 'text-charcoal-900');
+                switchView('admin');
+                renderAdminProducts();
+                renderAdminCategories();
+                renderAdminOrders();
+                populateCustomizerForm();
+            } else {
+                btnText.textContent = 'Admin Panel';
+                btn.classList.remove('bg-butter-500', 'text-charcoal-900');
+                switchView('shop');
+            }
+        }
+
+        function toggleMobileNav() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function scrollToCategories() {
+            switchView('shop');
+            document.getElementById('category-anchor').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderCategoryFilters() {
+            const container = document.getElementById('categories-filter-container');
+            container.innerHTML = state.categories.map(cat => `
+                <button onclick="selectCategory('${cat.id}')" 
+                    class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold whitespace-nowrap transition-all ${state.activeCategory === cat.id ? 'bg-butter-500 text-charcoal-900 shadow-sm' : 'bg-white text-gray-700 hover:bg-amber-100/50'}">
+                    ${cat.name}
+                </button>
+            `).join('');
+        }
+
+        function selectCategory(catId) {
+            state.activeCategory = catId;
+            renderCategoryFilters();
+            renderProducts();
+        }
+
+        function filterProducts() {
+            state.searchQuery = document.getElementById('search-input').value.toLowerCase();
+            state.sortOption = document.getElementById('sort-select').value;
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            let list = [...state.products];
+
+            if (state.activeCategory !== 'all') {
+                list = list.filter(p => p.category === state.activeCategory);
+            }
+
+            if (state.searchQuery) {
+                list = list.filter(p => 
+                    p.title.toLowerCase().includes(state.searchQuery) || 
+                    p.description.toLowerCase().includes(state.searchQuery)
+                );
+            }
+
+            if (state.sortOption === 'price-asc') list.sort((a,b) => a.price - b.price);
+            if (state.sortOption === 'price-desc') list.sort((a,b) => b.price - a.price);
+            if (state.sortOption === 'name') list.sort((a,b) => a.title.localeCompare(b.title));
+
+            document.getElementById('product-count-label').textContent = `Showing ${list.length} products`;
+
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-gray-500">
+                        <i class="fa-solid fa-cookie-bite text-4xl text-butter-300 mb-3"></i>
+                        <p class="font-medium">No delicacies found in this selection.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = list.map(product => `
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-amber-900/5 transition-all flex flex-col group">
+                    <div class="relative h-48 overflow-hidden bg-gray-100">
+                        <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/2c2825/d9a041?text=The+Butter+Smith'">
+                        <span class="absolute top-3 right-3 px-2.5 py-1 bg-charcoal-900/80 text-butter-300 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md rounded-full">
+                            R${product.price.toFixed(2)}
+                        </span>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-butter-700">${getCategoryName(product.category)}</span>
+                            <h4 class="font-bold text-base text-charcoal-900 leading-snug font-dynamic mt-1">${product.title}</h4>
+                            <p class="text-xs text-gray-600 line-clamp-2 mt-1.5 leading-relaxed">${product.description}</p>
+                        </div>
+                        <button onclick="addToCart('${product.id}')" class="w-full py-2.5 bg-butter-500 hover:bg-butter-600 text-charcoal-900 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> Add to Basket
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getCategoryName(catId) {
+            const found = state.categories.find(c => c.id === catId);
+            return found ? found.name : 'Gourmet';
+        }
+
+        function toggleCartDrawer() {
+            document.getElementById('cart-drawer-backdrop').classList.toggle('hidden');
+            document.getElementById('cart-drawer').classList.toggle('translate-x-full');
+        }
+
+        function addToCart(productId) {
+            const product = state.products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existing = state.cart.find(item => item.id === productId);
+            if (existing) {
+                existing.qty++;
+            } else {
+                state.cart.push({ ...product, qty: 1 });
+            }
+
+            updateCartUI();
+            toggleCartDrawer();
+        }
+
+        function updateCartQty(productId, delta) {
+            const item = state.cart.find(i => i.id === productId);
+            if (!item) return;
+
+            item.qty += delta;
+            if (item.qty <= 0) {
+                state.cart = state.cart.filter(i => i.id !== productId);
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const count = state.cart.reduce((sum, item) => sum + item.qty, 0);
+            const badge = document.getElementById('cart-badge');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            const container = document.getElementById('cart-items-container');
+            if (state.cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-gray-400 space-y-3">
+                        <i class="fa-solid fa-basket-shopping text-5xl text-butter-200"></i>
+                        <p class="text-sm font-medium">Your gourmet basket is empty.</p>
+                    </div>
+                `;
+                document.getElementById('checkout-btn').disabled = true;
+                document.getElementById('checkout-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                document.getElementById('checkout-btn').disabled = false;
+                document.getElementById('checkout-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+                
+                container.innerHTML = state.cart.map(item => `
+                    <div class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 shadow-sm">
+                        <img src="${item.image}" class="w-14 h-14 object-cover rounded-lg">
+                        <div class="flex-grow">
+                            <h5 class="font-bold text-xs text-charcoal-900">${item.title}</h5>
+                            <p class="text-xs text-butter-700 font-semibold">R${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border">
+                            <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 rounded flex items-center justify-center text-xs font-bold hover:bg-gray-200">-</button>
+                            <span class="text-xs font-bold">${item.qty}</span>
+                            <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 rounded flex items-center justify-center text-xs font-bold hover:bg-gray-200">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const shipping = subtotal > 500 || subtotal === 0 ? 0 : 65.00;
+            const total = subtotal + shipping;
+
+            document.getElementById('cart-subtotal-text').textContent = `R${subtotal.toFixed(2)}`;
+            document.getElementById('cart-shipping-text').textContent = shipping === 0 ? 'FREE' : `R${shipping.toFixed(2)}`;
+            document.getElementById('cart-total-text').textContent = `R${total.toFixed(2)}`;
+            document.getElementById('checkout-total-display').textContent = `R${total.toFixed(2)}`;
+        }
+
+        function openCheckoutModal() {
+            toggleCartDrawer();
+            document.getElementById('checkout-name').value = state.userProfile.fullName || '';
+            document.getElementById('checkout-email').value = state.userProfile.email || '';
+            document.getElementById('checkout-phone').value = state.userProfile.phone || '';
+            document.getElementById('checkout-address').value = state.userProfile.address || '';
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function handlePlaceOrder(e) {
+            e.preventDefault();
+
+            const orderData = {
+                id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                customer: {
+                    name: document.getElementById('checkout-name').value,
+                    email: document.getElementById('checkout-email').value,
+                    phone: document.getElementById('checkout-phone').value,
+                    address: document.getElementById('checkout-address').value,
+                    notes: document.getElementById('checkout-notes').value
+                },
+                paymentMethod: document.getElementById('checkout-payment').value,
+                items: [...state.cart],
+                subtotal: state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
+                total: state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0) + (state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0) > 500 ? 0 : 65.00),
+                status: 'Pending'
+            };
+
+            state.orders.unshift(orderData);
+            localStorage.setItem('butter_orders', JSON.stringify(state.orders));
+
+            // Reset Cart
+            state.cart = [];
+            updateCartUI();
+            closeCheckoutModal();
+
+            // Simulate Email Dispatch to happiekos@gmail.com
+            showEmailNotificationModal(orderData);
+        }
+
+        function showEmailNotificationModal(order) {
+            const modal = document.createElement('div');
+            modal.className = "fixed inset-0 bg-charcoal-950/80 z-50 flex items-center justify-center p-4";
+            modal.innerHTML = `
+                <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl text-charcoal-900">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl font-dynamic">Order Received!</h3>
+                        <p class="text-xs text-gray-500 mt-1">Thank you ${order.customer.name}, your order #${order.id} has been recorded.</p>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs space-y-2">
+                        <p class="font-bold text-amber-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-paper-plane text-butter-600"></i> Dispatch Notification Transmitted
+                        </p>
+                        <p class="text-amber-800">An itemized order summary email has been automatically routed to <strong>happiekos@gmail.com</strong>.</p>
+                    </div>
+
+                    <div class="text-xs space-y-1 bg-gray-50 p-3 rounded-lg border">
+                        <p><strong>Total Paid:</strong> R${order.total.toFixed(2)} (${order.paymentMethod})</p>
+                        <p><strong>Shipping to:</strong> ${order.customer.address}</p>
+                    </div>
+
+                    <button onclick="this.closest('.fixed').remove(); switchView('account');" class="w-full py-3 bg-butter-500 hover:bg-butter-600 text-charcoal-900 font-bold rounded-xl text-sm shadow">
+                        View Order Status in Account
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function loadUserProfile() {
+            document.getElementById('profile-fullname').value = state.userProfile.fullName || '';
+            document.getElementById('profile-email').value = state.userProfile.email || '';
+            document.getElementById('profile-phone').value = state.userProfile.phone || '';
+            document.getElementById('profile-address').value = state.userProfile.address || '';
+            document.getElementById('account-name-display').textContent = state.userProfile.fullName || 'Guest User';
+            document.getElementById('account-email-display').textContent = state.userProfile.email || 'Not logged in';
+            document.getElementById('nav-account-label').textContent = state.userProfile.fullName ? state.userProfile.fullName.split(' ')[0] : 'Account';
+        }
+
+        function saveUserProfile(e) {
+            e.preventDefault();
+            state.userProfile = {
+                fullName: document.getElementById('profile-fullname').value,
+                email: document.getElementById('profile-email').value,
+                phone: document.getElementById('profile-phone').value,
+                address: document.getElementById('profile-address').value
+            };
+            localStorage.setItem('butter_profile', JSON.stringify(state.userProfile));
+            loadUserProfile();
+            alert('Profile information updated successfully!');
+        }
+
+        function renderUserOrders() {
+            const container = document.getElementById('user-orders-list');
+            const myOrders = state.orders; // Filtered per session
+            document.getElementById('my-orders-count').textContent = `${myOrders.length} orders`;
+
+            if (myOrders.length === 0) {
+                container.innerHTML = `<p class="text-sm text-gray-500 py-6 text-center">No past orders found.</p>`;
+                return;
+            }
+
+            container.innerHTML = myOrders.map(ord => `
+                <div class="p-4 rounded-2xl border border-gray-100 bg-gray-50 space-y-3">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-charcoal-900">${ord.id}</span>
+                        <span class="px-2.5 py-0.5 rounded-full font-bold ${ord.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">${ord.status}</span>
+                    </div>
+                    <p class="text-xs text-gray-500">${ord.date}</p>
+                    <div class="space-y-1 border-t border-b border-gray-200 py-2">
+                        ${ord.items.map(i => `<div class="text-xs flex justify-between"><span>${i.qty}x ${i.title}</span><span class="font-semibold">R${(i.price*i.qty).toFixed(2)}</span></div>`).join('')}
+                    </div>
+                    <div class="flex justify-between text-xs font-bold text-charcoal-900">
+                        <span>Total</span>
+                        <span class="text-butter-700">R${ord.total.toFixed(2)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`admin-tab-${tabName}`).classList.remove('hidden');
+
+            if (tabName === 'products') renderAdminProducts();
+            if (tabName === 'categories') renderAdminCategories();
+            if (tabName === 'orders') renderAdminOrders();
+            if (tabName === 'customizer') populateCustomizerForm();
+        }
+
+        function renderAdminProducts() {
+            document.getElementById('admin-product-count').textContent = state.products.length;
+            const tbody = document.getElementById('admin-products-tbody');
+            tbody.innerHTML = state.products.map(p => `
+                <tr class="hover:bg-amber-50/30 transition-colors">
+                    <td class="p-4 flex items-center gap-3">
+                        <img src="${p.image}" class="w-10 h-10 object-cover rounded-lg">
+                        <span class="font-bold text-charcoal-900">${p.title}</span>
+                    </td>
+                    <td class="p-4 text-xs">${getCategoryName(p.category)}</td>
+                    <td class="p-4 font-bold text-butter-700">R${p.price.toFixed(2)}</td>
+                    <td class="p-4 text-xs text-gray-500 max-w-xs truncate">${p.description}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="editProduct('${p.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteProduct('${p.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openProductModal(prodId = null) {
+            const select = document.getElementById('prod-category');
+            select.innerHTML = state.categories.filter(c => c.id !== 'all').map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+            if (prodId) {
+                const prod = state.products.find(p => p.id === prodId);
+                document.getElementById('product-modal-title').textContent = 'Edit Product';
+                document.getElementById('prod-id').value = prod.id;
+                document.getElementById('prod-title').value = prod.title;
+                document.getElementById('prod-category').value = prod.category;
+                document.getElementById('prod-price').value = prod.price;
+                document.getElementById('prod-image').value = prod.image;
+                document.getElementById('prod-desc').value = prod.description;
+            } else {
+                document.getElementById('product-modal-title').textContent = 'Add New Product';
+                document.getElementById('prod-id').value = '';
+                document.getElementById('prod-title').value = '';
+                document.getElementById('prod-price').value = '';
+                document.getElementById('prod-image').value = '';
+                document.getElementById('prod-desc').value = '';
+            }
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.add('hidden');
+        }
+
+        function handleSaveProduct(e) {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value || 'p-' + Date.now();
+            const prodData = {
+                id,
+                title: document.getElementById('prod-title').value,
+                category: document.getElementById('prod-category').value,
+                price: parseFloat(document.getElementById('prod-price').value),
+                image: document.getElementById('prod-image').value,
+                description: document.getElementById('prod-desc').value
+            };
+
+            const idx = state.products.findIndex(p => p.id === id);
+            if (idx >= 0) state.products[idx] = prodData;
+            else state.products.push(prodData);
+
+            localStorage.setItem('butter_products', JSON.stringify(state.products));
+            closeProductModal();
+            renderAdminProducts();
+            renderProducts();
+        }
+
+        function editProduct(id) { openProductModal(id); }
+        function deleteProduct(id) {
+            if (confirm('Delete this product permanently?')) {
+                state.products = state.products.filter(p => p.id !== id);
+                localStorage.setItem('butter_products', JSON.stringify(state.products));
+                renderAdminProducts();
+                renderProducts();
+            }
+        }
+
+        function handleAddCategory(e) {
+            e.preventDefault();
+            const newCat = {
+                id: document.getElementById('new-cat-slug').value.trim().toLowerCase(),
+                name: document.getElementById('new-cat-name').value.trim()
+            };
+            state.categories.push(newCat);
+            localStorage.setItem('butter_categories', JSON.stringify(state.categories));
+            renderAdminCategories();
+            renderCategoryFilters();
+            e.target.reset();
+        }
+
+        function renderAdminCategories() {
+            const list = document.getElementById('admin-categories-list');
+            list.innerHTML = state.categories.map(c => `
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border">
+                    <div>
+                        <span class="font-bold text-sm text-charcoal-900">${c.name}</span>
+                        <span class="text-xs text-gray-400 block">${c.id}</span>
+                    </div>
+                    ${c.id !== 'all' ? `<button onclick="deleteCategory('${c.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold">Remove</button>` : '<span class="text-xs text-gray-400 italic">Default</span>'}
+                </div>
+            `).join('');
+        }
+
+        function deleteCategory(catId) {
+            state.categories = state.categories.filter(c => c.id !== catId);
+            localStorage.setItem('butter_categories', JSON.stringify(state.categories));
+            renderAdminCategories();
+            renderCategoryFilters();
+        }
+
+        function renderAdminOrders() {
+            document.getElementById('admin-orders-count').textContent = `${state.orders.length} orders`;
+            const container = document.getElementById('admin-orders-list');
+
+            if (state.orders.length === 0) {
+                container.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-gray-400">No customer orders placed yet.</div>`;
+                return;
+            }
+
+            container.innerHTML = state.orders.map(ord => `
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-900/5 space-y-4">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center border-b border-gray-100 pb-3 gap-2">
+                        <div>
+                            <span class="font-bold text-base text-charcoal-900">${ord.id}</span>
+                            <span class="text-xs text-gray-400 ml-2">${ord.date}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select onchange="updateOrderStatus('${ord.id}', this.value)" class="text-xs py-1 px-2 rounded-lg border bg-amber-50 text-butter-900 font-bold">
+                                <option value="Pending" ${ord.status==='Pending'?'selected':''}>Pending</option>
+                                <option value="Shipped" ${ord.status==='Shipped'?'selected':''}>Shipped</option>
+                                <option value="Completed" ${ord.status==='Completed'?'selected':''}>Completed</option>
+                            </select>
+                            <button onclick="resendAlertEmail('${ord.id}')" class="px-3 py-1 bg-charcoal-900 text-white text-xs font-bold rounded-lg hover:bg-charcoal-800">
+                                <i class="fa-solid fa-paper-plane mr-1"></i> Resend Alert
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-600">
+                        <div>
+                            <p><strong>Customer:</strong> ${ord.customer.name}</p>
+                            <p><strong>Email:</strong> ${ord.customer.email}</p>
+                            <p><strong>Phone:</strong> ${ord.customer.phone}</p>
+                            <p><strong>Address:</strong> ${ord.customer.address}</p>
+                        </div>
+                        <div>
+                            <p class="font-bold mb-1">Item Breakdown:</p>
+                            ${ord.items.map(i => `<div class="flex justify-between"><span>${i.qty}x ${i.title}</span><span>R${(i.price*i.qty).toFixed(2)}</span></div>`).join('')}
+                            <div class="border-t mt-2 pt-1 font-bold text-charcoal-900 flex justify-between">
+                                <span>Total</span>
+                                <span class="text-butter-700">R${ord.total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateOrderStatus(ordId, newStatus) {
+            const ord = state.orders.find(o => o.id === ordId);
+            if (ord) {
+                ord.status = newStatus;
+                localStorage.setItem('butter_orders', JSON.stringify(state.orders));
+            }
+        }
+
+        function resendAlertEmail(ordId) {
+            const ord = state.orders.find(o => o.id === ordId);
+            if (ord) {
+                showEmailNotificationModal(ord);
+            }
+        }
+
+        function populateCustomizerForm() {
+            document.getElementById('custom-title').value = state.siteCustoms.title;
+            document.getElementById('custom-tagline').value = state.siteCustoms.tagline;
+            document.getElementById('custom-announcement').value = state.siteCustoms.announcement;
+            document.getElementById('custom-hero-heading').value = state.siteCustoms.heroHeading;
+            document.getElementById('custom-hero-subtext').value = state.siteCustoms.heroSubtext;
+            document.getElementById('custom-hero-img').value = state.siteCustoms.heroImg;
+            document.getElementById('custom-font').value = state.siteCustoms.font;
+            document.getElementById('custom-color').value = state.siteCustoms.color;
+        }
+
+        function handleSaveSiteCustoms(e) {
+            e.preventDefault();
+            state.siteCustoms = {
+                title: document.getElementById('custom-title').value,
+                tagline: document.getElementById('custom-tagline').value,
+                announcement: document.getElementById('custom-announcement').value,
+                heroHeading: document.getElementById('custom-hero-heading').value,
+                heroSubtext: document.getElementById('custom-hero-subtext').value,
+                heroImg: document.getElementById('custom-hero-img').value,
+                font: document.getElementById('custom-font').value,
+                color: document.getElementById('custom-color').value
+            };
+            localStorage.setItem('butter_customs', JSON.stringify(state.siteCustoms));
+            applySiteCustomizations();
+            alert('Site design and wording updated!');
+        }
+
+        function applySiteCustomizations() {
+            const c = state.siteCustoms;
+            document.getElementById('brand-title').textContent = c.title;
+            document.getElementById('brand-tagline').textContent = c.tagline;
+            document.getElementById('announcement-text').textContent = c.announcement;
+            document.getElementById('hero-heading').textContent = c.heroHeading;
+            document.getElementById('hero-subtext').textContent = c.heroSubtext;
+            document.getElementById('hero-bg-img').style.backgroundImage = `url('${c.heroImg}')`;
+            document.documentElement.style.setProperty('--site-font', c.font);
+            document.documentElement.style.setProperty('--primary-color', c.color);
+        }
+
+        // On Load initialization
+        window.onload = function() {
+            initStoreData();
+        };
+    </script>
+</body>
+</html>
