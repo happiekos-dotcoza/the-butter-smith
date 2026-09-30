@@ -59,7 +59,7 @@
           </button>
           <div id="user-pill" class="hidden flex items-center space-x-2 bg-amber-100/80 px-3 py-1.5 rounded-full border border-amber-200 text-xs font-semibold">
             <span id="user-email-display" class="text-amber-900"></span>
-            <button onclick="logout()" class="text-amber-600 hover:text-amber-900 ml-1"><i class="fa-solid fa-right-from-bracket"></i></button>
+            <button onclick="logout()" class="text-amber-600 hover:text-amber-900 ml-1" title="Log Out"><i class="fa-solid fa-right-from-bracket"></i></button>
           </div>
         </div>
 
@@ -87,9 +87,7 @@
 
       <!-- Categories & Search Bar -->
       <div class="flex flex-col md:flex-row gap-4 justify-between items-center border-b border-amber-200/80 pb-6">
-        <div class="flex flex-wrap gap-2" id="category-filter-list">
-          <!-- Populated dynamically -->
-        </div>
+        <div class="flex flex-wrap gap-2" id="category-filter-list"></div>
         <div class="relative w-full md:w-72">
           <input type="text" id="search-input" onkeyup="renderProducts()" placeholder="Search products..." class="w-full pl-10 pr-4 py-2 text-sm bg-white border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-amber-400 text-xs"></i>
@@ -97,9 +95,7 @@
       </div>
 
       <!-- Product Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="product-grid">
-        <!-- Products populated dynamically -->
-      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="product-grid"></div>
     </section>
 
     <!-- VIEW 2: CUSTOMER ACCOUNT -->
@@ -134,10 +130,11 @@
       </div>
 
       <!-- Admin Tabs -->
-      <div class="flex space-x-2 border-b border-amber-200">
-        <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-4 py-2 text-sm font-bold border-b-2 border-amber-800 text-amber-900">Product List</button>
-        <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900">Site Customizer</button>
-        <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900">Orders Received</button>
+      <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto">
+        <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-4 py-2 text-sm font-bold border-b-2 border-amber-800 text-amber-900 whitespace-nowrap">Product List</button>
+        <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer</button>
+        <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
+        <button onclick="switchAdminTab('security')" id="tab-btn-security" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Security & Password</button>
       </div>
 
       <!-- Admin Tab 1: Products -->
@@ -168,9 +165,7 @@
                 <th class="p-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody id="admin-product-table-body">
-              <!-- Rendered dynamically -->
-            </tbody>
+            <tbody id="admin-product-table-body"></tbody>
           </table>
         </div>
       </div>
@@ -202,9 +197,27 @@
       <!-- Admin Tab 3: Orders -->
       <div id="admin-tab-orders" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-4">
         <h3 class="font-bold text-amber-900">Incoming Orders</h3>
-        <div id="admin-orders-list" class="space-y-4 text-sm">
-          <!-- Populated dynamically -->
-        </div>
+        <div id="admin-orders-list" class="space-y-4 text-sm"></div>
+      </div>
+
+      <!-- Admin Tab 4: Security & Password -->
+      <div id="admin-tab-security" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-4 max-w-md">
+        <h3 class="font-bold text-amber-900">Change Admin Password</h3>
+        <form onsubmit="changeAdminPassword(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-amber-800 mb-1">Current Password</label>
+            <input type="password" id="curr-admin-pass" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-amber-800 mb-1">New Password</label>
+            <input type="password" id="new-admin-pass" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required minlength="4">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-amber-800 mb-1">Confirm New Password</label>
+            <input type="password" id="confirm-admin-pass" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
+          </div>
+          <button type="submit" class="w-full bg-amber-800 text-white font-bold text-sm py-2.5 rounded-xl hover:bg-amber-900">Update Password</button>
+        </form>
       </div>
     </section>
 
@@ -218,9 +231,7 @@
         <h3 class="text-lg font-bold text-amber-950">Your Shopping Cart</h3>
         <button onclick="toggleCartDrawer()" class="text-amber-500 hover:text-amber-800"><i class="fa-solid fa-xmark text-xl"></i></button>
       </div>
-      <div id="cart-items-container" class="flex-grow overflow-y-auto py-4 space-y-3">
-        <!-- Dynamic Cart Items -->
-      </div>
+      <div id="cart-items-container" class="flex-grow overflow-y-auto py-4 space-y-3"></div>
       <div class="border-t border-amber-200 pt-4 space-y-4">
         <div class="flex justify-between font-bold text-lg text-amber-950">
           <span>Total:</span>
@@ -233,7 +244,7 @@
     </div>
   </div>
 
-  <!-- AUTH MODAL (Supports Login & Registration) -->
+  <!-- AUTH MODAL -->
   <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 border border-amber-200 shadow-xl">
       <div class="flex justify-between items-center">
@@ -262,7 +273,6 @@
   </footer>
 
   <script>
-    // INITIAL APP DATA
     const defaultProducts = [
       { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.' },
       { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.' },
@@ -274,10 +284,11 @@
     let cart = JSON.parse(localStorage.getItem('bs_cart')) || [];
     let orders = JSON.parse(localStorage.getItem('bs_orders')) || [];
     let currentUser = JSON.parse(localStorage.getItem('bs_user')) || null;
+    let adminPass = localStorage.getItem('bs_admin_pass') || 'admin123';
+    let customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || {};
     let selectedCategory = 'All';
     let isRegisterMode = false;
 
-    // APP SETUP ON LOAD
     window.addEventListener('DOMContentLoaded', () => {
       renderProducts();
       renderCategories();
@@ -286,7 +297,6 @@
       loadSiteSettings();
     });
 
-    // NAVIGATION
     function navigateTo(viewName) {
       document.getElementById('view-store').classList.add('hidden');
       document.getElementById('view-account').classList.add('hidden');
@@ -294,7 +304,7 @@
 
       if (viewName === 'admin') {
         if (!currentUser || currentUser.email !== 'happiekos@gmail.com') {
-          alert('Access Restricted. Please log in as Admin.');
+          alert('Access Restricted. Log in as Admin to access this panel.');
           openAuthModal();
           document.getElementById('view-store').classList.remove('hidden');
           return;
@@ -310,7 +320,6 @@
       }
     }
 
-    // AUTHENTICATION
     function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
     function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
 
@@ -323,7 +332,30 @@
 
     function handleAuth(e) {
       e.preventDefault();
-      const email = document.getElementById('auth-email').value.trim();
+      const email = document.getElementById('auth-email').value.trim().toLowerCase();
+      const pass = document.getElementById('auth-pass').value;
+
+      if (email === 'happiekos@gmail.com') {
+        if (pass !== adminPass) {
+          alert('Incorrect Admin Password!');
+          return;
+        }
+      } else {
+        if (isRegisterMode) {
+          customerAccounts[email] = pass;
+          localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
+        } else {
+          if (customerAccounts[email] && customerAccounts[email] !== pass) {
+            alert('Incorrect customer password!');
+            return;
+          }
+          if (!customerAccounts[email]) {
+            customerAccounts[email] = pass;
+            localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
+          }
+        }
+      }
+
       currentUser = { email: email };
       localStorage.setItem('bs_user', JSON.stringify(currentUser));
       updateAuthUI();
@@ -366,7 +398,29 @@
       }
     }
 
-    // STOREFRONT RENDERING
+    function changeAdminPassword(e) {
+      e.preventDefault();
+      const curr = document.getElementById('curr-admin-pass').value;
+      const next = document.getElementById('new-admin-pass').value;
+      const confirm = document.getElementById('confirm-admin-pass').value;
+
+      if (curr !== adminPass) {
+        alert('Current password does not match.');
+        return;
+      }
+      if (next !== confirm) {
+        alert('New passwords do not match.');
+        return;
+      }
+
+      adminPass = next;
+      localStorage.setItem('bs_admin_pass', adminPass);
+      alert('Admin password updated successfully!');
+      document.getElementById('curr-admin-pass').value = '';
+      document.getElementById('new-admin-pass').value = '';
+      document.getElementById('confirm-admin-pass').value = '';
+    }
+
     function renderCategories() {
       const cats = ['All', ...new Set(products.map(p => p.category))];
       const container = document.getElementById('category-filter-list');
@@ -418,7 +472,6 @@
       `).join('');
     }
 
-    // SHOPPING CART
     function addToCart(id) {
       const prod = products.find(p => p.id === id);
       const existing = cart.find(item => item.id === id);
@@ -509,7 +562,6 @@
       alert(`Order ${order.id} submitted! Order details prepared for happiekos@gmail.com.`);
     }
 
-    // CUSTOMER PROFILE
     function saveCustomerAddress(e) {
       e.preventDefault();
       const profile = {
@@ -530,9 +582,8 @@
       }
     }
 
-    // ADMIN FUNCTIONS
     function switchAdminTab(tab) {
-      ['products', 'customize', 'orders'].forEach(t => {
+      ['products', 'customize', 'orders', 'security'].forEach(t => {
         document.getElementById(`admin-tab-${t}`).classList.add('hidden');
         document.getElementById(`tab-btn-${t}`).classList.replace('text-amber-900', 'text-amber-600');
         document.getElementById(`tab-btn-${t}`).classList.replace('border-amber-800', 'border-transparent');
