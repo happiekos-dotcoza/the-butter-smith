@@ -55,7 +55,7 @@
       <div class="flex items-center space-x-4">
         <div id="auth-status-container">
           <button onclick="openAuthModal()" id="login-btn" class="text-sm font-semibold text-amber-900 hover:text-amber-700 px-3 py-2">
-            <i class="fa-regular fa-user mr-1"></i> Log In
+            <i class="fa-regular fa-user mr-1"></i> Log In / Register
           </button>
           <div id="user-pill" class="hidden flex items-center space-x-2 bg-amber-100/80 px-3 py-1.5 rounded-full border border-amber-200 text-xs font-semibold">
             <span id="user-email-display" class="text-amber-900"></span>
@@ -233,7 +233,7 @@
     </div>
   </div>
 
-  <!-- AUTH MODAL -->
+  <!-- AUTH MODAL (Supports Login & Registration) -->
   <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 border border-amber-200 shadow-xl">
       <div class="flex justify-between items-center">
@@ -243,9 +243,13 @@
       <form onsubmit="handleAuth(event)" class="space-y-3">
         <input type="email" id="auth-email" placeholder="Email Address" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
         <input type="password" id="auth-pass" placeholder="Password" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-        <button type="submit" class="w-full bg-amber-800 text-white font-bold py-2.5 rounded-xl hover:bg-amber-900">Continue</button>
+        <button type="submit" id="auth-submit-btn" class="w-full bg-amber-800 text-white font-bold py-2.5 rounded-xl hover:bg-amber-900">Log In</button>
       </form>
-      <p class="text-xs text-center text-amber-700">Admin email: <span class="font-mono font-bold">happiekos@gmail.com</span></p>
+      <div class="text-center pt-2 border-t border-amber-100">
+        <button type="button" onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs font-semibold text-amber-800 hover:underline">
+          Need an account? Create one here
+        </button>
+      </div>
     </div>
   </div>
 
@@ -271,6 +275,7 @@
     let orders = JSON.parse(localStorage.getItem('bs_orders')) || [];
     let currentUser = JSON.parse(localStorage.getItem('bs_user')) || null;
     let selectedCategory = 'All';
+    let isRegisterMode = false;
 
     // APP SETUP ON LOAD
     window.addEventListener('DOMContentLoaded', () => {
@@ -289,7 +294,7 @@
 
       if (viewName === 'admin') {
         if (!currentUser || currentUser.email !== 'happiekos@gmail.com') {
-          alert('Access Restricted. Please log in with the admin account (happiekos@gmail.com).');
+          alert('Access Restricted. Please log in as Admin.');
           openAuthModal();
           document.getElementById('view-store').classList.remove('hidden');
           return;
@@ -309,6 +314,13 @@
     function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
     function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
 
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      document.getElementById('auth-modal-title').textContent = isRegisterMode ? 'Create Account' : 'Log In';
+      document.getElementById('auth-submit-btn').textContent = isRegisterMode ? 'Create Account' : 'Log In';
+      document.getElementById('auth-toggle-btn').textContent = isRegisterMode ? 'Already have an account? Log In' : 'Need an account? Create one here';
+    }
+
     function handleAuth(e) {
       e.preventDefault();
       const email = document.getElementById('auth-email').value.trim();
@@ -319,6 +331,8 @@
 
       if (email === 'happiekos@gmail.com') {
         navigateTo('admin');
+      } else {
+        navigateTo('account');
       }
     }
 
@@ -484,7 +498,6 @@
       orders.unshift(order);
       localStorage.setItem('bs_orders', JSON.stringify(orders));
 
-      // Formulate mailto link target for happiekos@gmail.com
       const mailSubject = encodeURIComponent(`New Order ${order.id} from The Butter Smith`);
       const mailBody = encodeURIComponent(`Order ID: ${order.id}\nCustomer: ${order.user}\nDate: ${order.date}\nTotal: R${order.total.toFixed(2)}\n\nItems:\n` + cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n'));
       
