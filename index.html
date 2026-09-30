@@ -531,20 +531,30 @@
       bodyFont: "'Inter', sans-serif"
     };
 
+    // Pre-seed account so logging in on PC works smoothly without errors
+    const defaultAccounts = { "swanniestravels@gmail.com": "password123" };
+    const defaultProfiles = {
+      "swanniestravels@gmail.com": { name: "", phone: "", address: "" }
+    };
+
     let products = JSON.parse(localStorage.getItem('bs_products')) || defaultProducts;
     let settings = JSON.parse(localStorage.getItem('bs_settings')) || defaultSettings;
     let cart = JSON.parse(localStorage.getItem('bs_cart')) || [];
     let orders = JSON.parse(localStorage.getItem('bs_orders')) || [];
     let currentUser = JSON.parse(localStorage.getItem('bs_user')) || null;
     let adminPass = localStorage.getItem('bs_admin_pass') || 'admin123';
-    let customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || {};
-    let customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || {};
+    let customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || defaultAccounts;
+    let customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
     let selectedCategory = 'All';
     let activeModalProduct = null;
     let modalQty = 1;
     let isRegisterMode = false;
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Ensure seed default account is stored if storage is currently empty
+      if (!localStorage.getItem('bs_accounts')) localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
+      if (!localStorage.getItem('bs_all_profiles')) localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
+
       applyStylesAndSettings();
       renderProducts();
       renderCategories();
@@ -769,8 +779,8 @@
     }
 
     function renderAdminCustomers() {
-      customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || {};
-      customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || {};
+      customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || defaultAccounts;
+      customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
 
       const container = document.getElementById('admin-customers-list');
       const badge = document.getElementById('customer-count-badge');
@@ -1026,25 +1036,18 @@
           return;
         }
       } else {
-        customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || {};
-        customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || {};
+        customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || defaultAccounts;
+        customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
 
-        if (isRegisterMode) {
+        // Auto-register account if it doesn't exist locally on this device yet
+        if (!customerAccounts[email]) {
           customerAccounts[email] = pass;
           if (!customerProfiles[email]) customerProfiles[email] = { name: '', phone: '', address: '' };
           localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
           localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
-        } else {
-          if (customerAccounts[email] && customerAccounts[email] !== pass) {
-            alert('Incorrect customer password!');
-            return;
-          }
-          if (!customerAccounts[email]) {
-            customerAccounts[email] = pass;
-            if (!customerProfiles[email]) customerProfiles[email] = { name: '', phone: '', address: '' };
-            localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
-            localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
-          }
+        } else if (customerAccounts[email] !== pass) {
+          alert('Incorrect customer password!');
+          return;
         }
       }
 
