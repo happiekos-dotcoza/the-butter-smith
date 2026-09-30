@@ -32,25 +32,27 @@
 <body class="bg-amber-50/30 text-amber-950 min-h-screen flex flex-col">
 
   <!-- Announcement Bar -->
-  <div id="announcement-bar" class="bg-primary text-white text-xs sm:text-sm text-center py-2.5 px-4 font-medium flex justify-between items-center shadow-sm">
-    <span class="w-full text-center" id="announcement-text">✨ Handcrafted Small-Batch Compound Butters & Artisanal Relishes</span>
+  <div id="announcement-bar" class="bg-primary text-white text-[11px] sm:text-sm text-center py-2 px-3 font-medium flex justify-between items-center shadow-sm">
+    <span class="w-full text-center truncate" id="announcement-text">✨ Handcrafted Small-Batch Compound Butters & Artisanal Relishes</span>
   </div>
 
-  <!-- Header -->
-  <header class="bg-white/90 backdrop-blur-md border-b border-amber-200/60 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('store')">
-        <div id="header-logo-wrapper" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden flex items-center justify-center border border-amber-300 bg-amber-100 text-primary">
-          <i id="header-logo-icon" class="fa-solid fa-butter text-lg sm:text-xl"></i>
+  <!-- Mobile-Optimized Clean Header -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-amber-200/80 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
+      
+      <!-- Logo & Brand Title -->
+      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="navigateTo('store')">
+        <div id="header-logo-wrapper" class="w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-amber-400 bg-amber-100 text-amber-800 shadow-sm shrink-0">
+          <i id="header-logo-icon" class="fa-solid fa-butter text-base sm:text-xl"></i>
           <img id="header-logo-img" src="" alt="Logo" class="w-full h-full object-cover hidden">
         </div>
-        <div>
-          <span class="brand-font text-xl sm:text-2xl font-bold tracking-tight text-amber-950 block leading-none" id="header-brand-name">The Butter Smith</span>
-          <span class="text-[10px] sm:text-xs text-amber-700 tracking-wider uppercase" id="header-tagline">Artisanal Small-Batch Blends</span>
+        <div class="leading-tight">
+          <span class="brand-font text-lg sm:text-2xl font-bold tracking-tight text-amber-950 block" id="header-brand-name">The Butter Smith</span>
+          <span class="text-[9px] sm:text-xs text-amber-700 font-semibold tracking-wider uppercase block" id="header-tagline">Artisanal Small-Batch Blends</span>
         </div>
       </div>
 
-      <!-- Desktop Navigation -->
+      <!-- Desktop Navigation Links -->
       <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
         <button onclick="navigateTo('store')" class="text-amber-900 hover:text-primary transition">Shop Catalog</button>
         <button onclick="navigateTo('account')" id="nav-account-btn" class="text-amber-900 hover:text-primary transition">My Account</button>
@@ -59,35 +61,56 @@
         </button>
       </nav>
 
-      <!-- Cart, Auth & Mobile Menu Controls -->
-      <div class="flex items-center space-x-2 sm:space-x-4">
-        <div id="auth-status-container">
-          <button onclick="openAuthModal()" id="login-btn" class="text-xs sm:text-sm font-semibold text-amber-900 hover:text-primary px-2 sm:px-3 py-2">
+      <!-- Header Controls: Desktop User Pill, Cart & Mobile Menu Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Desktop Auth Status -->
+        <div id="desktop-auth-container" class="hidden md:block">
+          <button onclick="openAuthModal()" id="desktop-login-btn" class="text-xs sm:text-sm font-semibold text-amber-900 hover:text-primary px-3 py-2">
             <i class="fa-regular fa-user mr-1"></i> Log In
           </button>
-          <div id="user-pill" class="hidden flex items-center space-x-2 bg-amber-100/80 px-2.5 sm:px-3 py-1.5 rounded-full border border-amber-200 text-xs font-semibold">
-            <span id="user-email-display" class="text-amber-950 max-w-[100px] sm:max-w-none truncate"></span>
+          <div id="desktop-user-pill" class="hidden flex items-center space-x-2 bg-amber-100 px-3 py-1.5 rounded-full border border-amber-200 text-xs font-semibold">
+            <span id="desktop-user-email-display" class="text-amber-950"></span>
             <button onclick="logout()" class="text-amber-600 hover:text-amber-900 ml-1" title="Log Out"><i class="fa-solid fa-right-from-bracket"></i></button>
           </div>
         </div>
 
-        <button onclick="toggleCartDrawer()" class="relative p-2.5 bg-amber-100 text-primary rounded-full hover:bg-amber-200 transition">
+        <!-- Cart Trigger Button -->
+        <button onclick="toggleCartDrawer()" class="relative p-2 sm:p-2.5 bg-amber-100 text-primary rounded-full hover:bg-amber-200 transition">
           <i class="fa-solid fa-basket-shopping text-base sm:text-lg"></i>
-          <span id="cart-count" class="absolute -top-1 -right-1 bg-accent text-white text-[10px] sm:text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+          <span id="cart-count" class="absolute -top-1 -right-1 bg-accent text-white text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center">0</span>
         </button>
 
+        <!-- Mobile Hamburger Button -->
         <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-amber-950 hover:text-primary focus:outline-none">
           <i class="fa-solid fa-bars text-xl"></i>
         </button>
+
       </div>
     </div>
 
-    <!-- Mobile Dropdown Navigation -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-amber-200 px-4 py-3 space-y-2 text-sm font-semibold">
-      <button onclick="navigateTo('store'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary">Shop Catalog</button>
-      <button onclick="navigateTo('account'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary">My Account</button>
-      <button onclick="navigateTo('admin'); toggleMobileMenu()" id="mobile-nav-admin-btn" class="hidden w-full text-left py-2 text-primary font-bold">
-        <i class="fa-solid fa-gauge-high mr-1.5"></i> Admin Dashboard
+    <!-- Mobile Dropdown Navigation Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-amber-50/95 border-b border-amber-200 px-4 py-4 space-y-3 text-sm font-semibold shadow-lg">
+      
+      <!-- Mobile Auth Status Banner -->
+      <div id="mobile-auth-container" class="pb-3 border-b border-amber-200/80">
+        <button onclick="openAuthModal(); toggleMobileMenu()" id="mobile-login-btn" class="w-full text-left py-2 px-3 bg-amber-100 rounded-xl text-amber-900 font-bold text-xs flex items-center gap-2">
+          <i class="fa-regular fa-user text-sm"></i> Log In / Register Account
+        </button>
+        <div id="mobile-user-pill" class="hidden flex items-center justify-between bg-amber-200/60 p-2.5 rounded-xl text-xs font-semibold">
+          <span class="text-amber-950 truncate max-w-[200px]" id="mobile-user-email-display"></span>
+          <button onclick="logout()" class="text-amber-700 hover:text-red-700 text-xs font-bold bg-white px-2 py-1 rounded-lg border border-amber-300">Log Out</button>
+        </div>
+      </div>
+
+      <button onclick="navigateTo('store'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary flex items-center">
+        <i class="fa-solid fa-store w-6 text-amber-700"></i> Shop Catalog
+      </button>
+      <button onclick="navigateTo('account'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary flex items-center">
+        <i class="fa-solid fa-user-gear w-6 text-amber-700"></i> My Account & Address
+      </button>
+      <button onclick="navigateTo('admin'); toggleMobileMenu()" id="mobile-nav-admin-btn" class="hidden w-full text-left py-2 text-primary font-bold flex items-center">
+        <i class="fa-solid fa-gauge-high w-6 text-primary"></i> Admin Dashboard
       </button>
     </div>
   </header>
@@ -96,9 +119,9 @@
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
     <!-- VIEW 1: STORE FRONT -->
-    <section id="view-store" class="space-y-8 sm:space-y-10">
+    <section id="view-store" class="space-y-6 sm:space-y-10">
       
-      <!-- Clean Responsive Hero Banner -->
+      <!-- Hero Banner -->
       <div class="bg-white rounded-3xl border border-amber-200/80 shadow-md p-5 sm:p-10 grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
         <div class="md:col-span-7 space-y-3 sm:space-y-4">
           <span class="inline-block bg-amber-100 text-primary text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full border border-amber-200" id="hero-badge">
@@ -892,7 +915,6 @@
     function submitOrder() {
       if (cart.length === 0) return alert('Cart is empty.');
 
-      // Mandatory profile details check before order
       if (currentUser && currentUser.email !== 'happiekos@gmail.com') {
         const prof = customerProfiles[currentUser.email];
         if (!prof || !prof.name || !prof.phone || !prof.address) {
@@ -1023,7 +1045,6 @@
       if (email === 'happiekos@gmail.com') {
         navigateTo('admin');
       } else {
-        // Enforce profile setup for new or incomplete user accounts
         const prof = customerProfiles[email];
         if (!prof || !prof.name || !prof.phone || !prof.address) {
           navigateTo('account');
@@ -1042,28 +1063,41 @@
     }
 
     function updateAuthUI() {
-      const loginBtn = document.getElementById('login-btn');
-      const userPill = document.getElementById('user-pill');
-      const userEmailDisplay = document.getElementById('user-email-display');
+      const desktopLoginBtn = document.getElementById('desktop-login-btn');
+      const desktopUserPill = document.getElementById('desktop-user-pill');
+      const desktopEmail = document.getElementById('desktop-user-email-display');
+      
+      const mobileLoginBtn = document.getElementById('mobile-login-btn');
+      const mobileUserPill = document.getElementById('mobile-user-pill');
+      const mobileEmail = document.getElementById('mobile-user-email-display');
+
       const navAdminBtn = document.getElementById('nav-admin-btn');
       const mobileNavAdminBtn = document.getElementById('mobile-nav-admin-btn');
 
       if (currentUser) {
-        loginBtn.classList.add('hidden');
-        userPill.classList.remove('hidden');
-        userEmailDisplay.textContent = currentUser.email;
+        if (desktopLoginBtn) desktopLoginBtn.classList.add('hidden');
+        if (desktopUserPill) desktopUserPill.classList.remove('hidden');
+        if (desktopEmail) desktopEmail.textContent = currentUser.email;
+
+        if (mobileLoginBtn) mobileLoginBtn.classList.add('hidden');
+        if (mobileUserPill) mobileUserPill.classList.remove('hidden');
+        if (mobileEmail) mobileEmail.textContent = currentUser.email;
 
         if (currentUser.email === 'happiekos@gmail.com') {
-          navAdminBtn.classList.remove('hidden');
+          if (navAdminBtn) navAdminBtn.classList.remove('hidden');
           if (mobileNavAdminBtn) mobileNavAdminBtn.classList.remove('hidden');
         } else {
-          navAdminBtn.classList.add('hidden');
+          if (navAdminBtn) navAdminBtn.classList.add('hidden');
           if (mobileNavAdminBtn) mobileNavAdminBtn.classList.add('hidden');
         }
       } else {
-        loginBtn.classList.remove('hidden');
-        userPill.classList.add('hidden');
-        navAdminBtn.classList.add('hidden');
+        if (desktopLoginBtn) desktopLoginBtn.classList.remove('hidden');
+        if (desktopUserPill) desktopUserPill.classList.add('hidden');
+
+        if (mobileLoginBtn) mobileLoginBtn.classList.remove('hidden');
+        if (mobileUserPill) mobileUserPill.classList.add('hidden');
+
+        if (navAdminBtn) navAdminBtn.classList.add('hidden');
         if (mobileNavAdminBtn) mobileNavAdminBtn.classList.add('hidden');
       }
     }
