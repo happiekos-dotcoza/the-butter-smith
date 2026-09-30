@@ -76,7 +76,6 @@
           <span id="cart-count" class="absolute -top-1 -right-1 bg-accent text-white text-[10px] sm:text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
         </button>
 
-        <!-- Mobile Hamburger Button -->
         <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-amber-950 hover:text-primary focus:outline-none">
           <i class="fa-solid fa-bars text-xl"></i>
         </button>
@@ -140,14 +139,19 @@
 
     <!-- VIEW 2: CUSTOMER ACCOUNT -->
     <section id="view-account" class="hidden max-w-3xl mx-auto space-y-6">
+      <div id="profile-alert-banner" class="hidden bg-amber-100 border border-amber-300 text-amber-900 p-4 rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-amber-600 text-lg"></i>
+        <span>Welcome! Please save your delivery address and cell number below to complete your account setup.</span>
+      </div>
+
       <h2 class="text-xl sm:text-2xl font-bold text-amber-950">My Account & Shipping Details</h2>
       <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-base sm:text-lg text-primary">Saved Address</h3>
+        <h3 class="font-bold text-base sm:text-lg text-primary">Saved Address & Contact Info</h3>
         <form id="address-form" onsubmit="saveCustomerAddress(event)" class="space-y-3">
           <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          <input type="text" id="cust-phone" placeholder="Phone Number" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          <textarea id="cust-address" placeholder="Delivery Address (Street, Suburb, City, Code)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl h-24" required></textarea>
-          <button type="submit" class="w-full sm:w-auto bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Address</button>
+          <input type="text" id="cust-phone" placeholder="Cell Phone Number (e.g. 082 123 4567)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
+          <textarea id="cust-address" placeholder="Delivery Address (Street, Suburb, City, Postal Code)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl h-24" required></textarea>
+          <button type="submit" class="w-full sm:w-auto bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Delivery Address</button>
         </form>
       </div>
 
@@ -345,7 +349,7 @@
 
   </main>
 
-  <!-- PRODUCT DETAILS MODAL (Fully Responsive Mobile/Tablet) -->
+  <!-- PRODUCT DETAILS MODAL -->
   <div id="product-detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
     <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto text-amber-950">
       <button onclick="closeProductModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-base sm:text-lg z-10">
@@ -511,6 +515,7 @@
     let currentUser = JSON.parse(localStorage.getItem('bs_user')) || null;
     let adminPass = localStorage.getItem('bs_admin_pass') || 'admin123';
     let customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || {};
+    let customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || {};
     let selectedCategory = 'All';
     let activeModalProduct = null;
     let modalQty = 1;
@@ -740,7 +745,6 @@
       `).join('');
     }
 
-    // RENDER REGISTERED CUSTOMERS DIRECTORY IN BACKEND
     function renderAdminCustomers() {
       const container = document.getElementById('admin-customers-list');
       const badge = document.getElementById('customer-count-badge');
@@ -753,21 +757,22 @@
         return;
       }
 
-      const savedProfiles = JSON.parse(localStorage.getItem('bs_cust_profile')) || {};
-
-      container.innerHTML = emails.map(email => `
-        <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-2">
-          <div class="flex justify-between items-center font-bold text-amber-950">
-            <span class="text-primary"><i class="fa-regular fa-user mr-1.5"></i> ${email}</span>
-            <span class="text-[10px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300">Customer Account</span>
+      container.innerHTML = emails.map(email => {
+        const prof = customerProfiles[email] || {};
+        return `
+          <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-2">
+            <div class="flex justify-between items-center font-bold text-amber-950">
+              <span class="text-primary"><i class="fa-regular fa-user mr-1.5"></i> ${email}</span>
+              <span class="text-[10px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300">Customer Account</span>
+            </div>
+            <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
+              <p><strong>Full Name:</strong> ${prof.name || '<span class="text-red-500 italic">Not specified</span>'}</p>
+              <p><strong>Cell Phone:</strong> ${prof.phone || '<span class="text-red-500 italic">Not specified</span>'}</p>
+              <p><strong>Delivery Address:</strong> ${prof.address || '<span class="text-red-500 italic">No saved address</span>'}</p>
+            </div>
           </div>
-          <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
-            <p><strong>Full Name:</strong> ${savedProfiles.name || 'Not specified yet'}</p>
-            <p><strong>Phone:</strong> ${savedProfiles.phone || 'Not specified yet'}</p>
-            <p><strong>Delivery Address:</strong> ${savedProfiles.address || 'No saved address'}</p>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function handleProductSubmit(e) {
@@ -886,10 +891,26 @@
 
     function submitOrder() {
       if (cart.length === 0) return alert('Cart is empty.');
+
+      // Mandatory profile details check before order
+      if (currentUser && currentUser.email !== 'happiekos@gmail.com') {
+        const prof = customerProfiles[currentUser.email];
+        if (!prof || !prof.name || !prof.phone || !prof.address) {
+          alert('Please enter and save your name, cell phone number, and delivery address under "My Account" before submitting your order.');
+          toggleCartDrawer();
+          navigateTo('account');
+          return;
+        }
+      }
+
+      const activeUserEmail = currentUser ? currentUser.email : 'Guest';
+      const prof = customerProfiles[activeUserEmail] || {};
+
       const order = {
         id: 'ORD-' + Date.now().toString().slice(-6),
         date: new Date().toLocaleString(),
-        user: currentUser ? currentUser.email : 'Guest',
+        user: activeUserEmail,
+        customerDetails: prof,
         status: 'Pending',
         items: cart,
         total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
@@ -899,7 +920,16 @@
       localStorage.setItem('bs_orders', JSON.stringify(orders));
 
       const mailSubject = encodeURIComponent(`New Order ${order.id} from The Butter Smith`);
-      const mailBody = encodeURIComponent(`Order ID: ${order.id}\nCustomer: ${order.user}\nDate: ${order.date}\nTotal: R${order.total.toFixed(2)}\n\nItems:\n` + cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n'));
+      const mailBody = encodeURIComponent(
+        `Order ID: ${order.id}\n` +
+        `Customer Email: ${order.user}\n` +
+        `Name: ${prof.name || 'N/A'}\n` +
+        `Phone: ${prof.phone || 'N/A'}\n` +
+        `Delivery Address: ${prof.address || 'N/A'}\n` +
+        `Date: ${order.date}\n` +
+        `Total: R${order.total.toFixed(2)}\n\n` +
+        `Items Ordered:\n` + cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
+      );
       
       window.open(`mailto:happiekos@gmail.com?subject=${mailSubject}&body=${mailBody}`, '_blank');
 
@@ -993,7 +1023,14 @@
       if (email === 'happiekos@gmail.com') {
         navigateTo('admin');
       } else {
-        navigateTo('account');
+        // Enforce profile setup for new or incomplete user accounts
+        const prof = customerProfiles[email];
+        if (!prof || !prof.name || !prof.phone || !prof.address) {
+          navigateTo('account');
+          document.getElementById('profile-alert-banner').classList.remove('hidden');
+        } else {
+          navigateTo('store');
+        }
       }
     }
 
@@ -1056,21 +1093,30 @@
 
     function saveCustomerAddress(e) {
       e.preventDefault();
+      if (!currentUser) {
+        alert('Please log in first.');
+        return;
+      }
+
       const profile = {
-        name: document.getElementById('cust-name').value,
-        phone: document.getElementById('cust-phone').value,
-        address: document.getElementById('cust-address').value
+        name: document.getElementById('cust-name').value.trim(),
+        phone: document.getElementById('cust-phone').value.trim(),
+        address: document.getElementById('cust-address').value.trim()
       };
-      localStorage.setItem('bs_cust_profile', JSON.stringify(profile));
-      alert('Delivery address saved successfully!');
+
+      customerProfiles[currentUser.email] = profile;
+      localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
+      document.getElementById('profile-alert-banner').classList.add('hidden');
+      alert('Delivery address and contact details saved successfully!');
     }
 
     function loadCustomerProfile() {
-      const profile = JSON.parse(localStorage.getItem('bs_cust_profile'));
-      if (profile) {
-        document.getElementById('cust-name').value = profile.name || '';
-        document.getElementById('cust-phone').value = profile.phone || '';
-        document.getElementById('cust-address').value = profile.address || '';
+      if (!currentUser) return;
+      const prof = customerProfiles[currentUser.email];
+      if (prof) {
+        document.getElementById('cust-name').value = prof.name || '';
+        document.getElementById('cust-phone').value = prof.phone || '';
+        document.getElementById('cust-address').value = prof.address || '';
       }
     }
 
@@ -1094,6 +1140,7 @@
 
       container.innerHTML = orders.map(o => {
         const isDone = o.status === 'Completed';
+        const cd = o.customerDetails || {};
         return `
           <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3">
             <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950">
@@ -1105,9 +1152,12 @@
               </div>
               <span class="text-base text-primary">R${o.total.toFixed(2)}</span>
             </div>
-            <div class="text-xs text-amber-700 flex justify-between">
-              <span>Customer: <strong>${o.user}</strong></span>
-              <span>${o.date}</span>
+            <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
+              <p><strong>Customer Email:</strong> ${o.user}</p>
+              <p><strong>Full Name:</strong> ${cd.name || 'N/A'}</p>
+              <p><strong>Cell Phone:</strong> ${cd.phone || 'N/A'}</p>
+              <p><strong>Delivery Address:</strong> ${cd.address || 'N/A'}</p>
+              <p class="text-[10px] text-amber-600 pt-1">Date: ${o.date}</p>
             </div>
             <ul class="text-xs space-y-1 list-disc pl-4 text-amber-900 bg-white p-3 rounded-xl border border-amber-100">
               ${o.items.map(i => `<li>${i.title} x ${i.qty} (R${(i.price * i.qty).toFixed(2)})</li>`).join('')}
