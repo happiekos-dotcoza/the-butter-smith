@@ -40,8 +40,10 @@
   <header class="bg-white/90 backdrop-blur-md border-b border-amber-200/60 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('store')">
-        <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center font-bold text-xl border border-amber-300">
-          <i class="fa-solid fa-butter"></i>
+        <!-- Brand Logo Element (Supports 500x500 Custom Logo or Fallback Icon) -->
+        <div id="header-logo-wrapper" class="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center border border-amber-300 bg-amber-100 text-primary">
+          <i id="header-logo-icon" class="fa-solid fa-butter text-xl"></i>
+          <img id="header-logo-img" src="" alt="Logo" class="w-full h-full object-cover hidden">
         </div>
         <div>
           <span class="brand-font text-2xl font-bold tracking-tight text-amber-950 block leading-none" id="header-brand-name">The Butter Smith</span>
@@ -104,7 +106,7 @@
           </div>
         </div>
 
-        <!-- Right Hero Image Box (Editable in Admin Panel) -->
+        <!-- Right Hero Image Box -->
         <div class="md:col-span-5 flex justify-center">
           <div class="w-full h-64 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100">
             <img id="hero-image-display" src="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80" alt="Hero Featured Product" class="w-full h-full object-cover">
@@ -159,7 +161,7 @@
       <!-- Admin Navigation Tabs -->
       <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto">
         <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-4 py-2 text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Product List</button>
-        <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer & Styles</button>
+        <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer & Logo</button>
         <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
         <button onclick="switchAdminTab('security')" id="tab-btn-security" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Security & Password</button>
       </div>
@@ -197,11 +199,21 @@
         </div>
       </div>
 
-      <!-- Admin Tab 2: Full Site & Style Customizer -->
+      <!-- Admin Tab 2: Full Site & Style Customizer + Logo Upload -->
       <div id="admin-tab-customize" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-6 max-w-3xl">
-        <h3 class="font-bold text-primary text-lg">Customize Store Branding, Colors & Fonts</h3>
+        <h3 class="font-bold text-primary text-lg">Customize Store Logo, Branding, Colors & Fonts</h3>
         <form onsubmit="handleSiteCustomization(event)" class="space-y-6">
           
+          <!-- Logo & Brand Image Settings -->
+          <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
+            <h4 class="font-bold text-amber-900 text-sm">Store Logo (500x500px Recommended)</h4>
+            <div>
+              <label class="block text-xs font-bold text-amber-800 mb-1">Logo Image URL</label>
+              <input type="text" id="cust-logo-url" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" placeholder="Paste link to 500x500 logo image (e.g. https://domain.com/logo.png)">
+              <p class="text-[11px] text-amber-600 mt-1">Leave empty to use default butter icon.</p>
+            </div>
+          </div>
+
           <!-- Color & Font Settings -->
           <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
             <h4 class="font-bold text-amber-900 text-sm">Theme Colors & Fonts</h4>
@@ -284,9 +296,12 @@
         </form>
       </div>
 
-      <!-- Admin Tab 3: Orders -->
+      <!-- Admin Tab 3: Order Management (Delete & Complete Orders) -->
       <div id="admin-tab-orders" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-4">
-        <h3 class="font-bold text-primary">Incoming Orders</h3>
+        <div class="flex justify-between items-center border-b border-amber-200 pb-3">
+          <h3 class="font-bold text-primary">Incoming Orders</h3>
+          <span class="text-xs text-amber-700">Mark orders fulfilled or delete cleared orders</span>
+        </div>
         <div id="admin-orders-list" class="space-y-4 text-sm"></div>
       </div>
 
@@ -376,6 +391,7 @@
       heroTitle: 'Gourmet Compound Butters & Artisanal Relishes',
       heroSub: 'Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.',
       heroImg: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80',
+      logoUrl: '',
       announcement: '✨ Handcrafted Small-Batch Compound Butters & Artisanal Relishes',
       primaryColor: '#78350f',
       accentColor: '#d97706',
@@ -418,6 +434,18 @@
       document.getElementById('hero-subheadline').textContent = settings.heroSub || defaultSettings.heroSub;
       document.getElementById('announcement-text').textContent = settings.announcement || defaultSettings.announcement;
       
+      // Update Logo
+      const logoImg = document.getElementById('header-logo-img');
+      const logoIcon = document.getElementById('header-logo-icon');
+      if (settings.logoUrl && settings.logoUrl.trim() !== '') {
+        logoImg.src = settings.logoUrl;
+        logoImg.classList.remove('hidden');
+        logoIcon.classList.add('hidden');
+      } else {
+        logoImg.classList.add('hidden');
+        logoIcon.classList.remove('hidden');
+      }
+
       if (settings.heroImg) {
         document.getElementById('hero-image-display').src = settings.heroImg;
       }
@@ -429,6 +457,7 @@
       document.getElementById('accent-hex-display').textContent = settings.accentColor || '#d97706';
       document.getElementById('cust-heading-font').value = settings.headingFont || "'Playfair Display', serif";
       document.getElementById('cust-body-font').value = settings.bodyFont || "'Inter', sans-serif";
+      document.getElementById('cust-logo-url').value = settings.logoUrl || '';
       document.getElementById('cust-hero-img').value = settings.heroImg || defaultSettings.heroImg;
       document.getElementById('cust-site-title').value = settings.title || defaultSettings.title;
       document.getElementById('cust-site-tagline').value = settings.tagline || defaultSettings.tagline;
@@ -445,6 +474,7 @@
         heroTitle: document.getElementById('cust-hero-title').value,
         heroSub: document.getElementById('cust-hero-sub').value,
         heroImg: document.getElementById('cust-hero-img').value,
+        logoUrl: document.getElementById('cust-logo-url').value,
         announcement: document.getElementById('cust-announcement').value,
         primaryColor: document.getElementById('cust-primary-color').value,
         accentColor: document.getElementById('cust-accent-color').value,
@@ -454,7 +484,7 @@
 
       localStorage.setItem('bs_settings', JSON.stringify(settings));
       applyStylesAndSettings();
-      alert('Styles and branding updated successfully!');
+      alert('Logo, styles, and branding updated successfully!');
     }
 
     function navigateTo(viewName) {
@@ -704,6 +734,7 @@
         id: 'ORD-' + Date.now().toString().slice(-6),
         date: new Date().toLocaleString(),
         user: currentUser ? currentUser.email : 'Guest',
+        status: 'Pending',
         items: cart,
         total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
       };
@@ -822,25 +853,61 @@
       renderCategories();
     }
 
+    // ORDER MANAGEMENT: Toggle Complete & Delete Orders
     function renderAdminOrders() {
       const container = document.getElementById('admin-orders-list');
       if (orders.length === 0) {
-        container.innerHTML = `<p class="text-amber-600 italic">No orders received yet.</p>`;
+        container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No orders received yet.</p>`;
         return;
       }
 
-      container.innerHTML = orders.map(o => `
-        <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-2">
-          <div class="flex justify-between font-bold text-amber-950">
-            <span>Order #${o.id} - ${o.user}</span>
-            <span>R${o.total.toFixed(2)}</span>
+      container.innerHTML = orders.map(o => {
+        const isDone = o.status === 'Completed';
+        return `
+          <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3">
+            <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950">
+              <div class="flex items-center gap-2">
+                <span>Order #${o.id}</span>
+                <span class="text-xs px-2.5 py-0.5 rounded-full font-bold ${isDone ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-amber-100 text-amber-800 border border-amber-300'}">
+                  ${o.status || 'Pending'}
+                </span>
+              </div>
+              <span class="text-base text-primary">R${o.total.toFixed(2)}</span>
+            </div>
+            <div class="text-xs text-amber-700 flex justify-between">
+              <span>Customer: <strong>${o.user}</strong></span>
+              <span>${o.date}</span>
+            </div>
+            <ul class="text-xs space-y-1 list-disc pl-4 text-amber-900 bg-white p-3 rounded-xl border border-amber-100">
+              ${o.items.map(i => `<li>${i.title} x ${i.qty} (R${(i.price * i.qty).toFixed(2)})</li>`).join('')}
+            </ul>
+            <div class="flex justify-end items-center gap-2 pt-1">
+              <button onclick="toggleOrderStatus('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl transition ${isDone ? 'bg-amber-100 text-amber-900 hover:bg-amber-200' : 'bg-green-700 text-white hover:bg-green-800'}">
+                <i class="fa-solid ${isDone ? 'fa-rotate-left' : 'fa-check'} mr-1"></i> ${isDone ? 'Mark Pending' : 'Mark Completed'}
+              </button>
+              <button onclick="deleteOrder('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-100 text-red-700 hover:bg-red-200 transition">
+                <i class="fa-solid fa-trash mr-1"></i> Delete Order
+              </button>
+            </div>
           </div>
-          <p class="text-xs text-amber-700">${o.date}</p>
-          <ul class="text-xs space-y-1 list-disc pl-4 text-amber-900">
-            ${o.items.map(i => `<li>${i.title} x ${i.qty} (R${(i.price * i.qty).toFixed(2)})</li>`).join('')}
-          </ul>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+
+    function toggleOrderStatus(orderId) {
+      const order = orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = order.status === 'Completed' ? 'Pending' : 'Completed';
+        localStorage.setItem('bs_orders', JSON.stringify(orders));
+        renderAdminOrders();
+      }
+    }
+
+    function deleteOrder(orderId) {
+      if (!confirm(`Are you sure you want to delete order #${orderId}?`)) return;
+      orders = orders.filter(o => o.id !== orderId);
+      localStorage.setItem('bs_orders', JSON.stringify(orders));
+      renderAdminOrders();
     }
   </script>
 </body>
