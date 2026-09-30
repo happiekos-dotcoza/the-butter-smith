@@ -40,17 +40,17 @@
   <header class="bg-white/90 backdrop-blur-md border-b border-amber-200/60 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('store')">
-        <div id="header-logo-wrapper" class="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center border border-amber-300 bg-amber-100 text-primary">
-          <i id="header-logo-icon" class="fa-solid fa-butter text-xl"></i>
+        <div id="header-logo-wrapper" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden flex items-center justify-center border border-amber-300 bg-amber-100 text-primary">
+          <i id="header-logo-icon" class="fa-solid fa-butter text-lg sm:text-xl"></i>
           <img id="header-logo-img" src="" alt="Logo" class="w-full h-full object-cover hidden">
         </div>
         <div>
-          <span class="brand-font text-2xl font-bold tracking-tight text-amber-950 block leading-none" id="header-brand-name">The Butter Smith</span>
-          <span class="text-xs text-amber-700 tracking-wider uppercase" id="header-tagline">Artisanal Small-Batch Blends</span>
+          <span class="brand-font text-xl sm:text-2xl font-bold tracking-tight text-amber-950 block leading-none" id="header-brand-name">The Butter Smith</span>
+          <span class="text-[10px] sm:text-xs text-amber-700 tracking-wider uppercase" id="header-tagline">Artisanal Small-Batch Blends</span>
         </div>
       </div>
 
-      <!-- Navigation -->
+      <!-- Desktop Navigation -->
       <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
         <button onclick="navigateTo('store')" class="text-amber-900 hover:text-primary transition">Shop Catalog</button>
         <button onclick="navigateTo('account')" id="nav-account-btn" class="text-amber-900 hover:text-primary transition">My Account</button>
@@ -59,53 +59,67 @@
         </button>
       </nav>
 
-      <!-- Cart & Auth Controls -->
-      <div class="flex items-center space-x-4">
+      <!-- Cart, Auth & Mobile Menu Controls -->
+      <div class="flex items-center space-x-2 sm:space-x-4">
         <div id="auth-status-container">
-          <button onclick="openAuthModal()" id="login-btn" class="text-sm font-semibold text-amber-900 hover:text-primary px-3 py-2">
-            <i class="fa-regular fa-user mr-1"></i> Log In / Register
+          <button onclick="openAuthModal()" id="login-btn" class="text-xs sm:text-sm font-semibold text-amber-900 hover:text-primary px-2 sm:px-3 py-2">
+            <i class="fa-regular fa-user mr-1"></i> Log In
           </button>
-          <div id="user-pill" class="hidden flex items-center space-x-2 bg-amber-100/80 px-3 py-1.5 rounded-full border border-amber-200 text-xs font-semibold">
-            <span id="user-email-display" class="text-amber-900"></span>
+          <div id="user-pill" class="hidden flex items-center space-x-2 bg-amber-100/80 px-2.5 sm:px-3 py-1.5 rounded-full border border-amber-200 text-xs font-semibold">
+            <span id="user-email-display" class="text-amber-950 max-w-[100px] sm:max-w-none truncate"></span>
             <button onclick="logout()" class="text-amber-600 hover:text-amber-900 ml-1" title="Log Out"><i class="fa-solid fa-right-from-bracket"></i></button>
           </div>
         </div>
 
         <button onclick="toggleCartDrawer()" class="relative p-2.5 bg-amber-100 text-primary rounded-full hover:bg-amber-200 transition">
-          <i class="fa-solid fa-basket-shopping text-lg"></i>
-          <span id="cart-count" class="absolute -top-1 -right-1 bg-accent text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+          <i class="fa-solid fa-basket-shopping text-base sm:text-lg"></i>
+          <span id="cart-count" class="absolute -top-1 -right-1 bg-accent text-white text-[10px] sm:text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+        </button>
+
+        <!-- Mobile Hamburger Button -->
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-amber-950 hover:text-primary focus:outline-none">
+          <i class="fa-solid fa-bars text-xl"></i>
         </button>
       </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-amber-200 px-4 py-3 space-y-2 text-sm font-semibold">
+      <button onclick="navigateTo('store'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary">Shop Catalog</button>
+      <button onclick="navigateTo('account'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary">My Account</button>
+      <button onclick="navigateTo('admin'); toggleMobileMenu()" id="mobile-nav-admin-btn" class="hidden w-full text-left py-2 text-primary font-bold">
+        <i class="fa-solid fa-gauge-high mr-1.5"></i> Admin Dashboard
+      </button>
     </div>
   </header>
 
   <!-- Main View Router Container -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
     <!-- VIEW 1: STORE FRONT -->
-    <section id="view-store" class="space-y-10">
+    <section id="view-store" class="space-y-8 sm:space-y-10">
       
-      <!-- Clean Hero Banner -->
-      <div class="bg-white rounded-3xl border border-amber-200/80 shadow-md p-6 sm:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-        <div class="md:col-span-7 space-y-4">
-          <span class="inline-block bg-amber-100 text-primary text-xs font-bold px-3 py-1 rounded-full border border-amber-200" id="hero-badge">
+      <!-- Clean Responsive Hero Banner -->
+      <div class="bg-white rounded-3xl border border-amber-200/80 shadow-md p-5 sm:p-10 grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
+        <div class="md:col-span-7 space-y-3 sm:space-y-4">
+          <span class="inline-block bg-amber-100 text-primary text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full border border-amber-200" id="hero-badge">
             Crafted Fresh in Centurion
           </span>
-          <h1 class="brand-font text-3xl sm:text-5xl font-extrabold text-amber-950 leading-tight" id="hero-headline">
+          <h1 class="brand-font text-2xl sm:text-5xl font-extrabold text-amber-950 leading-tight" id="hero-headline">
             Gourmet Compound Butters & Artisanal Relishes
           </h1>
-          <p class="text-amber-800 text-sm sm:text-base leading-relaxed" id="hero-subheadline">
+          <p class="text-amber-800 text-xs sm:text-base leading-relaxed" id="hero-subheadline">
             Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.
           </p>
           <div class="pt-2 flex flex-wrap items-center gap-4">
-            <a href="#product-grid" class="bg-primary text-white font-bold px-6 py-3 rounded-xl shadow-md hover:opacity-90 transition text-sm flex items-center">
+            <a href="#product-grid" class="w-full sm:w-auto text-center bg-primary text-white font-bold px-6 py-3 rounded-xl shadow-md hover:opacity-90 transition text-sm flex items-center justify-center">
               <i class="fa-solid fa-basket-shopping mr-2"></i> Shop Our Lineup
             </a>
           </div>
         </div>
 
         <div class="md:col-span-5 flex justify-center">
-          <div class="w-full h-64 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100">
+          <div class="w-full h-52 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100">
             <img id="hero-image-display" src="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80" alt="Hero Featured Product" class="w-full h-full object-cover">
           </div>
         </div>
@@ -113,32 +127,32 @@
 
       <!-- Categories & Search Bar -->
       <div class="flex flex-col md:flex-row gap-4 justify-between items-center border-b border-amber-200/80 pb-6">
-        <div class="flex flex-wrap gap-2" id="category-filter-list"></div>
+        <div class="flex flex-wrap gap-2 w-full md:w-auto" id="category-filter-list"></div>
         <div class="relative w-full md:w-72">
-          <input type="text" id="search-input" onkeyup="renderProducts()" placeholder="Search products..." class="w-full pl-10 pr-4 py-2 text-sm bg-white border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
-          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-amber-400 text-xs"></i>
+          <input type="text" id="search-input" onkeyup="renderProducts()" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-amber-400 text-xs"></i>
         </div>
       </div>
 
       <!-- Product Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="product-grid"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" id="product-grid"></div>
     </section>
 
     <!-- VIEW 2: CUSTOMER ACCOUNT -->
     <section id="view-account" class="hidden max-w-3xl mx-auto space-y-6">
-      <h2 class="text-2xl font-bold text-amber-950">My Account & Shipping Details</h2>
-      <div class="bg-white p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-lg text-primary">Saved Address</h3>
+      <h2 class="text-xl sm:text-2xl font-bold text-amber-950">My Account & Shipping Details</h2>
+      <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
+        <h3 class="font-bold text-base sm:text-lg text-primary">Saved Address</h3>
         <form id="address-form" onsubmit="saveCustomerAddress(event)" class="space-y-3">
           <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
           <input type="text" id="cust-phone" placeholder="Phone Number" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
           <textarea id="cust-address" placeholder="Delivery Address (Street, Suburb, City, Code)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl h-24" required></textarea>
-          <button type="submit" class="bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Address</button>
+          <button type="submit" class="w-full sm:w-auto bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Address</button>
         </form>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-lg text-primary">Order History</h3>
+      <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
+        <h3 class="font-bold text-base sm:text-lg text-primary">Order History</h3>
         <div id="customer-order-history" class="text-sm text-amber-800 space-y-2">
           <p class="text-amber-600 italic">No previous orders found.</p>
         </div>
@@ -146,26 +160,27 @@
     </section>
 
     <!-- VIEW 3: ADMIN DASHBOARD -->
-    <section id="view-admin" class="hidden space-y-8">
-      <div class="flex justify-between items-center border-b border-amber-200 pb-4">
+    <section id="view-admin" class="hidden space-y-6 sm:space-y-8">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-amber-200 pb-4">
         <div>
-          <h2 class="text-2xl font-bold text-amber-950">Admin Control Panel</h2>
-          <p class="text-xs text-amber-700">Manage products, site styles, fonts, and dispatch orders.</p>
+          <h2 class="text-xl sm:text-2xl font-bold text-amber-950">Admin Control Panel</h2>
+          <p class="text-xs text-amber-700">Manage products, customer accounts, styles, and orders.</p>
         </div>
         <span class="bg-amber-100 text-primary text-xs font-bold px-3 py-1 rounded-full border border-amber-300">Logged in as Admin</span>
       </div>
 
       <!-- Admin Navigation Tabs -->
-      <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto">
-        <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-4 py-2 text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Product List</button>
-        <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer & Logo</button>
-        <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
-        <button onclick="switchAdminTab('security')" id="tab-btn-security" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Security & Password</button>
+      <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto pb-1">
+        <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Product List</button>
+        <button onclick="switchAdminTab('customers')" id="tab-btn-customers" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Customer Accounts</button>
+        <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer</button>
+        <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
+        <button onclick="switchAdminTab('security')" id="tab-btn-security" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Security</button>
       </div>
 
-      <!-- Admin Tab 1: Products (With Variants & Ingredients) -->
+      <!-- Admin Tab 1: Products -->
       <div id="admin-tab-products" class="space-y-6">
-        <div class="bg-white p-6 rounded-2xl border border-amber-200 space-y-4">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
           <h3 class="font-bold text-primary" id="product-form-title">Add New Product</h3>
           <form onsubmit="handleProductSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input type="hidden" id="edit-prod-id">
@@ -183,8 +198,8 @@
           </form>
         </div>
 
-        <div class="bg-white rounded-2xl border border-amber-200 overflow-hidden">
-          <table class="w-full text-left text-sm text-amber-950">
+        <div class="bg-white rounded-2xl border border-amber-200 overflow-x-auto">
+          <table class="w-full text-left text-sm text-amber-950 min-w-[500px]">
             <thead class="bg-amber-100/60 text-primary font-bold border-b border-amber-200">
               <tr>
                 <th class="p-3">Product</th>
@@ -198,8 +213,17 @@
         </div>
       </div>
 
-      <!-- Admin Tab 2: Customizer -->
-      <div id="admin-tab-customize" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-6 max-w-3xl">
+      <!-- Admin Tab 2: Customer Accounts Directory -->
+      <div id="admin-tab-customers" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
+        <div class="flex justify-between items-center border-b border-amber-200 pb-3">
+          <h3 class="font-bold text-primary">Registered Customer Accounts</h3>
+          <span class="text-xs text-amber-700" id="customer-count-badge">0 Accounts</span>
+        </div>
+        <div id="admin-customers-list" class="space-y-4 text-sm"></div>
+      </div>
+
+      <!-- Admin Tab 3: Customizer -->
+      <div id="admin-tab-customize" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-6 max-w-3xl">
         <h3 class="font-bold text-primary text-lg">Customize Store Logo, Branding, Colors & Fonts</h3>
         <form onsubmit="handleSiteCustomization(event)" class="space-y-6">
           <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
@@ -289,8 +313,8 @@
         </form>
       </div>
 
-      <!-- Admin Tab 3: Orders -->
-      <div id="admin-tab-orders" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-4">
+      <!-- Admin Tab 4: Orders -->
+      <div id="admin-tab-orders" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
         <div class="flex justify-between items-center border-b border-amber-200 pb-3">
           <h3 class="font-bold text-primary">Incoming Orders</h3>
           <span class="text-xs text-amber-700">Mark orders fulfilled or delete cleared orders</span>
@@ -298,8 +322,8 @@
         <div id="admin-orders-list" class="space-y-4 text-sm"></div>
       </div>
 
-      <!-- Admin Tab 4: Security -->
-      <div id="admin-tab-security" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-4 max-w-md">
+      <!-- Admin Tab 5: Security -->
+      <div id="admin-tab-security" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4 max-w-md">
         <h3 class="font-bold text-primary">Change Admin Password</h3>
         <form onsubmit="changeAdminPassword(event)" class="space-y-3">
           <div>
@@ -321,90 +345,87 @@
 
   </main>
 
-  <!-- PRODUCT DETAILS MODAL (Matching Screenshot Layout) -->
-  <div id="product-detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-    <div class="bg-amber-50/90 border border-amber-200 rounded-3xl max-w-4xl w-full p-6 sm:p-10 shadow-2xl relative my-8 text-amber-950">
-      <button onclick="closeProductModal()" class="absolute top-5 right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg">
+  <!-- PRODUCT DETAILS MODAL (Fully Responsive Mobile/Tablet) -->
+  <div id="product-detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto text-amber-950">
+      <button onclick="closeProductModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-base sm:text-lg z-10">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-8 items-start">
         <!-- Product Photo Column -->
         <div class="md:col-span-6 space-y-4">
-          <div class="w-full h-80 sm:h-96 rounded-2xl overflow-hidden shadow-md border border-amber-200 bg-white">
+          <div class="w-full h-56 sm:h-96 rounded-2xl overflow-hidden shadow-md border border-amber-200 bg-white">
             <img id="modal-prod-img" src="" alt="Product Photo" class="w-full h-full object-cover">
           </div>
         </div>
 
         <!-- Product Info Column -->
-        <div class="md:col-span-6 space-y-5">
+        <div class="md:col-span-6 space-y-4 sm:space-y-5">
           <div>
-            <span id="modal-prod-cat" class="text-xs font-bold text-accent uppercase tracking-wider"></span>
-            <h2 id="modal-prod-title" class="brand-font text-3xl font-extrabold text-amber-950 mt-1"></h2>
+            <span id="modal-prod-cat" class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider"></span>
+            <h2 id="modal-prod-title" class="brand-font text-xl sm:text-3xl font-extrabold text-amber-950 mt-1"></h2>
           </div>
 
-          <p id="modal-prod-desc" class="text-sm text-amber-800/90 leading-relaxed"></p>
+          <p id="modal-prod-desc" class="text-xs sm:text-sm text-amber-800/90 leading-relaxed"></p>
 
           <div class="pt-2 border-t border-amber-200/80">
-            <span class="text-2xl font-extrabold text-amber-950" id="modal-prod-price"></span>
-            <p class="text-[11px] text-amber-700">Taxes included. Delivery calculated at checkout.</p>
+            <span class="text-xl sm:text-2xl font-extrabold text-amber-950" id="modal-prod-price"></span>
+            <p class="text-[10px] sm:text-[11px] text-amber-700">Taxes included. Delivery calculated at checkout.</p>
           </div>
 
           <!-- Unit Variants Selection -->
-          <div class="space-y-2">
+          <div class="space-y-1 sm:space-y-2">
             <label class="block text-xs font-bold text-amber-900">Select Unit Size / Variant:</label>
-            <select id="modal-variant-select" onchange="updateModalVariantPrice()" class="w-full p-3 text-sm bg-white border border-amber-300 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></select>
+            <select id="modal-variant-select" onchange="updateModalVariantPrice()" class="w-full p-2.5 sm:p-3 text-xs sm:text-sm bg-white border border-amber-300 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></select>
           </div>
 
           <!-- Quantity Selection -->
-          <div class="space-y-2">
+          <div class="space-y-1 sm:space-y-2">
             <label class="block text-xs font-bold text-amber-900">Quantity:</label>
-            <div class="flex items-center space-x-3 w-36 bg-white border border-amber-300 rounded-xl p-1.5 justify-between">
-              <button onclick="adjustModalQty(-1)" class="w-8 h-8 bg-amber-100 text-amber-900 rounded-lg font-bold text-sm hover:bg-amber-200">-</button>
-              <span id="modal-qty-display" class="font-bold text-sm">1</span>
-              <button onclick="adjustModalQty(1)" class="w-8 h-8 bg-amber-100 text-amber-900 rounded-lg font-bold text-sm hover:bg-amber-200">+</button>
+            <div class="flex items-center space-x-3 w-32 sm:w-36 bg-white border border-amber-300 rounded-xl p-1.5 justify-between">
+              <button onclick="adjustModalQty(-1)" class="w-7 h-7 sm:w-8 sm:h-8 bg-amber-100 text-amber-900 rounded-lg font-bold text-sm hover:bg-amber-200">-</button>
+              <span id="modal-qty-display" class="font-bold text-xs sm:text-sm">1</span>
+              <button onclick="adjustModalQty(1)" class="w-7 h-7 sm:w-8 sm:h-8 bg-amber-100 text-amber-900 rounded-lg font-bold text-sm hover:bg-amber-200">+</button>
             </div>
           </div>
 
-          <button onclick="addModalItemToCart()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition shadow-lg flex justify-center items-center gap-2">
+          <button onclick="addModalItemToCart()" class="w-full bg-primary text-white font-bold py-3 sm:py-3.5 rounded-xl hover:opacity-90 transition shadow-lg flex justify-center items-center gap-2 text-xs sm:text-sm">
             <i class="fa-solid fa-cart-plus"></i> Add to Cart
           </button>
         </div>
       </div>
 
-      <!-- Accordion Section (Ingredients & Delivery) -->
-      <div class="mt-8 pt-6 border-t border-amber-200/80 space-y-3">
-        <!-- Accordion 1: Ingredients -->
+      <!-- Accordion Section -->
+      <div class="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-amber-200/80 space-y-2.5">
         <div class="bg-white rounded-xl border border-amber-200 overflow-hidden">
-          <button onclick="toggleAccordion('acc-ingredients')" class="w-full p-4 text-left font-bold text-amber-950 flex justify-between items-center text-sm">
+          <button onclick="toggleAccordion('acc-ingredients')" class="w-full p-3.5 sm:p-4 text-left font-bold text-amber-950 flex justify-between items-center text-xs sm:text-sm">
             <span><i class="fa-solid fa-leaf mr-2 text-primary"></i> Ingredients & Allergens</span>
             <i class="fa-solid fa-chevron-down text-amber-500 transition-transform" id="acc-ingredients-icon"></i>
           </button>
-          <div id="acc-ingredients" class="hidden p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80">
+          <div id="acc-ingredients" class="hidden p-3.5 sm:p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80">
             <p id="modal-ingredients-text">Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.</p>
           </div>
         </div>
 
-        <!-- Accordion 2: Storage & Shelf Life -->
         <div class="bg-white rounded-xl border border-amber-200 overflow-hidden">
-          <button onclick="toggleAccordion('acc-storage')" class="w-full p-4 text-left font-bold text-amber-950 flex justify-between items-center text-sm">
+          <button onclick="toggleAccordion('acc-storage')" class="w-full p-3.5 sm:p-4 text-left font-bold text-amber-950 flex justify-between items-center text-xs sm:text-sm">
             <span><i class="fa-solid fa-snowflake mr-2 text-primary"></i> Storage, Usage & Shelf Life</span>
             <i class="fa-solid fa-chevron-down text-amber-500 transition-transform" id="acc-storage-icon"></i>
           </button>
-          <div id="acc-storage" class="hidden p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80 space-y-1">
+          <div id="acc-storage" class="hidden p-3.5 sm:p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80 space-y-1">
             <p>• Keep refrigerated between 2°C and 5°C.</p>
             <p>• Suitable for freezing for up to 6 months.</p>
             <p>• Best consumed within 30 days of opening.</p>
           </div>
         </div>
 
-        <!-- Accordion 3: Delivery Info -->
         <div class="bg-white rounded-xl border border-amber-200 overflow-hidden">
-          <button onclick="toggleAccordion('acc-delivery')" class="w-full p-4 text-left font-bold text-amber-950 flex justify-between items-center text-sm">
+          <button onclick="toggleAccordion('acc-delivery')" class="w-full p-3.5 sm:p-4 text-left font-bold text-amber-950 flex justify-between items-center text-xs sm:text-sm">
             <span><i class="fa-solid fa-truck-fast mr-2 text-primary"></i> Delivery Information</span>
             <i class="fa-solid fa-chevron-down text-amber-500 transition-transform" id="acc-delivery-icon"></i>
           </button>
-          <div id="acc-delivery" class="hidden p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80">
+          <div id="acc-delivery" class="hidden p-3.5 sm:p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80">
             <p>Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.</p>
           </div>
         </div>
@@ -415,18 +436,18 @@
   <!-- CART DRAWER MODAL -->
   <div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-xs" onclick="toggleCartDrawer()"></div>
-    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white p-6 shadow-2xl flex flex-col justify-between pointer-events-auto transform translate-x-full transition-transform duration-300" id="cart-drawer-panel">
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-xs sm:max-w-md bg-white p-5 sm:p-6 shadow-2xl flex flex-col justify-between pointer-events-auto transform translate-x-full transition-transform duration-300" id="cart-drawer-panel">
       <div class="flex justify-between items-center border-b border-amber-200 pb-4">
-        <h3 class="text-lg font-bold text-amber-950">Your Shopping Cart</h3>
+        <h3 class="text-base sm:text-lg font-bold text-amber-950">Your Shopping Cart</h3>
         <button onclick="toggleCartDrawer()" class="text-amber-500 hover:text-amber-800"><i class="fa-solid fa-xmark text-xl"></i></button>
       </div>
       <div id="cart-items-container" class="flex-grow overflow-y-auto py-4 space-y-3"></div>
       <div class="border-t border-amber-200 pt-4 space-y-4">
-        <div class="flex justify-between font-bold text-lg text-amber-950">
+        <div class="flex justify-between font-bold text-base sm:text-lg text-amber-950">
           <span>Total:</span>
           <span id="cart-total-price">R0.00</span>
         </div>
-        <button onclick="submitOrder()" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-90 transition flex justify-center items-center">
+        <button onclick="submitOrder()" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-90 transition flex justify-center items-center text-xs sm:text-sm">
           <i class="fa-solid fa-paper-plane mr-2"></i> Submit Order to Store
         </button>
       </div>
@@ -435,15 +456,15 @@
 
   <!-- AUTH MODAL -->
   <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 border border-amber-200 shadow-xl">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 sm:p-6 space-y-4 border border-amber-200 shadow-xl">
       <div class="flex justify-between items-center">
-        <h3 class="text-lg font-bold text-amber-950" id="auth-modal-title">Log In</h3>
+        <h3 class="text-base sm:text-lg font-bold text-amber-950" id="auth-modal-title">Log In</h3>
         <button onclick="closeAuthModal()" class="text-amber-400 hover:text-amber-800"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <form onsubmit="handleAuth(event)" class="space-y-3">
         <input type="email" id="auth-email" placeholder="Email Address" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
         <input type="password" id="auth-pass" placeholder="Password" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-        <button type="submit" id="auth-submit-btn" class="w-full bg-primary text-white font-bold py-2.5 rounded-xl hover:opacity-90">Log In</button>
+        <button type="submit" id="auth-submit-btn" class="w-full bg-primary text-white font-bold py-2.5 rounded-xl hover:opacity-90 text-xs sm:text-sm">Log In</button>
       </form>
       <div class="text-center pt-2 border-t border-amber-100">
         <button type="button" onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs font-semibold text-amber-800 hover:underline">
@@ -502,6 +523,11 @@
       updateCartUI();
       updateAuthUI();
     });
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
 
     function applyStylesAndSettings() {
       const root = document.documentElement;
@@ -587,19 +613,19 @@
       grid.innerHTML = filtered.map(p => `
         <div onclick="openProductModal('${p.id}')" class="bg-white rounded-2xl border border-amber-200/80 overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
           <div class="relative overflow-hidden">
-            <img src="${p.img}" alt="${p.title}" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
+            <img src="${p.img}" alt="${p.title}" class="w-full h-44 sm:h-48 object-cover group-hover:scale-105 transition duration-300">
             <span class="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-xs">View Details</span>
           </div>
-          <div class="p-5 flex-grow flex flex-col justify-between space-y-3">
+          <div class="p-4 sm:p-5 flex-grow flex flex-col justify-between space-y-3">
             <div>
-              <span class="text-xs font-bold text-accent uppercase tracking-wider">${p.category}</span>
-              <h3 class="font-bold text-lg text-amber-950 mt-1 group-hover:text-primary transition">${p.title}</h3>
+              <span class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider">${p.category}</span>
+              <h3 class="font-bold text-base sm:text-lg text-amber-950 mt-0.5 group-hover:text-primary transition">${p.title}</h3>
               <p class="text-amber-800/80 text-xs leading-relaxed mt-1 line-clamp-2">${p.desc}</p>
             </div>
             <div class="flex justify-between items-center pt-2 border-t border-amber-100">
-              <span class="text-xl font-extrabold text-amber-950">R${p.price.toFixed(2)}</span>
-              <button onclick="event.stopPropagation(); openProductModal('${p.id}')" class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl hover:opacity-90 transition flex items-center">
-                <i class="fa-solid fa-eye mr-1.5"></i> Select Options
+              <span class="text-lg sm:text-xl font-extrabold text-amber-950">R${p.price.toFixed(2)}</span>
+              <button onclick="event.stopPropagation(); openProductModal('${p.id}')" class="bg-primary text-white text-[11px] sm:text-xs font-bold px-3.5 py-2 rounded-xl hover:opacity-90 transition flex items-center">
+                <i class="fa-solid fa-eye mr-1"></i> Options
               </button>
             </div>
           </div>
@@ -607,7 +633,6 @@
       `).join('');
     }
 
-    // PRODUCT DETAILS MODAL LOGIC
     function openProductModal(id) {
       const p = products.find(item => item.id === id);
       if (!p) return;
@@ -621,12 +646,11 @@
       document.getElementById('modal-ingredients-text').textContent = p.ingredients || 'Pure Cultured Butter, Natural Spices & Fresh Herbs. Contains Milk.';
       document.getElementById('modal-qty-display').textContent = modalQty;
 
-      // Populate Variant Dropdown
       const variantSelect = document.getElementById('modal-variant-select');
       variantSelect.innerHTML = '';
 
       const varList = (p.variants || 'Standard:+0').split(',');
-      varList.forEach((vStr, index) => {
+      varList.forEach((vStr) => {
         const parts = vStr.trim().split(':+');
         const vName = parts[0];
         const vAddPrice = parseFloat(parts[1] || 0);
@@ -701,7 +725,6 @@
       }
     }
 
-    // GENERAL ADMIN & PRODUCT MANAGEMENT
     function renderAdminProducts() {
       const tbody = document.getElementById('admin-product-table-body');
       tbody.innerHTML = products.map(p => `
@@ -714,6 +737,36 @@
             <button onclick="deleteProduct('${p.id}')" class="text-xs bg-red-100 text-red-700 px-2.5 py-1 rounded-lg font-bold">Delete</button>
           </td>
         </tr>
+      `).join('');
+    }
+
+    // RENDER REGISTERED CUSTOMERS DIRECTORY IN BACKEND
+    function renderAdminCustomers() {
+      const container = document.getElementById('admin-customers-list');
+      const badge = document.getElementById('customer-count-badge');
+      const emails = Object.keys(customerAccounts);
+
+      badge.textContent = `${emails.length} Registered`;
+
+      if (emails.length === 0) {
+        container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No customer accounts registered yet.</p>`;
+        return;
+      }
+
+      const savedProfiles = JSON.parse(localStorage.getItem('bs_cust_profile')) || {};
+
+      container.innerHTML = emails.map(email => `
+        <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-2">
+          <div class="flex justify-between items-center font-bold text-amber-950">
+            <span class="text-primary"><i class="fa-regular fa-user mr-1.5"></i> ${email}</span>
+            <span class="text-[10px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300">Customer Account</span>
+          </div>
+          <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
+            <p><strong>Full Name:</strong> ${savedProfiles.name || 'Not specified yet'}</p>
+            <p><strong>Phone:</strong> ${savedProfiles.phone || 'Not specified yet'}</p>
+            <p><strong>Delivery Address:</strong> ${savedProfiles.address || 'No saved address'}</p>
+          </div>
+        </div>
       `).join('');
     }
 
@@ -777,7 +830,6 @@
       renderCategories();
     }
 
-    // CART & HELPERS
     function saveCart() {
       localStorage.setItem('bs_cart', JSON.stringify(cart));
       updateCartUI();
@@ -798,10 +850,10 @@
       container.innerHTML = cart.map(item => `
         <div class="flex items-center justify-between p-3 bg-amber-50/50 rounded-xl border border-amber-200/60">
           <div>
-            <h4 class="font-bold text-sm text-amber-950">${item.title}</h4>
-            <span class="text-xs text-amber-700">R${item.price.toFixed(2)} x ${item.qty}</span>
+            <h4 class="font-bold text-xs sm:text-sm text-amber-950">${item.title}</h4>
+            <span class="text-[11px] sm:text-xs text-amber-700">R${item.price.toFixed(2)} x ${item.qty}</span>
           </div>
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-1.5 sm:space-x-2">
             <button onclick="changeQty('${item.cartId}', -1)" class="w-6 h-6 bg-amber-200 text-amber-900 rounded font-bold text-xs">-</button>
             <span class="text-xs font-bold">${item.qty}</span>
             <button onclick="changeQty('${item.cartId}', 1)" class="w-6 h-6 bg-amber-200 text-amber-900 rounded font-bold text-xs">+</button>
@@ -861,7 +913,7 @@
       const cats = ['All', ...new Set(products.map(p => p.category))];
       const container = document.getElementById('category-filter-list');
       container.innerHTML = cats.map(c => `
-        <button onclick="setCategory('${c}')" class="px-4 py-1.5 rounded-full text-xs font-semibold transition ${selectedCategory === c ? 'bg-primary text-white' : 'bg-white text-amber-900 border border-amber-200 hover:bg-amber-100'}">
+        <button onclick="setCategory('${c}')" class="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition ${selectedCategory === c ? 'bg-primary text-white' : 'bg-white text-amber-900 border border-amber-200 hover:bg-amber-100'}">
           ${c}
         </button>
       `).join('');
@@ -887,6 +939,7 @@
         }
         document.getElementById('view-admin').classList.remove('hidden');
         renderAdminProducts();
+        renderAdminCustomers();
         renderAdminOrders();
       } else if (viewName === 'account') {
         document.getElementById('view-account').classList.remove('hidden');
@@ -956,6 +1009,7 @@
       const userPill = document.getElementById('user-pill');
       const userEmailDisplay = document.getElementById('user-email-display');
       const navAdminBtn = document.getElementById('nav-admin-btn');
+      const mobileNavAdminBtn = document.getElementById('mobile-nav-admin-btn');
 
       if (currentUser) {
         loginBtn.classList.add('hidden');
@@ -964,13 +1018,16 @@
 
         if (currentUser.email === 'happiekos@gmail.com') {
           navAdminBtn.classList.remove('hidden');
+          if (mobileNavAdminBtn) mobileNavAdminBtn.classList.remove('hidden');
         } else {
           navAdminBtn.classList.add('hidden');
+          if (mobileNavAdminBtn) mobileNavAdminBtn.classList.add('hidden');
         }
       } else {
         loginBtn.classList.remove('hidden');
         userPill.classList.add('hidden');
         navAdminBtn.classList.add('hidden');
+        if (mobileNavAdminBtn) mobileNavAdminBtn.classList.add('hidden');
       }
     }
 
@@ -1018,7 +1075,7 @@
     }
 
     function switchAdminTab(tab) {
-      ['products', 'customize', 'orders', 'security'].forEach(t => {
+      ['products', 'customers', 'customize', 'orders', 'security'].forEach(t => {
         document.getElementById(`admin-tab-${t}`).classList.add('hidden');
         document.getElementById(`tab-btn-${t}`).classList.replace('text-primary', 'text-amber-600');
         document.getElementById(`tab-btn-${t}`).classList.replace('border-primary', 'border-transparent');
