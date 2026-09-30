@@ -6,8 +6,11 @@
   <title id="site-title-meta">The Butter Smith - Artisanal Compound Butters</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Dynamic Google Fonts -->
+  <link id="font-imports" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&family=Poppins:wght@500;700&family=Roboto:wght@400;700&display=swap">
+  
   <style id="dynamic-styles">
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
     :root {
       --primary-color: #78350f;
       --accent-color: #d97706;
@@ -16,16 +19,20 @@
     }
     body { font-family: var(--body-font); }
     h1, h2, h3, h4, .brand-font { font-family: var(--heading-font); }
-    .bg-primary { background-color: var(--primary-color); }
-    .text-primary { color: var(--primary-color); }
-    .bg-accent { background-color: var(--accent-color); }
-    .text-accent { color: var(--accent-color); }
+    
+    .bg-primary { background-color: var(--primary-color) !important; }
+    .text-primary { color: var(--primary-color) !important; }
+    .border-primary { border-color: var(--primary-color) !important; }
+    
+    .bg-accent { background-color: var(--accent-color) !important; }
+    .text-accent { color: var(--accent-color) !important; }
+    .border-accent { border-color: var(--accent-color) !important; }
   </style>
 </head>
 <body class="bg-amber-50/30 text-amber-950 min-h-screen flex flex-col">
 
   <!-- Announcement Bar -->
-  <div id="announcement-bar" class="bg-amber-900 text-amber-100 text-xs sm:text-sm text-center py-2 px-4 font-medium flex justify-between items-center">
+  <div id="announcement-bar" class="bg-primary text-white text-xs sm:text-sm text-center py-2.5 px-4 font-medium flex justify-between items-center shadow-sm">
     <span class="w-full text-center" id="announcement-text">✨ Handcrafted Small-Batch Compound Butters & Artisanal Relishes</span>
   </div>
 
@@ -33,7 +40,7 @@
   <header class="bg-white/90 backdrop-blur-md border-b border-amber-200/60 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('store')">
-        <div class="w-12 h-12 bg-amber-100 text-amber-800 rounded-full flex items-center justify-center font-bold text-xl border border-amber-300">
+        <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center font-bold text-xl border border-amber-300">
           <i class="fa-solid fa-butter"></i>
         </div>
         <div>
@@ -44,9 +51,9 @@
 
       <!-- Navigation -->
       <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-        <button onclick="navigateTo('store')" class="text-amber-900 hover:text-amber-600 transition">Shop Catalog</button>
-        <button onclick="navigateTo('account')" id="nav-account-btn" class="text-amber-900 hover:text-amber-600 transition">My Account</button>
-        <button onclick="navigateTo('admin')" id="nav-admin-btn" class="hidden bg-amber-100 text-amber-900 px-3 py-1.5 rounded-lg border border-amber-300 hover:bg-amber-200 transition">
+        <button onclick="navigateTo('store')" class="text-amber-900 hover:text-primary transition">Shop Catalog</button>
+        <button onclick="navigateTo('account')" id="nav-account-btn" class="text-amber-900 hover:text-primary transition">My Account</button>
+        <button onclick="navigateTo('admin')" id="nav-admin-btn" class="hidden bg-amber-100 text-primary px-3.5 py-1.5 rounded-xl border border-amber-300 hover:bg-amber-200 transition font-semibold">
           <i class="fa-solid fa-gauge-high mr-1.5"></i> Admin Dashboard
         </button>
       </nav>
@@ -54,7 +61,7 @@
       <!-- Cart & Auth Controls -->
       <div class="flex items-center space-x-4">
         <div id="auth-status-container">
-          <button onclick="openAuthModal()" id="login-btn" class="text-sm font-semibold text-amber-900 hover:text-amber-700 px-3 py-2">
+          <button onclick="openAuthModal()" id="login-btn" class="text-sm font-semibold text-amber-900 hover:text-primary px-3 py-2">
             <i class="fa-regular fa-user mr-1"></i> Log In / Register
           </button>
           <div id="user-pill" class="hidden flex items-center space-x-2 bg-amber-100/80 px-3 py-1.5 rounded-full border border-amber-200 text-xs font-semibold">
@@ -63,9 +70,9 @@
           </div>
         </div>
 
-        <button onclick="toggleCartDrawer()" class="relative p-2.5 bg-amber-100 text-amber-900 rounded-full hover:bg-amber-200 transition">
+        <button onclick="toggleCartDrawer()" class="relative p-2.5 bg-amber-100 text-primary rounded-full hover:bg-amber-200 transition">
           <i class="fa-solid fa-basket-shopping text-lg"></i>
-          <span id="cart-count" class="absolute -top-1 -right-1 bg-amber-700 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+          <span id="cart-count" class="absolute -top-1 -right-1 bg-accent text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
         </button>
       </div>
     </div>
@@ -74,54 +81,33 @@
   <!-- Main View Router Container -->
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <!-- Enhanced Hero Banner -->
-      <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 text-white p-8 sm:p-12 shadow-2xl border border-amber-900/40">
-        <!-- Background Pattern Overlay -->
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
-
-        <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          <!-- Left Column: Copy & CTAs -->
-          <div class="md:col-span-7 space-y-5">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-amber-400/30">
-                <i class="fa-solid fa-location-dot text-amber-400 text-[10px]"></i> Handcrafted in Centurion
-              </span>
-              <span class="inline-flex items-center gap-1.5 bg-amber-600/30 text-amber-200 text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/20">
-                🚚 Free Local Delivery over R250
-              </span>
-            </div>
-
-            <h1 class="brand-font text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight text-amber-50">
-              Gourmet Compound Butters & Artisanal Relishes
-            </h1>
-
-            <p class="text-amber-200/90 text-sm sm:text-base leading-relaxed max-w-xl">
-              Elevate your ribeye steaks, warm sourdough, and roasted veggies with our small-batch garlic & herb, smoked chilli, and sweet honey cinnamon blends.
-            </p>
-
-            <div class="pt-2 flex flex-wrap items-center gap-4">
-              <a href="#product-grid" class="bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-amber-500/20 transition-all flex items-center gap-2 text-sm">
-                <i class="fa-solid fa-basket-shopping"></i> Order Fresh Today
-              </a>
-              <button onclick="navigateTo('account')" class="bg-amber-900/60 hover:bg-amber-800 text-amber-200 font-semibold px-5 py-3 rounded-xl border border-amber-700/50 transition text-sm">
-                View Delivery Info
-              </button>
-            </div>
+    <!-- VIEW 1: STORE FRONT -->
+    <section id="view-store" class="space-y-10">
+      
+      <!-- Clean, Flexible Hero Banner -->
+      <div class="bg-white rounded-3xl border border-amber-200/80 shadow-md p-6 sm:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <!-- Left Text Section -->
+        <div class="md:col-span-7 space-y-4">
+          <span class="inline-block bg-amber-100 text-primary text-xs font-bold px-3 py-1 rounded-full border border-amber-200" id="hero-badge">
+            Crafted Fresh in Centurion
+          </span>
+          <h1 class="brand-font text-3xl sm:text-5xl font-extrabold text-amber-950 leading-tight" id="hero-headline">
+            Gourmet Compound Butters & Artisanal Relishes
+          </h1>
+          <p class="text-amber-800 text-sm sm:text-base leading-relaxed" id="hero-subheadline">
+            Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.
+          </p>
+          <div class="pt-2 flex flex-wrap items-center gap-4">
+            <a href="#product-grid" class="bg-primary text-white font-bold px-6 py-3 rounded-xl shadow-md hover:opacity-90 transition text-sm flex items-center">
+              <i class="fa-solid fa-basket-shopping mr-2"></i> Shop Our Lineup
+            </a>
           </div>
+        </div>
 
-          <!-- Right Column: Product Spotlight Graphic -->
-          <div class="md:col-span-5 hidden md:flex justify-center items-center">
-            <div class="relative group">
-              <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-amber-700 rounded-2xl blur-sm opacity-50 group-hover:opacity-75 transition"></div>
-              <img src="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80" alt="Garlic & Herb Butter" class="relative rounded-2xl w-full h-64 object-cover shadow-2xl border border-amber-700/50">
-              <div class="absolute bottom-3 left-3 right-3 bg-amber-950/80 backdrop-blur-md p-3 rounded-xl border border-amber-700/40 text-xs flex justify-between items-center">
-                <div>
-                  <p class="font-bold text-amber-100">Garlic & Herb Butter</p>
-                  <p class="text-amber-300/80 text-[10px]">Cultured Butter & Sea Salt</p>
-                </div>
-                <span class="bg-amber-500 text-amber-950 font-extrabold px-2.5 py-1 rounded-lg">R65.00</span>
-              </div>
-            </div>
+        <!-- Right Hero Image Box (Editable in Admin Panel) -->
+        <div class="md:col-span-5 flex justify-center">
+          <div class="w-full h-64 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100">
+            <img id="hero-image-display" src="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80" alt="Hero Featured Product" class="w-full h-full object-cover">
           </div>
         </div>
       </div>
@@ -143,37 +129,37 @@
     <section id="view-account" class="hidden max-w-3xl mx-auto space-y-6">
       <h2 class="text-2xl font-bold text-amber-950">My Account & Shipping Details</h2>
       <div class="bg-white p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-lg text-amber-900">Saved Address</h3>
+        <h3 class="font-bold text-lg text-primary">Saved Address</h3>
         <form id="address-form" onsubmit="saveCustomerAddress(event)" class="space-y-3">
           <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
           <input type="text" id="cust-phone" placeholder="Phone Number" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
           <textarea id="cust-address" placeholder="Delivery Address (Street, Suburb, City, Code)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl h-24" required></textarea>
-          <button type="submit" class="bg-amber-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-amber-900 transition">Save Address</button>
+          <button type="submit" class="bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Address</button>
         </form>
       </div>
 
       <div class="bg-white p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-lg text-amber-900">Order History</h3>
+        <h3 class="font-bold text-lg text-primary">Order History</h3>
         <div id="customer-order-history" class="text-sm text-amber-800 space-y-2">
           <p class="text-amber-600 italic">No previous orders found.</p>
         </div>
       </div>
     </section>
 
-    <!-- VIEW 3: ADMIN DASHBOARD (Locked by default) -->
+    <!-- VIEW 3: ADMIN DASHBOARD -->
     <section id="view-admin" class="hidden space-y-8">
       <div class="flex justify-between items-center border-b border-amber-200 pb-4">
         <div>
           <h2 class="text-2xl font-bold text-amber-950">Admin Control Panel</h2>
-          <p class="text-xs text-amber-700">Manage products, site copy, fonts, and dispatch orders.</p>
+          <p class="text-xs text-amber-700">Manage products, site styles, fonts, and dispatch orders.</p>
         </div>
-        <span class="bg-amber-100 text-amber-900 text-xs font-bold px-3 py-1 rounded-full border border-amber-300">Logged in as Admin</span>
+        <span class="bg-amber-100 text-primary text-xs font-bold px-3 py-1 rounded-full border border-amber-300">Logged in as Admin</span>
       </div>
 
-      <!-- Admin Tabs -->
+      <!-- Admin Navigation Tabs -->
       <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto">
-        <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-4 py-2 text-sm font-bold border-b-2 border-amber-800 text-amber-900 whitespace-nowrap">Product List</button>
-        <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer</button>
+        <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-4 py-2 text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Product List</button>
+        <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer & Styles</button>
         <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
         <button onclick="switchAdminTab('security')" id="tab-btn-security" class="px-4 py-2 text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Security & Password</button>
       </div>
@@ -181,7 +167,7 @@
       <!-- Admin Tab 1: Products -->
       <div id="admin-tab-products" class="space-y-6">
         <div class="bg-white p-6 rounded-2xl border border-amber-200 space-y-4">
-          <h3 class="font-bold text-amber-900" id="product-form-title">Add New Product</h3>
+          <h3 class="font-bold text-primary" id="product-form-title">Add New Product</h3>
           <form onsubmit="handleProductSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input type="hidden" id="edit-prod-id">
             <input type="text" id="prod-title" placeholder="Product Name (e.g., Garlic & Herb Butter)" class="p-2.5 text-sm border border-amber-200 rounded-xl" required>
@@ -191,14 +177,14 @@
             <textarea id="prod-desc" placeholder="Product Description" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-20" required></textarea>
             <div class="sm:col-span-2 flex justify-end space-x-2">
               <button type="button" onclick="resetProductForm()" class="px-4 py-2 text-sm text-amber-700 bg-amber-100 rounded-xl">Cancel</button>
-              <button type="submit" class="px-6 py-2 text-sm font-bold text-white bg-amber-800 rounded-xl hover:bg-amber-900">Save Product</button>
+              <button type="submit" class="px-6 py-2 text-sm font-bold text-white bg-primary rounded-xl hover:opacity-90">Save Product</button>
             </div>
           </form>
         </div>
 
         <div class="bg-white rounded-2xl border border-amber-200 overflow-hidden">
           <table class="w-full text-left text-sm text-amber-950">
-            <thead class="bg-amber-100/60 text-amber-900 font-bold border-b border-amber-200">
+            <thead class="bg-amber-100/60 text-primary font-bold border-b border-amber-200">
               <tr>
                 <th class="p-3">Product</th>
                 <th class="p-3">Category</th>
@@ -211,39 +197,102 @@
         </div>
       </div>
 
-      <!-- Admin Tab 2: Site Customizer -->
-      <div id="admin-tab-customize" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-4 max-w-2xl">
-        <h3 class="font-bold text-amber-900">Customize Branding & Wording</h3>
-        <form onsubmit="handleSiteCustomization(event)" class="space-y-4">
-          <div>
-            <label class="block text-xs font-bold text-amber-800 mb-1">Store Name</label>
-            <input type="text" id="cust-site-title" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+      <!-- Admin Tab 2: Full Site & Style Customizer -->
+      <div id="admin-tab-customize" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-6 max-w-3xl">
+        <h3 class="font-bold text-primary text-lg">Customize Store Branding, Colors & Fonts</h3>
+        <form onsubmit="handleSiteCustomization(event)" class="space-y-6">
+          
+          <!-- Color & Font Settings -->
+          <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
+            <h4 class="font-bold text-amber-900 text-sm">Theme Colors & Fonts</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Primary Color</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="cust-primary-color" class="h-10 w-16 p-1 border border-amber-200 rounded-lg cursor-pointer">
+                  <span class="text-xs text-amber-700 font-mono" id="primary-hex-display">#78350f</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Accent / Badge Color</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="cust-accent-color" class="h-10 w-16 p-1 border border-amber-200 rounded-lg cursor-pointer">
+                  <span class="text-xs text-amber-700 font-mono" id="accent-hex-display">#d97706</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Heading Font Style</label>
+                <select id="cust-heading-font" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+                  <option value="'Playfair Display', serif">Playfair Display (Classic Elegant)</option>
+                  <option value="'Lora', serif">Lora (Warm Serif)</option>
+                  <option value="'Poppins', sans-serif">Poppins (Modern Bold)</option>
+                  <option value="'Roboto', sans-serif">Roboto (Clean Neutral)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Body Text Font Style</label>
+                <select id="cust-body-font" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+                  <option value="'Inter', sans-serif">Inter (Modern Clean)</option>
+                  <option value="'Roboto', sans-serif">Roboto (Standard)</option>
+                  <option value="'Lora', serif">Lora (Editorial Serif)</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-amber-800 mb-1">Tagline</label>
-            <input type="text" id="cust-site-tagline" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+
+          <!-- Hero Image & Text Content -->
+          <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
+            <h4 class="font-bold text-amber-900 text-sm">Hero Banner Content & Photo</h4>
+            <div>
+              <label class="block text-xs font-bold text-amber-800 mb-1">Hero Image URL</label>
+              <input type="text" id="cust-hero-img" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" placeholder="Paste image link here">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Hero Headline</label>
+                <input type="text" id="cust-hero-title" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Hero Subtitle</label>
+                <input type="text" id="cust-hero-sub" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+              </div>
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-amber-800 mb-1">Hero Banner Title</label>
-            <input type="text" id="cust-hero-title" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+
+          <!-- General Store Info -->
+          <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
+            <h4 class="font-bold text-amber-900 text-sm">Store Name & Announcement</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Store Name</label>
+                <input type="text" id="cust-site-title" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Tagline</label>
+                <input type="text" id="cust-site-tagline" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-amber-800 mb-1">Announcement Bar Text</label>
+              <input type="text" id="cust-announcement" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-amber-800 mb-1">Announcement Bar Text</label>
-            <input type="text" id="cust-announcement" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
-          </div>
-          <button type="submit" class="bg-amber-800 text-white font-bold text-sm px-6 py-2.5 rounded-xl hover:bg-amber-900">Save Site Changes</button>
+
+          <button type="submit" class="bg-primary text-white font-bold text-sm px-6 py-3 rounded-xl hover:opacity-90 transition">
+            Save & Apply Styles Live
+          </button>
         </form>
       </div>
 
       <!-- Admin Tab 3: Orders -->
       <div id="admin-tab-orders" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-4">
-        <h3 class="font-bold text-amber-900">Incoming Orders</h3>
+        <h3 class="font-bold text-primary">Incoming Orders</h3>
         <div id="admin-orders-list" class="space-y-4 text-sm"></div>
       </div>
 
       <!-- Admin Tab 4: Security & Password -->
       <div id="admin-tab-security" class="hidden bg-white p-6 rounded-2xl border border-amber-200 space-y-4 max-w-md">
-        <h3 class="font-bold text-amber-900">Change Admin Password</h3>
+        <h3 class="font-bold text-primary">Change Admin Password</h3>
         <form onsubmit="changeAdminPassword(event)" class="space-y-3">
           <div>
             <label class="block text-xs font-bold text-amber-800 mb-1">Current Password</label>
@@ -257,7 +306,7 @@
             <label class="block text-xs font-bold text-amber-800 mb-1">Confirm New Password</label>
             <input type="password" id="confirm-admin-pass" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
           </div>
-          <button type="submit" class="w-full bg-amber-800 text-white font-bold text-sm py-2.5 rounded-xl hover:bg-amber-900">Update Password</button>
+          <button type="submit" class="w-full bg-primary text-white font-bold text-sm py-2.5 rounded-xl hover:opacity-90">Update Password</button>
         </form>
       </div>
     </section>
@@ -278,7 +327,7 @@
           <span>Total:</span>
           <span id="cart-total-price">R0.00</span>
         </div>
-        <button onclick="submitOrder()" class="w-full bg-amber-800 text-white font-bold py-3 rounded-xl hover:bg-amber-900 transition flex justify-center items-center">
+        <button onclick="submitOrder()" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-90 transition flex justify-center items-center">
           <i class="fa-solid fa-paper-plane mr-2"></i> Submit Order to Store
         </button>
       </div>
@@ -295,7 +344,7 @@
       <form onsubmit="handleAuth(event)" class="space-y-3">
         <input type="email" id="auth-email" placeholder="Email Address" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
         <input type="password" id="auth-pass" placeholder="Password" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-        <button type="submit" id="auth-submit-btn" class="w-full bg-amber-800 text-white font-bold py-2.5 rounded-xl hover:bg-amber-900">Log In</button>
+        <button type="submit" id="auth-submit-btn" class="w-full bg-primary text-white font-bold py-2.5 rounded-xl hover:opacity-90">Log In</button>
       </form>
       <div class="text-center pt-2 border-t border-amber-100">
         <button type="button" onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs font-semibold text-amber-800 hover:underline">
@@ -321,7 +370,21 @@
       { id: '4', title: 'Dried Fruit Relish', category: 'Relish', price: 55, img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80', desc: 'Slow-cooked artisanal dried fruit chutney, pairs perfectly with cheeses.' }
     ];
 
+    const defaultSettings = {
+      title: 'The Butter Smith',
+      tagline: 'Artisanal Small-Batch Blends',
+      heroTitle: 'Gourmet Compound Butters & Artisanal Relishes',
+      heroSub: 'Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.',
+      heroImg: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80',
+      announcement: '✨ Handcrafted Small-Batch Compound Butters & Artisanal Relishes',
+      primaryColor: '#78350f',
+      accentColor: '#d97706',
+      headingFont: "'Playfair Display', serif",
+      bodyFont: "'Inter', sans-serif"
+    };
+
     let products = JSON.parse(localStorage.getItem('bs_products')) || defaultProducts;
+    let settings = JSON.parse(localStorage.getItem('bs_settings')) || defaultSettings;
     let cart = JSON.parse(localStorage.getItem('bs_cart')) || [];
     let orders = JSON.parse(localStorage.getItem('bs_orders')) || [];
     let currentUser = JSON.parse(localStorage.getItem('bs_user')) || null;
@@ -331,12 +394,68 @@
     let isRegisterMode = false;
 
     window.addEventListener('DOMContentLoaded', () => {
+      applyStylesAndSettings();
       renderProducts();
       renderCategories();
       updateCartUI();
       updateAuthUI();
-      loadSiteSettings();
     });
+
+    function applyStylesAndSettings() {
+      // Apply Root Dynamic CSS Variables
+      const root = document.documentElement;
+      root.style.setProperty('--primary-color', settings.primaryColor || '#78350f');
+      root.style.setProperty('--accent-color', settings.accentColor || '#d97706');
+      root.style.setProperty('--heading-font', settings.headingFont || "'Playfair Display', serif");
+      root.style.setProperty('--body-font', settings.bodyFont || "'Inter', sans-serif");
+
+      // Update Text Elements
+      document.getElementById('header-brand-name').textContent = settings.title || defaultSettings.title;
+      document.getElementById('footer-brand').textContent = settings.title || defaultSettings.title;
+      document.getElementById('site-title-meta').textContent = settings.title || defaultSettings.title;
+      document.getElementById('header-tagline').textContent = settings.tagline || defaultSettings.tagline;
+      document.getElementById('hero-headline').textContent = settings.heroTitle || defaultSettings.heroTitle;
+      document.getElementById('hero-subheadline').textContent = settings.heroSub || defaultSettings.heroSub;
+      document.getElementById('announcement-text').textContent = settings.announcement || defaultSettings.announcement;
+      
+      if (settings.heroImg) {
+        document.getElementById('hero-image-display').src = settings.heroImg;
+      }
+
+      // Pre-fill Customizer Inputs in Admin Dashboard
+      document.getElementById('cust-primary-color').value = settings.primaryColor || '#78350f';
+      document.getElementById('cust-accent-color').value = settings.accentColor || '#d97706';
+      document.getElementById('primary-hex-display').textContent = settings.primaryColor || '#78350f';
+      document.getElementById('accent-hex-display').textContent = settings.accentColor || '#d97706';
+      document.getElementById('cust-heading-font').value = settings.headingFont || "'Playfair Display', serif";
+      document.getElementById('cust-body-font').value = settings.bodyFont || "'Inter', sans-serif";
+      document.getElementById('cust-hero-img').value = settings.heroImg || defaultSettings.heroImg;
+      document.getElementById('cust-site-title').value = settings.title || defaultSettings.title;
+      document.getElementById('cust-site-tagline').value = settings.tagline || defaultSettings.tagline;
+      document.getElementById('cust-hero-title').value = settings.heroTitle || defaultSettings.heroTitle;
+      document.getElementById('cust-hero-sub').value = settings.heroSub || defaultSettings.heroSub;
+      document.getElementById('cust-announcement').value = settings.announcement || defaultSettings.announcement;
+    }
+
+    function handleSiteCustomization(e) {
+      e.preventDefault();
+      settings = {
+        title: document.getElementById('cust-site-title').value,
+        tagline: document.getElementById('cust-site-tagline').value,
+        heroTitle: document.getElementById('cust-hero-title').value,
+        heroSub: document.getElementById('cust-hero-sub').value,
+        heroImg: document.getElementById('cust-hero-img').value,
+        announcement: document.getElementById('cust-announcement').value,
+        primaryColor: document.getElementById('cust-primary-color').value,
+        accentColor: document.getElementById('cust-accent-color').value,
+        headingFont: document.getElementById('cust-heading-font').value,
+        bodyFont: document.getElementById('cust-body-font').value
+      };
+
+      localStorage.setItem('bs_settings', JSON.stringify(settings));
+      applyStylesAndSettings();
+      alert('Styles and branding updated successfully!');
+    }
 
     function navigateTo(viewName) {
       document.getElementById('view-store').classList.add('hidden');
@@ -466,7 +585,7 @@
       const cats = ['All', ...new Set(products.map(p => p.category))];
       const container = document.getElementById('category-filter-list');
       container.innerHTML = cats.map(c => `
-        <button onclick="setCategory('${c}')" class="px-4 py-1.5 rounded-full text-xs font-semibold transition ${selectedCategory === c ? 'bg-amber-800 text-white' : 'bg-white text-amber-900 border border-amber-200 hover:bg-amber-100'}">
+        <button onclick="setCategory('${c}')" class="px-4 py-1.5 rounded-full text-xs font-semibold transition ${selectedCategory === c ? 'bg-primary text-white' : 'bg-white text-amber-900 border border-amber-200 hover:bg-amber-100'}">
           ${c}
         </button>
       `).join('');
@@ -498,13 +617,13 @@
           <img src="${p.img}" alt="${p.title}" class="w-full h-48 object-cover">
           <div class="p-5 flex-grow flex flex-col justify-between space-y-3">
             <div>
-              <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">${p.category}</span>
+              <span class="text-xs font-bold text-accent uppercase tracking-wider">${p.category}</span>
               <h3 class="font-bold text-lg text-amber-950 mt-1">${p.title}</h3>
               <p class="text-amber-800/80 text-xs leading-relaxed mt-1">${p.desc}</p>
             </div>
             <div class="flex justify-between items-center pt-2 border-t border-amber-100">
               <span class="text-xl font-extrabold text-amber-950">R${p.price.toFixed(2)}</span>
-              <button onclick="addToCart('${p.id}')" class="bg-amber-800 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-amber-900 transition flex items-center">
+              <button onclick="addToCart('${p.id}')" class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl hover:opacity-90 transition flex items-center">
                 <i class="fa-solid fa-cart-plus mr-1.5"></i> Add
               </button>
             </div>
@@ -626,12 +745,12 @@
     function switchAdminTab(tab) {
       ['products', 'customize', 'orders', 'security'].forEach(t => {
         document.getElementById(`admin-tab-${t}`).classList.add('hidden');
-        document.getElementById(`tab-btn-${t}`).classList.replace('text-amber-900', 'text-amber-600');
-        document.getElementById(`tab-btn-${t}`).classList.replace('border-amber-800', 'border-transparent');
+        document.getElementById(`tab-btn-${t}`).classList.replace('text-primary', 'text-amber-600');
+        document.getElementById(`tab-btn-${t}`).classList.replace('border-primary', 'border-transparent');
       });
       document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
-      document.getElementById(`tab-btn-${tab}`).classList.replace('text-amber-600', 'text-amber-900');
-      document.getElementById(`tab-btn-${tab}`).classList.replace('border-transparent', 'border-amber-800');
+      document.getElementById(`tab-btn-${tab}`).classList.replace('text-amber-600', 'text-primary');
+      document.getElementById(`tab-btn-${tab}`).classList.replace('border-transparent', 'border-primary');
     }
 
     function renderAdminProducts() {
@@ -642,7 +761,7 @@
           <td class="p-3 text-amber-700">${p.category}</td>
           <td class="p-3 font-bold">R${p.price.toFixed(2)}</td>
           <td class="p-3 text-right space-x-2">
-            <button onclick="editProduct('${p.id}')" class="text-xs bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg">Edit</button>
+            <button onclick="editProduct('${p.id}')" class="text-xs bg-amber-100 text-primary px-2.5 py-1 rounded-lg">Edit</button>
             <button onclick="deleteProduct('${p.id}')" class="text-xs bg-red-100 text-red-700 px-2.5 py-1 rounded-lg">Delete</button>
           </td>
         </tr>
@@ -722,33 +841,6 @@
           </ul>
         </div>
       `).join('');
-    }
-
-    function handleSiteCustomization(e) {
-      e.preventDefault();
-      const settings = {
-        title: document.getElementById('cust-site-title').value,
-        tagline: document.getElementById('cust-site-tagline').value,
-        hero: document.getElementById('cust-hero-title').value,
-        announcement: document.getElementById('cust-announcement').value
-      };
-      localStorage.setItem('bs_settings', JSON.stringify(settings));
-      loadSiteSettings();
-      alert('Site branding updated successfully!');
-    }
-
-    function loadSiteSettings() {
-      const s = JSON.parse(localStorage.getItem('bs_settings'));
-      if (s) {
-        if (s.title) {
-          document.getElementById('header-brand-name').textContent = s.title;
-          document.getElementById('footer-brand').textContent = s.title;
-          document.getElementById('site-title-meta').textContent = s.title;
-        }
-        if (s.tagline) document.getElementById('header-tagline').textContent = s.tagline;
-        if (s.hero) document.getElementById('hero-headline').textContent = s.hero;
-        if (s.announcement) document.getElementById('announcement-text').textContent = s.announcement;
-      }
     }
   </script>
 </body>
