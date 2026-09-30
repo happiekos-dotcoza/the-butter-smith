@@ -61,7 +61,7 @@
         </button>
       </nav>
 
-      <!-- Header Controls: Desktop User Pill, Cart & Mobile Menu Button -->
+      <!-- Header Controls -->
       <div class="flex items-center space-x-2 sm:space-x-3">
         
         <!-- Desktop Auth Status -->
@@ -531,20 +531,46 @@
       bodyFont: "'Inter', sans-serif"
     };
 
+    // Default Seed Account & Dummy Order Setup
+    const defaultAccounts = { "swanniestravels@gmail.com": "password123" };
+    const defaultProfiles = {
+      "swanniestravels@gmail.com": {
+        name: "Swannies Mobile User",
+        phone: "082 000 0000",
+        address: "123 Market Street, Centurion, Pretoria, 0157"
+      }
+    };
+    const defaultOrders = [
+      {
+        id: "ORD-1001",
+        date: new Date().toLocaleString(),
+        user: "swanniestravels@gmail.com",
+        customerDetails: defaultProfiles["swanniestravels@gmail.com"],
+        status: "Pending",
+        items: [{ cartId: "1-100g", id: "1", title: "Garlic & Herb Compound Butter (100g Tub)", price: 65, qty: 2 }],
+        total: 130
+      }
+    ];
+
     let products = JSON.parse(localStorage.getItem('bs_products')) || defaultProducts;
     let settings = JSON.parse(localStorage.getItem('bs_settings')) || defaultSettings;
     let cart = JSON.parse(localStorage.getItem('bs_cart')) || [];
-    let orders = JSON.parse(localStorage.getItem('bs_orders')) || [];
+    let orders = JSON.parse(localStorage.getItem('bs_orders')) || defaultOrders;
     let currentUser = JSON.parse(localStorage.getItem('bs_user')) || null;
     let adminPass = localStorage.getItem('bs_admin_pass') || 'admin123';
-    let customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || {};
-    let customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || {};
+    let customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || defaultAccounts;
+    let customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
     let selectedCategory = 'All';
     let activeModalProduct = null;
     let modalQty = 1;
     let isRegisterMode = false;
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Ensure seed data is committed to localStorage if missing
+      if (!localStorage.getItem('bs_accounts')) localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
+      if (!localStorage.getItem('bs_all_profiles')) localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
+      if (!localStorage.getItem('bs_orders')) localStorage.setItem('bs_orders', JSON.stringify(orders));
+
       applyStylesAndSettings();
       renderProducts();
       renderCategories();
@@ -769,6 +795,9 @@
     }
 
     function renderAdminCustomers() {
+      customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || defaultAccounts;
+      customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
+
       const container = document.getElementById('admin-customers-list');
       const badge = document.getElementById('customer-count-badge');
       const emails = Object.keys(customerAccounts);
@@ -934,10 +963,11 @@
         user: activeUserEmail,
         customerDetails: prof,
         status: 'Pending',
-        items: cart,
+        items: [...cart],
         total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
       };
 
+      orders = JSON.parse(localStorage.getItem('bs_orders')) || [];
       orders.unshift(order);
       localStorage.setItem('bs_orders', JSON.stringify(orders));
 
@@ -1022,9 +1052,14 @@
           return;
         }
       } else {
+        customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || defaultAccounts;
+        customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
+
         if (isRegisterMode) {
           customerAccounts[email] = pass;
+          if (!customerProfiles[email]) customerProfiles[email] = { name: '', phone: '', address: '' };
           localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
+          localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
         } else {
           if (customerAccounts[email] && customerAccounts[email] !== pass) {
             alert('Incorrect customer password!');
@@ -1032,7 +1067,9 @@
           }
           if (!customerAccounts[email]) {
             customerAccounts[email] = pass;
+            if (!customerProfiles[email]) customerProfiles[email] = { name: '', phone: '', address: '' };
             localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
+            localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
           }
         }
       }
@@ -1132,6 +1169,8 @@
         return;
       }
 
+      customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
+
       const profile = {
         name: document.getElementById('cust-name').value.trim(),
         phone: document.getElementById('cust-phone').value.trim(),
@@ -1146,6 +1185,7 @@
 
     function loadCustomerProfile() {
       if (!currentUser) return;
+      customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
       const prof = customerProfiles[currentUser.email];
       if (prof) {
         document.getElementById('cust-name').value = prof.name || '';
@@ -1163,9 +1203,14 @@
       document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
       document.getElementById(`tab-btn-${tab}`).classList.replace('text-amber-600', 'text-primary');
       document.getElementById(`tab-btn-${tab}`).classList.replace('border-transparent', 'border-primary');
+
+      if (tab === 'customers') renderAdminCustomers();
+      if (tab === 'orders') renderAdminOrders();
     }
 
     function renderAdminOrders() {
+      orders = JSON.parse(localStorage.getItem('bs_orders')) || defaultOrders;
+
       const container = document.getElementById('admin-orders-list');
       if (orders.length === 0) {
         container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No orders received yet.</p>`;
