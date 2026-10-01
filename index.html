@@ -17,9 +17,9 @@
 
   <style id="dynamic-styles">
     :root {
-      --primary-color: #78350f;
-      --accent-color: #d97706;
-      --footer-bg-color: #451a03;
+      --primary-color: #556B2F;
+      --accent-color: #6B8E23;
+      --footer-bg-color: #3b4e1e;
       --footer-text-color: #fcd34d;
       --heading-font: 'Playfair Display', serif;
       --body-font: 'Inter', sans-serif;
@@ -45,7 +45,7 @@
 
   <!-- Announcement Bar -->
   <div id="announcement-bar" class="bg-primary text-white text-[11px] sm:text-sm text-center py-2 px-3 font-medium flex justify-between items-center shadow-sm">
-    <span class="w-full text-center truncate" id="announcement-text">✨ Handcrafted Small-Batch Compound Butters & Artisanal Relishes</span>
+    <span class="w-full text-center truncate" id="announcement-text">Free Delivery in Centurion for Orders over R250.</span>
   </div>
 
   <!-- Mobile-Optimized Clean Header -->
@@ -55,8 +55,8 @@
       <!-- Logo & Brand Title -->
       <div class="flex items-center space-x-2.5 cursor-pointer" onclick="navigateTo('store')">
         <div id="header-logo-wrapper" class="w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-amber-400 bg-amber-100 text-amber-800 shadow-sm shrink-0">
-          <i id="header-logo-icon" class="fa-solid fa-butter text-base sm:text-xl"></i>
-          <img id="header-logo-img" src="" alt="Logo" class="w-full h-full object-cover hidden">
+          <i id="header-logo-icon" class="fa-solid fa-butter text-base sm:text-xl hidden"></i>
+          <img id="header-logo-img" src="https://firebasestorage.googleapis.com/v0/b/the-butter-smith.appspot.com/o/logo.png?alt=media" alt="Logo" class="w-full h-full object-cover">
         </div>
         <div class="leading-tight">
           <span class="brand-font text-lg sm:text-2xl font-bold tracking-tight text-amber-950 block" id="header-brand-name">The Butter Smith</span>
@@ -274,21 +274,21 @@
                 <label class="block text-xs font-bold text-amber-800 mb-1">Primary Color</label>
                 <div class="flex items-center gap-2">
                   <input type="color" id="cust-primary-color" class="h-10 w-16 p-1 border border-amber-200 rounded-lg cursor-pointer">
-                  <span class="text-xs text-amber-700 font-mono" id="primary-hex-display">#78350f</span>
+                  <span class="text-xs text-amber-700 font-mono" id="primary-hex-display">#556B2F</span>
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-bold text-amber-800 mb-1">Accent Color</label>
                 <div class="flex items-center gap-2">
                   <input type="color" id="cust-accent-color" class="h-10 w-16 p-1 border border-amber-200 rounded-lg cursor-pointer">
-                  <span class="text-xs text-amber-700 font-mono" id="accent-hex-display">#d97706</span>
+                  <span class="text-xs text-amber-700 font-mono" id="accent-hex-display">#6B8E23</span>
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-bold text-amber-800 mb-1">Footer Background Color</label>
                 <div class="flex items-center gap-2">
                   <input type="color" id="cust-footer-bg" class="h-10 w-16 p-1 border border-amber-200 rounded-lg cursor-pointer">
-                  <span class="text-xs text-amber-700 font-mono" id="footer-bg-hex-display">#451a03</span>
+                  <span class="text-xs text-amber-700 font-mono" id="footer-bg-hex-display">#3b4e1e</span>
                 </div>
               </div>
               <div>
@@ -746,11 +746,11 @@
       heroTitle: 'Gourmet Compound Butters & Artisanal Relishes',
       heroSub: 'Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.',
       heroImg: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80',
-      logoUrl: '',
-      announcement: '✨ Handcrafted Small-Batch Compound Butters & Artisanal Relishes',
-      primaryColor: '#78350f',
-      accentColor: '#d97706',
-      footerBgColor: '#451a03',
+      logoUrl: 'https://firebasestorage.googleapis.com/v0/b/the-butter-smith.appspot.com/o/logo.png?alt=media',
+      announcement: 'Free Delivery in Centurion for Orders over R250.',
+      primaryColor: '#556B2F',
+      accentColor: '#6B8E23',
+      footerBgColor: '#3b4e1e',
       footerTextColor: '#fcd34d',
       footerCopyright: 'All rights reserved.',
       contactEmail: 'happiekos@gmail.com',
@@ -882,9 +882,9 @@
 
     function applyStylesAndSettings() {
       const root = document.documentElement;
-      root.style.setProperty('--primary-color', settings.primaryColor || '#78350f');
-      root.style.setProperty('--accent-color', settings.accentColor || '#d97706');
-      root.style.setProperty('--footer-bg-color', settings.footerBgColor || '#451a03');
+      root.style.setProperty('--primary-color', settings.primaryColor || '#556B2F');
+      root.style.setProperty('--accent-color', settings.accentColor || '#6B8E23');
+      root.style.setProperty('--footer-bg-color', settings.footerBgColor || '#3b4e1e');
       root.style.setProperty('--footer-text-color', settings.footerTextColor || '#fcd34d');
       root.style.setProperty('--heading-font', settings.headingFont || "'Playfair Display', serif");
       root.style.setProperty('--body-font', settings.bodyFont || "'Inter', sans-serif");
@@ -932,14 +932,14 @@
         document.getElementById('hero-image-display').src = settings.heroImg;
       }
 
-      document.getElementById('cust-primary-color').value = settings.primaryColor || '#78350f';
-      document.getElementById('cust-accent-color').value = settings.accentColor || '#d97706';
-      document.getElementById('cust-footer-bg').value = settings.footerBgColor || '#451a03';
+      document.getElementById('cust-primary-color').value = settings.primaryColor || '#556B2F';
+      document.getElementById('cust-accent-color').value = settings.accentColor || '#6B8E23';
+      document.getElementById('cust-footer-bg').value = settings.footerBgColor || '#3b4e1e';
       document.getElementById('cust-footer-text').value = settings.footerTextColor || '#fcd34d';
       
-      document.getElementById('primary-hex-display').textContent = settings.primaryColor || '#78350f';
-      document.getElementById('accent-hex-display').textContent = settings.accentColor || '#d97706';
-      document.getElementById('footer-bg-hex-display').textContent = settings.footerBgColor || '#451a03';
+      document.getElementById('primary-hex-display').textContent = settings.primaryColor || '#556B2F';
+      document.getElementById('accent-hex-display').textContent = settings.accentColor || '#6B8E23';
+      document.getElementById('footer-bg-hex-display').textContent = settings.footerBgColor || '#3b4e1e';
       document.getElementById('footer-text-hex-display').textContent = settings.footerTextColor || '#fcd34d';
 
       document.getElementById('cust-heading-font').value = settings.headingFont || "'Playfair Display', serif";
@@ -1433,7 +1433,6 @@
         saveCart();
         toggleCartDrawer();
         
-        // Success alert with Yoco payment prompt
         if (confirm(`Order ${order.id} submitted successfully!\nTotal: R${orderTotal.toFixed(2)}\n\nWould you like to open Yoco now to pay for this order by card?`)) {
           window.open(yocoPaymentLink, '_blank');
         }
