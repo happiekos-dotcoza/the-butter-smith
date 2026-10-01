@@ -1374,7 +1374,6 @@
     function submitOrder() {
       if (cart.length === 0) return alert('Cart is empty.');
 
-      // Check if user is logged in
       if (!currentUser) {
         alert('Please log in or create an account to place your order.');
         toggleCartDrawer();
@@ -1385,7 +1384,6 @@
       const activeUserEmail = currentUser.email;
       const userKey = sanitizeKey(activeUserEmail);
 
-      // Fetch customer profile from Firebase Database
       db.ref('profiles/' + userKey).once('value', (snap) => {
         const prof = snap.val() || {};
 
@@ -1399,6 +1397,8 @@
         }
 
         const orderId = 'ORD-' + Date.now().toString().slice(-6);
+        const orderTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        
         const order = {
           id: orderId,
           date: new Date().toLocaleString(),
@@ -1406,12 +1406,14 @@
           customerDetails: prof,
           status: 'Pending',
           items: [...cart],
-          total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
+          total: orderTotal
         };
 
         db.ref('orders/' + orderId).set(order);
 
         const targetEmail = settings.contactEmail || 'happiekos@gmail.com';
+        const yocoPaymentLink = 'https://pay.yoco.com/thebuttersmithdeli';
+        
         const mailSubject = encodeURIComponent(`New Order ${order.id} from ${settings.title || 'The Butter Smith'}`);
         const mailBody = encodeURIComponent(
           `Order ID: ${order.id}\n` +
@@ -1420,7 +1422,8 @@
           `Phone: ${prof.phone || 'N/A'}\n` +
           `Delivery Address: ${prof.address || 'N/A'}\n` +
           `Date: ${order.date}\n` +
-          `Total: R${order.total.toFixed(2)}\n\n` +
+          `Total: R${orderTotal.toFixed(2)}\n\n` +
+          `Pay online via Yoco Card: ${yocoPaymentLink}\n\n` +
           `Items Ordered:\n` + cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
         );
         
@@ -1429,7 +1432,11 @@
         cart = [];
         saveCart();
         toggleCartDrawer();
-        alert(`Order ${order.id} submitted! Details sent to cloud and prepared for email.`);
+        
+        // Success alert with Yoco payment prompt
+        if (confirm(`Order ${order.id} submitted successfully!\nTotal: R${orderTotal.toFixed(2)}\n\nWould you like to open Yoco now to pay for this order by card?`)) {
+          window.open(yocoPaymentLink, '_blank');
+        }
       });
     }
 
