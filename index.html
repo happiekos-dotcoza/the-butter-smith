@@ -19,8 +19,7 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
     (function(){
-      // Initialize EmailJS with your public key (replace with your actual key if needed)
-      emailjs.init("YOUR_EMAILJS_PUBLIC_KEY");
+      emailjs.init("fqQG_XHdWX2BHEO6Z");
     })();
   </script>
 
@@ -1421,7 +1420,7 @@
         // Save order to Firebase automatically
         db.ref('orders/' + orderId).set(order);
 
-        // Send automatic background notification email to store owner via EmailJS
+        // Send automatic background notification email to store owner via EmailJS using template_hjrekg5
         const emailParams = {
           order_id: orderId,
           customer_email: activeUserEmail,
@@ -1432,8 +1431,7 @@
           order_items: cart.map(i => `${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
         };
 
-        // Replace with your EmailJS service ID, template ID, and public key if configured
-        emailjs.send('default_service', 'template_order', emailParams)
+        emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
           .then(() => console.log('Notification email sent to owner successfully!'))
           .catch((err) => console.log('Email notification skipped/failed:', err));
 
@@ -1745,7 +1743,7 @@
     }
 
     function toggleOrderStatus(orderId) {
-      const order = orders.orders.find(o => o.id === orderId);
+      const order = orders.find(o => o.id === orderId);
       if (order) {
         const nextStatus = order.status === 'Completed' ? 'Pending' : 'Completed';
         db.ref('orders/' + orderId + '/status').set(nextStatus);
