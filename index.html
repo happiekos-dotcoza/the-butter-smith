@@ -18,6 +18,8 @@
     :root {
       --primary-color: #78350f;
       --accent-color: #d97706;
+      --footer-bg-color: #451a03;
+      --footer-text-color: #fcd34d;
       --heading-font: 'Playfair Display', serif;
       --body-font: 'Inter', sans-serif;
     }
@@ -31,6 +33,11 @@
     .bg-accent { background-color: var(--accent-color) !important; }
     .text-accent { color: var(--accent-color) !important; }
     .border-accent { border-color: var(--accent-color) !important; }
+
+    .site-footer {
+      background-color: var(--footer-bg-color) !important;
+      color: var(--footer-text-color) !important;
+    }
   </style>
 </head>
 <body class="bg-amber-50/30 text-amber-950 min-h-screen flex flex-col">
@@ -283,6 +290,20 @@
                 </div>
               </div>
               <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Footer Background Color</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="cust-footer-bg" class="h-10 w-16 p-1 border border-amber-200 rounded-lg cursor-pointer">
+                  <span class="text-xs text-amber-700 font-mono" id="footer-bg-hex-display">#451a03</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-amber-800 mb-1">Footer Text Color</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="cust-footer-text" class="h-10 w-16 p-1 border border-amber-200 rounded-lg cursor-pointer">
+                  <span class="text-xs text-amber-700 font-mono" id="footer-text-hex-display">#fcd34d</span>
+                </div>
+              </div>
+              <div>
                 <label class="block text-xs font-bold text-amber-800 mb-1">Heading Font Style</label>
                 <select id="cust-heading-font" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
                   <option value="'Playfair Display', serif">Playfair Display (Classic Elegant)</option>
@@ -464,6 +485,50 @@
     </div>
   </div>
 
+  <!-- POPIA PRIVACY POLICY MODAL -->
+  <div id="privacy-policy-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto text-amber-950 space-y-4">
+      <button onclick="closePrivacyModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-base sm:text-lg z-10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="border-b border-amber-200 pb-3">
+        <span class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider">Legal Notice & Compliance</span>
+        <h2 class="brand-font text-xl sm:text-3xl font-bold text-amber-950 mt-0.5">Privacy Notice & POPIA Compliance</h2>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
+        <p>At <strong>The Butter Smith</strong>, we respect your privacy and are committed to protecting your personal information in full compliance with the <strong>Protection of Personal Information Act (Act 4 of 2013) ("POPIA")</strong> of South Africa.</p>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h4 class="font-bold text-primary flex items-center"><i class="fa-solid fa-shield-halved mr-2"></i> 1. Information We Collect</h4>
+          <p>When you register an account, update your shipping details, or place an order, we process necessary personal information including your full name, email address, contact phone number, and physical delivery address.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h4 class="font-bold text-primary flex items-center"><i class="fa-solid fa-bullseye mr-2"></i> 2. Purpose of Collection & Usage</h4>
+          <p>Your information is collected strictly for fulfilling artisanal orders, arranging local insulated delivery in Centurion and Gauteng, maintaining customer accounts, and communicating essential order updates.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h4 class="font-bold text-primary flex items-center"><i class="fa-solid fa-lock mr-2"></i> 3. Data Protection & Security</h4>
+          <p>We implement secure encrypted cloud data storage (via Google Firebase) and standard safeguards to protect your personal information against unauthorized access, loss, or misuse.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h4 class="font-bold text-primary flex items-center"><i class="fa-solid fa-user-shield mr-2"></i> 4. Your Rights Under POPIA</h4>
+          <p>You have the right to request access to the personal information we hold about you, request corrections, or ask for deletion of your stored details at any time by contacting us at <strong>happiekos@gmail.com</strong>.</p>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-amber-200 flex justify-end">
+        <button onclick="closePrivacyModal()" class="bg-primary text-white text-xs sm:text-sm font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition">
+          I Understand & Agree
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- CART DRAWER MODAL -->
   <div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-xs" onclick="toggleCartDrawer()"></div>
@@ -506,15 +571,20 @@
   </div>
 
   <!-- Footer -->
-  <footer class="bg-amber-950 text-amber-300 py-8 border-t border-amber-900 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 text-center space-y-2 text-xs">
+  <footer class="site-footer py-8 border-t border-amber-900 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center space-y-2.5 text-xs">
       <p>&copy; <span id="footer-year">2026</span> <span id="footer-brand">The Butter Smith</span>. All rights reserved.</p>
-      <p>Orders & inquiries dispatched directly to <span class="text-amber-100 font-medium">happiekos@gmail.com</span></p>
+      <p>Orders & inquiries dispatched directly to <span class="font-medium underline">happiekos@gmail.com</span></p>
+      <div class="pt-1">
+        <button onclick="openPrivacyModal()" class="underline hover:opacity-80 text-[11px] font-semibold transition">
+          <i class="fa-solid fa-shield-halved mr-1"></i> Privacy Policy & POPIA Notice
+        </button>
+      </div>
     </div>
   </footer>
 
   <script>
-    // Initialize Firebase Realtime Database
+    // Firebase Realtime Database Config
     const firebaseConfig = {
       apiKey: "AIzaSyDS044vPx7knub_w6S7W6kbNJ9X5oYtjVc",
       authDomain: "the-butter-smith.firebaseapp.com",
@@ -548,6 +618,8 @@
       announcement: '✨ Handcrafted Small-Batch Compound Butters & Artisanal Relishes',
       primaryColor: '#78350f',
       accentColor: '#d97706',
+      footerBgColor: '#451a03',
+      footerTextColor: '#fcd34d',
       headingFont: "'Playfair Display', serif",
       bodyFont: "'Inter', sans-serif"
     };
@@ -572,7 +644,6 @@
       updateCartUI();
       updateAuthUI();
 
-      // Cloud Listeners for Products, Settings, Accounts, Profiles & Orders
       db.ref('products').on('value', (snap) => {
         if (snap.exists()) { products = snap.val(); renderProducts(); renderCategories(); }
       });
@@ -601,10 +672,15 @@
       document.getElementById('mobile-menu').classList.toggle('hidden');
     }
 
+    function openPrivacyModal() { document.getElementById('privacy-policy-modal').classList.remove('hidden'); }
+    function closePrivacyModal() { document.getElementById('privacy-policy-modal').classList.add('hidden'); }
+
     function applyStylesAndSettings() {
       const root = document.documentElement;
       root.style.setProperty('--primary-color', settings.primaryColor || '#78350f');
       root.style.setProperty('--accent-color', settings.accentColor || '#d97706');
+      root.style.setProperty('--footer-bg-color', settings.footerBgColor || '#451a03');
+      root.style.setProperty('--footer-text-color', settings.footerTextColor || '#fcd34d');
       root.style.setProperty('--heading-font', settings.headingFont || "'Playfair Display', serif");
       root.style.setProperty('--body-font', settings.bodyFont || "'Inter', sans-serif");
 
@@ -633,8 +709,14 @@
 
       document.getElementById('cust-primary-color').value = settings.primaryColor || '#78350f';
       document.getElementById('cust-accent-color').value = settings.accentColor || '#d97706';
+      document.getElementById('cust-footer-bg').value = settings.footerBgColor || '#451a03';
+      document.getElementById('cust-footer-text').value = settings.footerTextColor || '#fcd34d';
+      
       document.getElementById('primary-hex-display').textContent = settings.primaryColor || '#78350f';
       document.getElementById('accent-hex-display').textContent = settings.accentColor || '#d97706';
+      document.getElementById('footer-bg-hex-display').textContent = settings.footerBgColor || '#451a03';
+      document.getElementById('footer-text-hex-display').textContent = settings.footerTextColor || '#fcd34d';
+
       document.getElementById('cust-heading-font').value = settings.headingFont || "'Playfair Display', serif";
       document.getElementById('cust-body-font').value = settings.bodyFont || "'Inter', sans-serif";
       document.getElementById('cust-logo-url').value = settings.logoUrl || '';
@@ -658,13 +740,15 @@
         announcement: document.getElementById('cust-announcement').value,
         primaryColor: document.getElementById('cust-primary-color').value,
         accentColor: document.getElementById('cust-accent-color').value,
+        footerBgColor: document.getElementById('cust-footer-bg').value,
+        footerTextColor: document.getElementById('cust-footer-text').value,
         headingFont: document.getElementById('cust-heading-font').value,
         bodyFont: document.getElementById('cust-body-font').value
       };
 
       db.ref('settings').set(settings);
       applyStylesAndSettings();
-      alert('Logo, styles, and branding updated successfully to cloud!');
+      alert('Logo, footer colors, styles, and branding updated successfully!');
     }
 
     function renderProducts() {
