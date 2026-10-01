@@ -1475,18 +1475,31 @@
                 <span class="text-xs text-amber-900 uppercase font-bold">Total Amount Due</span>
                 <p class="text-2xl font-extrabold text-amber-950" id="yoco-modal-total">R0.00</p>
               </div>
-              <div class="text-[11px] text-amber-800 bg-white p-2 rounded-lg border border-amber-200 flex justify-between items-center">
-                <span>Reference: <strong id="yoco-ref-code"></strong></span>
-                <button onclick="copyOrderRef()" class="bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold px-2 py-1 rounded text-[10px]">Copy Ref</button>
+              
+              <!-- Individual Copy Buttons for Amount and Reference -->
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button onclick="copySpecificValue('amount')" class="bg-white hover:bg-amber-50 text-amber-900 font-bold px-3 py-2 rounded-xl text-xs border border-amber-300 shadow-xs flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-copy text-primary"></i> Copy Amount
+                </button>
+                <button onclick="copySpecificValue('reference')" class="bg-white hover:bg-amber-50 text-amber-900 font-bold px-3 py-2 rounded-xl text-xs border border-amber-300 shadow-xs flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-copy text-primary"></i> Copy Reference
+                </button>
+              </div>
+              
+              <div class="text-[11px] text-amber-800 bg-white p-2 rounded-lg border border-amber-200 text-center">
+                Reference Code: <strong id="yoco-ref-code"></strong>
               </div>
             </div>
 
-            <p class="text-xs text-amber-800">
-              Click below to pay securely via Yoco. Your Order Reference and Amount will be copied automatically:
-            </p>
+            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs text-amber-900 text-left space-y-1">
+              <p class="font-bold text-primary"><i class="fa-solid fa-circle-info mr-1"></i> Payment Instructions:</p>
+              <p>1. Click the button below to open Yoco.</p>
+              <p>2. Use the <strong>Copy Amount</strong> and <strong>Copy Reference</strong> buttons above to paste them into Yoco.</p>
+            </div>
+
             <div class="space-y-2">
               <a id="yoco-pay-btn" href="#" target="_blank" onclick="handleYocoPayClick(event)" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
-                <i class="fa-solid fa-lock"></i> Pay Now with Yoco Card
+                <i class="fa-solid fa-lock"></i> Open Yoco Payment Page
               </a>
               <button onclick="closeYocoPaymentModal()" class="w-full bg-amber-100 text-amber-900 font-bold py-2 rounded-xl hover:bg-amber-200 transition text-xs">
                 Close & Return to Store
@@ -1507,25 +1520,27 @@
       modal.classList.remove('hidden');
     }
 
-    function handleYocoPayClick(e) {
-      const refCode = document.getElementById('yoco-ref-code').textContent;
-      const totalAmount = document.getElementById('yoco-modal-total').textContent;
-      const copyText = `Order Ref: ${refCode} | Amount: ${totalAmount}`;
-      
-      navigator.clipboard.writeText(copyText).then(() => {
-        // Optional subtle visual confirmation or just let it open the link
-      }).catch(err => {
-        console.log('Clipboard copy failed:', err);
-      });
+    function copySpecificValue(type) {
+      if (type === 'amount') {
+        const totalAmount = document.getElementById('yoco-modal-total').textContent.replace('R', '').trim();
+        navigator.clipboard.writeText(totalAmount).then(() => {
+          alert('Amount copied to clipboard! You can now paste it into Yoco.');
+        });
+      } else if (type === 'reference') {
+        const refText = document.getElementById('yoco-ref-code').textContent.trim();
+        navigator.clipboard.writeText(refText).then(() => {
+          alert('Reference Code copied to clipboard! You can now paste it into Yoco.');
+        });
+      }
     }
 
-    function copyOrderRef() {
-      const refText = document.getElementById('yoco-ref-code').textContent;
-      const totalAmount = document.getElementById('yoco-modal-total').textContent;
-      const copyText = `Order Ref: ${refText} | Amount: ${totalAmount}`;
+    function handleYocoPayClick(e) {
+      const refCode = document.getElementById('yoco-ref-code').textContent;
+      const totalAmount = document.getElementById('yoco-modal-total').textContent.replace('R', '').trim();
+      const copyText = `${totalAmount}`;
       
-      navigator.clipboard.writeText(copyText).then(() => {
-        alert('Order Reference & Total copied to clipboard!');
+      navigator.clipboard.writeText(copyText).catch(err => {
+        console.log('Clipboard copy failed:', err);
       });
     }
 
