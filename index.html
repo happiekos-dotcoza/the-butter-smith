@@ -677,9 +677,9 @@
   </footer>
 
   <script>
-    // Firebase Config
+    // Firebase Config with Updated API Key
     const firebaseConfig = {
-      apiKey: "AIzaSyDS044vPx7knub_w6S7W6kbNJ9X5oYtjVc",
+      apiKey: "AIzaSyDSO44vPx7knub_w6S7W6kbNJ9X5oYtjVc",
       authDomain: "the-butter-smith.firebaseapp.com",
       databaseURL: "https://the-butter-smith-default-rtdb.firebaseio.com",
       projectId: "the-butter-smith",
@@ -760,7 +760,6 @@
       renderCategories();
       updateCartUI();
 
-      // Firebase Session Observer
       auth.onAuthStateChanged((user) => {
         currentUser = user;
         updateAuthUI();
