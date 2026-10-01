@@ -1374,14 +1374,22 @@
     function submitOrder() {
       if (cart.length === 0) return alert('Cart is empty.');
 
-      const activeUserEmail = currentUser ? currentUser.email : 'Guest';
+      // Check if user is logged in
+      if (!currentUser) {
+        alert('Please log in or create an account to place your order.');
+        toggleCartDrawer();
+        openAuthModal();
+        return;
+      }
+
+      const activeUserEmail = currentUser.email;
       const userKey = sanitizeKey(activeUserEmail);
 
-      // Real-time lookup of customer profile directly from Firebase Database
+      // Fetch customer profile from Firebase Database
       db.ref('profiles/' + userKey).once('value', (snap) => {
         const prof = snap.val() || {};
 
-        if (currentUser && currentUser.email !== 'happiekos@gmail.com') {
+        if (currentUser.email !== 'happiekos@gmail.com') {
           if (!prof.name || !prof.phone || !prof.address) {
             alert('Please complete your profile details before submitting an order.');
             toggleCartDrawer();
