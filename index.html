@@ -1420,7 +1420,7 @@
         // Save order to Firebase automatically
         db.ref('orders/' + orderId).set(order);
 
-        // Send automatic background notification email to store owner via EmailJS with line breaks for items
+        // Send automatic background notification email to store owner via EmailJS
         const emailParams = {
           order_id: orderId,
           customer_email: activeUserEmail,
@@ -1428,7 +1428,7 @@
           customer_phone: prof.phone || 'N/A',
           customer_address: prof.address || 'N/A',
           order_total: `R${orderTotal.toFixed(2)}`,
-          order_items: cart.map(i => `• ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
+          order_items: cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
         };
 
         emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
@@ -1482,10 +1482,10 @@
             </div>
 
             <p class="text-xs text-amber-800">
-              Click below to pay securely via Yoco. Please enter your order reference or exact amount when paying:
+              Click below to pay securely via Yoco. Your Order Reference and Amount will be copied automatically:
             </p>
             <div class="space-y-2">
-              <a id="yoco-pay-btn" href="#" target="_blank" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
+              <a id="yoco-pay-btn" href="#" target="_blank" onclick="handleYocoPayClick(event)" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
                 <i class="fa-solid fa-lock"></i> Pay Now with Yoco Card
               </a>
               <button onclick="closeYocoPaymentModal()" class="w-full bg-amber-100 text-amber-900 font-bold py-2 rounded-xl hover:bg-amber-200 transition text-xs">
@@ -1507,10 +1507,25 @@
       modal.classList.remove('hidden');
     }
 
+    function handleYocoPayClick(e) {
+      const refCode = document.getElementById('yoco-ref-code').textContent;
+      const totalAmount = document.getElementById('yoco-modal-total').textContent;
+      const copyText = `Order Ref: ${refCode} | Amount: ${totalAmount}`;
+      
+      navigator.clipboard.writeText(copyText).then(() => {
+        // Optional subtle visual confirmation or just let it open the link
+      }).catch(err => {
+        console.log('Clipboard copy failed:', err);
+      });
+    }
+
     function copyOrderRef() {
       const refText = document.getElementById('yoco-ref-code').textContent;
-      navigator.clipboard.writeText(refText).then(() => {
-        alert('Order Reference copied to clipboard!');
+      const totalAmount = document.getElementById('yoco-modal-total').textContent;
+      const copyText = `Order Ref: ${refText} | Amount: ${totalAmount}`;
+      
+      navigator.clipboard.writeText(copyText).then(() => {
+        alert('Order Reference & Total copied to clipboard!');
       });
     }
 
@@ -1648,7 +1663,7 @@
         if (mobileUserPill) mobileUserPill.classList.add('hidden');
 
         if (navAdminBtn) navAdminBtn.classList.add('hidden');
-        if (mobileNavAdminBtn) navAdminBtn.classList.add('hidden');
+        if (mobileNavAdminBtn) mobileNavAdminBtn.classList.add('hidden');
       }
     }
 
