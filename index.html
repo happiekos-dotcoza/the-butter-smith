@@ -10,6 +10,10 @@
   <!-- Dynamic Google Fonts -->
   <link id="font-imports" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&family=Poppins:wght@500;700&family=Roboto:wght@400;700&display=swap">
   
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
   <style id="dynamic-styles">
     :root {
       --primary-color: #78350f;
@@ -510,6 +514,23 @@
   </footer>
 
   <script>
+    // Initialize Firebase Realtime Database
+    const firebaseConfig = {
+      apiKey: "AIzaSyDS044vPx7knub_w6S7W6kbNJ9X5oYtjVc",
+      authDomain: "the-butter-smith.firebaseapp.com",
+      databaseURL: "https://the-butter-smith-default-rtdb.firebaseio.com",
+      projectId: "the-butter-smith",
+      storageBucket: "the-butter-smith.appspot.com",
+      messagingSenderId: "9947922179",
+      appId: "1:9947922179:web:00b2eae5d17a3b65c3f336",
+      measurementId: "G-V1JRB2MVX9"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const sanitizeKey = (email) => email.replace(/[^a-zA-Z0-9]/g, '_');
+
     const defaultProducts = [
       { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.' },
       { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Smoked Paprika, Cayenne Chilli, Sea Salt. Contains Milk.' },
@@ -531,40 +552,53 @@
       bodyFont: "'Inter', sans-serif"
     };
 
-    // Pre-seed account so logging in on PC works smoothly without errors
-    const defaultAccounts = { "swanniestravels@gmail.com": "password123" };
-    const defaultProfiles = {
-      "swanniestravels@gmail.com": { name: "", phone: "", address: "" }
-    };
-
     let products = JSON.parse(localStorage.getItem('bs_products')) || defaultProducts;
     let settings = JSON.parse(localStorage.getItem('bs_settings')) || defaultSettings;
     let cart = JSON.parse(localStorage.getItem('bs_cart')) || [];
-    let orders = JSON.parse(localStorage.getItem('bs_orders')) || [];
+    let orders = [];
     let currentUser = JSON.parse(localStorage.getItem('bs_user')) || null;
-    let adminPass = localStorage.getItem('bs_admin_pass') || 'admin123';
-    let customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || defaultAccounts;
-    let customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
+    let adminPass = 'admin123';
+    let customerAccounts = {};
+    let customerProfiles = {};
     let selectedCategory = 'All';
     let activeModalProduct = null;
     let modalQty = 1;
     let isRegisterMode = false;
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Ensure seed default account is stored if storage is currently empty
-      if (!localStorage.getItem('bs_accounts')) localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
-      if (!localStorage.getItem('bs_all_profiles')) localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
-
       applyStylesAndSettings();
       renderProducts();
       renderCategories();
       updateCartUI();
       updateAuthUI();
+
+      // Cloud Listeners for Products, Settings, Accounts, Profiles & Orders
+      db.ref('products').on('value', (snap) => {
+        if (snap.exists()) { products = snap.val(); renderProducts(); renderCategories(); }
+      });
+
+      db.ref('settings').on('value', (snap) => {
+        if (snap.exists()) { settings = snap.val(); applyStylesAndSettings(); }
+      });
+
+      db.ref('accounts').on('value', (snap) => {
+        if (snap.exists()) customerAccounts = snap.val();
+      });
+
+      db.ref('profiles').on('value', (snap) => {
+        if (snap.exists()) customerProfiles = snap.val();
+      });
+
+      db.ref('orders').on('value', (snap) => {
+        if (snap.exists()) {
+          const raw = snap.val();
+          orders = Object.keys(raw).map(k => raw[k]).reverse();
+        }
+      });
     });
 
     function toggleMobileMenu() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
+      document.getElementById('mobile-menu').classList.toggle('hidden');
     }
 
     function applyStylesAndSettings() {
@@ -628,9 +662,9 @@
         bodyFont: document.getElementById('cust-body-font').value
       };
 
-      localStorage.setItem('bs_settings', JSON.stringify(settings));
+      db.ref('settings').set(settings);
       applyStylesAndSettings();
-      alert('Logo, styles, and branding updated successfully!');
+      alert('Logo, styles, and branding updated successfully to cloud!');
     }
 
     function renderProducts() {
@@ -703,9 +737,7 @@
       document.getElementById('product-detail-modal').classList.remove('hidden');
     }
 
-    function closeProductModal() {
-      document.getElementById('product-detail-modal').classList.add('hidden');
-    }
+    function closeProductModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
 
     function updateModalVariantPrice() {
       if (!activeModalProduct) return;
@@ -779,22 +811,20 @@
     }
 
     function renderAdminCustomers() {
-      customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || defaultAccounts;
-      customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
-
       const container = document.getElementById('admin-customers-list');
       const badge = document.getElementById('customer-count-badge');
-      const emails = Object.keys(customerAccounts);
+      const userKeys = Object.keys(customerProfiles);
 
-      badge.textContent = `${emails.length} Registered`;
+      badge.textContent = `${userKeys.length} Registered`;
 
-      if (emails.length === 0) {
+      if (userKeys.length === 0) {
         container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No customer accounts registered yet.</p>`;
         return;
       }
 
-      container.innerHTML = emails.map(email => {
-        const prof = customerProfiles[email] || {};
+      container.innerHTML = userKeys.map(k => {
+        const prof = customerProfiles[k] || {};
+        const email = prof.email || k.replace(/_/g, '.');
         return `
           <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-2">
             <div class="flex justify-between items-center font-bold text-amber-950">
@@ -829,7 +859,7 @@
         products.push({ id, title, price, category, img, desc, variants, ingredients });
       }
 
-      localStorage.setItem('bs_products', JSON.stringify(products));
+      db.ref('products').set(products);
       resetProductForm();
       renderAdminProducts();
       renderProducts();
@@ -865,7 +895,7 @@
     function deleteProduct(id) {
       if (!confirm('Are you sure you want to delete this product?')) return;
       products = products.filter(p => p.id !== id);
-      localStorage.setItem('bs_products', JSON.stringify(products));
+      db.ref('products').set(products);
       renderAdminProducts();
       renderProducts();
       renderCategories();
@@ -928,8 +958,11 @@
     function submitOrder() {
       if (cart.length === 0) return alert('Cart is empty.');
 
+      const activeUserEmail = currentUser ? currentUser.email : 'Guest';
+      const userKey = sanitizeKey(activeUserEmail);
+      const prof = customerProfiles[userKey] || {};
+
       if (currentUser && currentUser.email !== 'happiekos@gmail.com') {
-        const prof = customerProfiles[currentUser.email];
         if (!prof || !prof.name || !prof.phone || !prof.address) {
           alert('Please enter and save your name, cell phone number, and delivery address under "My Account" before submitting your order.');
           toggleCartDrawer();
@@ -938,11 +971,9 @@
         }
       }
 
-      const activeUserEmail = currentUser ? currentUser.email : 'Guest';
-      const prof = customerProfiles[activeUserEmail] || {};
-
+      const orderId = 'ORD-' + Date.now().toString().slice(-6);
       const order = {
-        id: 'ORD-' + Date.now().toString().slice(-6),
+        id: orderId,
         date: new Date().toLocaleString(),
         user: activeUserEmail,
         customerDetails: prof,
@@ -951,9 +982,7 @@
         total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
       };
 
-      orders = JSON.parse(localStorage.getItem('bs_orders')) || [];
-      orders.unshift(order);
-      localStorage.setItem('bs_orders', JSON.stringify(orders));
+      db.ref('orders/' + orderId).set(order);
 
       const mailSubject = encodeURIComponent(`New Order ${order.id} from The Butter Smith`);
       const mailBody = encodeURIComponent(
@@ -972,7 +1001,7 @@
       cart = [];
       saveCart();
       toggleCartDrawer();
-      alert(`Order ${order.id} submitted! Order details prepared for happiekos@gmail.com.`);
+      alert(`Order ${order.id} submitted! Details sent to cloud and prepared for email.`);
     }
 
     function renderCategories() {
@@ -1029,6 +1058,7 @@
       e.preventDefault();
       const email = document.getElementById('auth-email').value.trim().toLowerCase();
       const pass = document.getElementById('auth-pass').value;
+      const userKey = sanitizeKey(email);
 
       if (email === 'happiekos@gmail.com') {
         if (pass !== adminPass) {
@@ -1036,19 +1066,7 @@
           return;
         }
       } else {
-        customerAccounts = JSON.parse(localStorage.getItem('bs_accounts')) || defaultAccounts;
-        customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || defaultProfiles;
-
-        // Auto-register account if it doesn't exist locally on this device yet
-        if (!customerAccounts[email]) {
-          customerAccounts[email] = pass;
-          if (!customerProfiles[email]) customerProfiles[email] = { name: '', phone: '', address: '' };
-          localStorage.setItem('bs_accounts', JSON.stringify(customerAccounts));
-          localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
-        } else if (customerAccounts[email] !== pass) {
-          alert('Incorrect customer password!');
-          return;
-        }
+        db.ref('accounts/' + userKey).set(pass);
       }
 
       currentUser = { email: email };
@@ -1059,7 +1077,7 @@
       if (email === 'happiekos@gmail.com') {
         navigateTo('admin');
       } else {
-        const prof = customerProfiles[email];
+        const prof = customerProfiles[userKey];
         if (!prof || !prof.name || !prof.phone || !prof.address) {
           navigateTo('account');
           document.getElementById('profile-alert-banner').classList.remove('hidden');
@@ -1116,59 +1134,34 @@
       }
     }
 
-    function changeAdminPassword(e) {
-      e.preventDefault();
-      const curr = document.getElementById('curr-admin-pass').value;
-      const next = document.getElementById('new-admin-pass').value;
-      const confirm = document.getElementById('confirm-admin-pass').value;
-
-      if (curr !== adminPass) {
-        alert('Current password does not match.');
-        return;
-      }
-      if (next !== confirm) {
-        alert('New passwords do not match.');
-        return;
-      }
-
-      adminPass = next;
-      localStorage.setItem('bs_admin_pass', adminPass);
-      alert('Admin password updated successfully!');
-      document.getElementById('curr-admin-pass').value = '';
-      document.getElementById('new-admin-pass').value = '';
-      document.getElementById('confirm-admin-pass').value = '';
-    }
-
     function saveCustomerAddress(e) {
       e.preventDefault();
-      if (!currentUser) {
-        alert('Please log in first.');
-        return;
-      }
+      if (!currentUser) { alert('Please log in first.'); return; }
 
-      customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || {};
-
+      const userKey = sanitizeKey(currentUser.email);
       const profile = {
+        email: currentUser.email,
         name: document.getElementById('cust-name').value.trim(),
         phone: document.getElementById('cust-phone').value.trim(),
         address: document.getElementById('cust-address').value.trim()
       };
 
-      customerProfiles[currentUser.email] = profile;
-      localStorage.setItem('bs_all_profiles', JSON.stringify(customerProfiles));
+      db.ref('profiles/' + userKey).set(profile);
       document.getElementById('profile-alert-banner').classList.add('hidden');
-      alert('Delivery address and contact details saved successfully!');
+      alert('Delivery address and contact details saved to cloud successfully!');
     }
 
     function loadCustomerProfile() {
       if (!currentUser) return;
-      customerProfiles = JSON.parse(localStorage.getItem('bs_all_profiles')) || {};
-      const prof = customerProfiles[currentUser.email];
-      if (prof) {
-        document.getElementById('cust-name').value = prof.name || '';
-        document.getElementById('cust-phone').value = prof.phone || '';
-        document.getElementById('cust-address').value = prof.address || '';
-      }
+      const userKey = sanitizeKey(currentUser.email);
+      db.ref('profiles/' + userKey).once('value', (snap) => {
+        if (snap.exists()) {
+          const prof = snap.val();
+          document.getElementById('cust-name').value = prof.name || '';
+          document.getElementById('cust-phone').value = prof.phone || '';
+          document.getElementById('cust-address').value = prof.address || '';
+        }
+      });
     }
 
     function switchAdminTab(tab) {
@@ -1186,8 +1179,6 @@
     }
 
     function renderAdminOrders() {
-      orders = JSON.parse(localStorage.getItem('bs_orders')) || [];
-
       const container = document.getElementById('admin-orders-list');
       if (orders.length === 0) {
         container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No orders received yet.</p>`;
@@ -1234,17 +1225,14 @@
     function toggleOrderStatus(orderId) {
       const order = orders.find(o => o.id === orderId);
       if (order) {
-        order.status = order.status === 'Completed' ? 'Pending' : 'Completed';
-        localStorage.setItem('bs_orders', JSON.stringify(orders));
-        renderAdminOrders();
+        const nextStatus = order.status === 'Completed' ? 'Pending' : 'Completed';
+        db.ref('orders/' + orderId + '/status').set(nextStatus);
       }
     }
 
     function deleteOrder(orderId) {
       if (!confirm(`Are you sure you want to delete order #${orderId}?`)) return;
-      orders = orders.filter(o => o.id !== orderId);
-      localStorage.setItem('bs_orders', JSON.stringify(orders));
-      renderAdminOrders();
+      db.ref('orders/' + orderId).remove();
     }
   </script>
 </body>
