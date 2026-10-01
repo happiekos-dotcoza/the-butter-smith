@@ -1409,62 +1409,58 @@
           total: orderTotal
         };
 
+        // Automatically save the order to Firebase for the admin dashboard
         db.ref('orders/' + orderId).set(order);
 
-        const targetEmail = settings.contactEmail || 'happiekos@gmail.com';
         const yocoPaymentLink = 'https://pay.yoco.com/thebuttersmithdeli';
-        
-        const mailSubject = encodeURIComponent(`New Order ${order.id} from ${settings.title || 'The Butter Smith'}`);
-        const mailBody = encodeURIComponent(
-          `Order ID: ${order.id}\n` +
-          `Customer Email: ${order.user}\n` +
-          `Name: ${prof.name || 'N/A'}\n` +
-          `Phone: ${prof.phone || 'N/A'}\n` +
-          `Delivery Address: ${prof.address || 'N/A'}\n` +
-          `Date: ${order.date}\n` +
-          `Total: R${orderTotal.toFixed(2)}\n\n` +
-          `Pay online via Yoco Card: ${yocoPaymentLink}\n\n` +
-          `Items Ordered:\n` + cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
-        );
-        
-        window.open(`mailto:${targetEmail}?subject=${mailSubject}&body=${mailBody}`, '_blank');
 
+        // Clear cart and close drawer
         cart = [];
         saveCart();
         toggleCartDrawer();
         
-        // Open the clickable Yoco payment success modal for the customer
-        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink);
+        // Open the Yoco payment modal pre-loaded with customer and order info automatically
+        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof);
       });
     }
 
-    function openYocoPaymentModal(orderId, total, link) {
+    function openYocoPaymentModal(orderId, total, link, prof) {
       let modal = document.getElementById('yoco-success-modal');
       if (!modal) {
         modal = document.createElement('div');
         modal.id = 'yoco-success-modal';
         modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4';
         modal.innerHTML = `
-          <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-amber-200 shadow-2xl relative text-amber-950 text-center">
-            <div class="w-14 h-14 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-2xl font-bold border border-amber-300">
+          <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 border border-amber-200 shadow-2xl relative text-amber-950 text-center">
+            <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-xl font-bold border border-amber-300">
               <i class="fa-solid fa-credit-card"></i>
             </div>
-            <div class="space-y-1">
-              <h3 class="brand-font text-2xl font-bold text-amber-950">Order Placed Successfully!</h3>
+            <div class="space-y-0.5">
+              <h3 class="brand-font text-xl font-bold text-amber-950">Order Placed Successfully!</h3>
               <p class="text-xs text-amber-800" id="yoco-modal-order-id">Order Reference: #</p>
             </div>
-            <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 space-y-1">
-              <span class="text-xs text-amber-700 uppercase font-bold">Total Amount Due</span>
-              <p class="text-3xl font-extrabold text-amber-950" id="yoco-modal-total">R0.00</p>
+            
+            <!-- Customer Details Preview Box -->
+            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-left text-xs space-y-1">
+              <p class="font-bold text-primary border-b border-amber-200 pb-1 mb-1"><i class="fa-solid fa-user mr-1"></i> Customer & Shipping Details</p>
+              <p><strong>Name:</strong> <span id="yoco-modal-name"></span></p>
+              <p><strong>Phone:</strong> <span id="yoco-modal-phone"></span></p>
+              <p><strong>Address:</strong> <span id="yoco-modal-address"></span></p>
             </div>
+
+            <div class="bg-amber-100/70 p-3 rounded-xl border border-amber-300 flex justify-between items-center">
+              <span class="text-xs text-amber-900 uppercase font-bold">Total Amount Due</span>
+              <p class="text-2xl font-extrabold text-amber-950" id="yoco-modal-total">R0.00</p>
+            </div>
+
             <p class="text-xs text-amber-800">
-              Click below to complete your secure payment instantly via our Yoco portal:
+              Click below to complete your secure payment instantly via Yoco:
             </p>
-            <div class="space-y-2.5">
-              <a id="yoco-pay-btn" href="#" target="_blank" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
+            <div class="space-y-2">
+              <a id="yoco-pay-btn" href="#" target="_blank" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
                 <i class="fa-solid fa-lock"></i> Pay Now with Yoco Card
               </a>
-              <button onclick="closeYocoPaymentModal()" class="w-full bg-amber-100 text-amber-900 font-bold py-2.5 rounded-xl hover:bg-amber-200 transition text-xs">
+              <button onclick="closeYocoPaymentModal()" class="w-full bg-amber-100 text-amber-900 font-bold py-2 rounded-xl hover:bg-amber-200 transition text-xs">
                 Close & Return to Store
               </button>
             </div>
@@ -1475,6 +1471,9 @@
 
       document.getElementById('yoco-modal-order-id').textContent = `Order Reference: #${orderId}`;
       document.getElementById('yoco-modal-total').textContent = `R${total.toFixed(2)}`;
+      document.getElementById('yoco-modal-name').textContent = prof.name || 'N/A';
+      document.getElementById('yoco-modal-phone').textContent = prof.phone || 'N/A';
+      document.getElementById('yoco-modal-address').textContent = prof.address || 'N/A';
       document.getElementById('yoco-pay-btn').href = link;
       modal.classList.remove('hidden');
     }
