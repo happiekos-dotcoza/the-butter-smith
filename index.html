@@ -776,8 +776,14 @@
         if (snap.exists()) { settings = snap.val(); applyStylesAndSettings(); }
       });
 
+      // Real-time Profile Updates Listener
       db.ref('profiles').on('value', (snap) => {
-        if (snap.exists()) customerProfiles = snap.val();
+        if (snap.exists()) {
+          customerProfiles = snap.val();
+          if (currentUser && currentUser.email === 'happiekos@gmail.com') {
+            renderAdminCustomers();
+          }
+        }
       });
 
       db.ref('orders').on('value', (snap) => {
