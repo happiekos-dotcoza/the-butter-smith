@@ -174,11 +174,6 @@
 
     <!-- VIEW 2: CUSTOMER ACCOUNT -->
     <section id="view-account" class="hidden max-w-3xl mx-auto space-y-6">
-      <div id="profile-alert-banner" class="hidden bg-amber-100 border border-amber-300 text-amber-900 p-4 rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-2">
-        <i class="fa-solid fa-circle-info text-amber-600 text-lg"></i>
-        <span>Welcome! Please save your delivery address and cell number below to complete your account setup.</span>
-      </div>
-
       <h2 class="text-xl sm:text-2xl font-bold text-amber-950">My Account & Shipping Details</h2>
       <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
         <h3 class="font-bold text-base sm:text-lg text-primary">Saved Address & Contact Info</h3>
@@ -418,6 +413,40 @@
 
   </main>
 
+  <!-- UNCLOSABLE FIRST-TIME PROFILE SETUP MODAL -->
+  <div id="profile-setup-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-amber-200 shadow-2xl relative">
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-xl font-bold border border-amber-300">
+          <i class="fa-solid fa-address-card"></i>
+        </div>
+        <h3 class="brand-font text-xl font-bold text-amber-950">Complete Your Account Setup</h3>
+        <p class="text-xs text-amber-800 leading-relaxed">
+          Please enter your delivery details once so we can accurately fulfill and ship your orders.
+        </p>
+      </div>
+
+      <form onsubmit="saveMandatoryProfile(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-amber-900 mb-1">Full Name</label>
+          <input type="text" id="setup-name" placeholder="John Doe" class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-amber-900 mb-1">Cell Phone Number</label>
+          <input type="text" id="setup-phone" placeholder="082 123 4567" class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-amber-900 mb-1">Delivery Address</label>
+          <textarea id="setup-address" placeholder="Street, Suburb, City, Postal Code" class="w-full p-3 text-sm border border-amber-200 rounded-xl h-24 focus:ring-2 focus:ring-amber-500" required></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition text-sm shadow-md flex justify-center items-center gap-2">
+          <i class="fa-solid fa-check"></i> Save Details & Continue
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- PRODUCT DETAILS MODAL -->
   <div id="product-detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
     <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto text-amber-950">
@@ -627,7 +656,7 @@
     </div>
   </div>
 
-  <!-- AUTH MODAL (Supports Email/Password + Google Login) -->
+  <!-- AUTH MODAL -->
   <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-5 sm:p-6 space-y-4 border border-amber-200 shadow-xl">
       <div class="flex justify-between items-center">
@@ -677,7 +706,7 @@
   </footer>
 
   <script>
-    // Firebase Config with Updated API Key
+    // Firebase Config with Valid Web API Key
     const firebaseConfig = {
       apiKey: "AIzaSyDSO44vPx7knub_w6S7W6kbNJ9X5oYtjVc",
       authDomain: "the-butter-smith.firebaseapp.com",
@@ -765,6 +794,9 @@
         updateAuthUI();
         if (user) {
           loadCustomerProfile();
+          checkMandatoryProfileSetup();
+        } else {
+          closeProfileSetupModal();
         }
       });
 
@@ -776,7 +808,6 @@
         if (snap.exists()) { settings = snap.val(); applyStylesAndSettings(); }
       });
 
-      // Real-time Profile Updates Listener
       db.ref('profiles').on('value', (snap) => {
         if (snap.exists()) {
           customerProfiles = snap.val();
@@ -793,6 +824,51 @@
         }
       });
     });
+
+    function checkMandatoryProfileSetup() {
+      if (!currentUser || currentUser.email === 'happiekos@gmail.com') {
+        closeProfileSetupModal();
+        return;
+      }
+
+      const userKey = sanitizeKey(currentUser.email);
+      db.ref('profiles/' + userKey).once('value', (snap) => {
+        const prof = snap.val();
+        if (!prof || !prof.name || !prof.phone || !prof.address) {
+          openProfileSetupModal();
+        } else {
+          closeProfileSetupModal();
+        }
+      });
+    }
+
+    function openProfileSetupModal() {
+      document.getElementById('profile-setup-modal').classList.remove('hidden');
+    }
+
+    function closeProfileSetupModal() {
+      document.getElementById('profile-setup-modal').classList.add('hidden');
+    }
+
+    function saveMandatoryProfile(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const userKey = sanitizeKey(currentUser.email);
+      const name = document.getElementById('setup-name').value.trim();
+      const phone = document.getElementById('setup-phone').value.trim();
+      const address = document.getElementById('setup-address').value.trim();
+
+      const profile = { email: currentUser.email, name, phone, address };
+
+      db.ref('profiles/' + userKey).set(profile)
+        .then(() => {
+          closeProfileSetupModal();
+          alert('Profile completed! You can now browse products and place orders.');
+          navigateTo('store');
+        })
+        .catch((err) => alert('Error saving details: ' + err.message));
+    }
 
     function toggleMobileMenu() {
       document.getElementById('mobile-menu').classList.toggle('hidden');
@@ -1304,9 +1380,9 @@
 
       if (currentUser && currentUser.email !== 'happiekos@gmail.com') {
         if (!prof || !prof.name || !prof.phone || !prof.address) {
-          alert('Please enter and save your name, cell phone number, and delivery address under "My Account" before submitting your order.');
+          alert('Please complete your profile details before submitting an order.');
           toggleCartDrawer();
-          navigateTo('account');
+          openProfileSetupModal();
           return;
         }
       }
@@ -1404,8 +1480,7 @@
         auth.createUserWithEmailAndPassword(email, pass)
           .then((userCredential) => {
             closeAuthModal();
-            navigateTo('account');
-            document.getElementById('profile-alert-banner').classList.remove('hidden');
+            checkMandatoryProfileSetup();
           })
           .catch((error) => alert('Registration Error: ' + error.message));
       } else {
@@ -1413,7 +1488,7 @@
           .then((userCredential) => {
             closeAuthModal();
             if (email === 'happiekos@gmail.com') navigateTo('admin');
-            else navigateTo('store');
+            else checkMandatoryProfileSetup();
           })
           .catch((error) => alert('Login Failed: ' + error.message));
       }
@@ -1425,7 +1500,7 @@
           closeAuthModal();
           const user = result.user;
           if (user.email === 'happiekos@gmail.com') navigateTo('admin');
-          else navigateTo('store');
+          else checkMandatoryProfileSetup();
         })
         .catch((error) => alert('Google Sign-In Error: ' + error.message));
     }
@@ -1434,6 +1509,7 @@
       auth.signOut().then(() => {
         currentUser = null;
         updateAuthUI();
+        closeProfileSetupModal();
         navigateTo('store');
       });
     }
@@ -1492,7 +1568,6 @@
 
       db.ref('profiles/' + userKey).set(profile)
         .then(() => {
-          document.getElementById('profile-alert-banner').classList.add('hidden');
           alert('Delivery address and contact details saved to cloud successfully!');
         })
         .catch((err) => alert('Error saving address: ' + err.message));
