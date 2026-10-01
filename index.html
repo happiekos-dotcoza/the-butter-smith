@@ -1420,7 +1420,7 @@
         // Save order to Firebase automatically
         db.ref('orders/' + orderId).set(order);
 
-        // Send automatic background notification email to store owner via EmailJS using template_hjrekg5
+        // Send automatic background notification email to store owner via EmailJS with line breaks for items
         const emailParams = {
           order_id: orderId,
           customer_email: activeUserEmail,
@@ -1428,7 +1428,7 @@
           customer_phone: prof.phone || 'N/A',
           customer_address: prof.address || 'N/A',
           order_total: `R${orderTotal.toFixed(2)}`,
-          order_items: cart.map(i => `${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
+          order_items: cart.map(i => `• ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
         };
 
         emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
@@ -1648,7 +1648,7 @@
         if (mobileUserPill) mobileUserPill.classList.add('hidden');
 
         if (navAdminBtn) navAdminBtn.classList.add('hidden');
-        if (mobileNavAdminBtn) mobileNavAdminBtn.classList.add('hidden');
+        if (mobileNavAdminBtn) navAdminBtn.classList.add('hidden');
       }
     }
 
