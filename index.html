@@ -342,7 +342,7 @@
           </div>
 
           <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
-            <h4 class="font-bold text-amber-900 text-sm">Store Info</h4>
+            <h4 class="font-bold text-amber-900 text-sm">Store & Footer Info</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-bold text-amber-800 mb-1">Store Name</label>
@@ -356,6 +356,10 @@
             <div>
               <label class="block text-xs font-bold text-amber-800 mb-1">Announcement Text</label>
               <input type="text" id="cust-announcement" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-amber-800 mb-1">Footer Copyright Text</label>
+              <input type="text" id="cust-footer-copyright" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" placeholder="e.g. All rights reserved.">
             </div>
           </div>
 
@@ -573,7 +577,7 @@
   <!-- Footer -->
   <footer class="site-footer py-8 border-t border-amber-900 mt-auto">
     <div class="max-w-7xl mx-auto px-4 text-center space-y-2.5 text-xs">
-      <p>&copy; <span id="footer-year">2026</span> <span id="footer-brand">The Butter Smith</span>. All rights reserved.</p>
+      <p>&copy; <span id="footer-year">2026</span> <span id="footer-brand">The Butter Smith</span>. <span id="footer-copyright-text">All rights reserved.</span></p>
       <p>Orders & inquiries dispatched directly to <span class="font-medium underline">happiekos@gmail.com</span></p>
       <div class="pt-1">
         <button onclick="openPrivacyModal()" class="underline hover:opacity-80 text-[11px] font-semibold transition">
@@ -620,6 +624,7 @@
       accentColor: '#d97706',
       footerBgColor: '#451a03',
       footerTextColor: '#fcd34d',
+      footerCopyright: 'All rights reserved.',
       headingFont: "'Playfair Display', serif",
       bodyFont: "'Inter', sans-serif"
     };
@@ -691,7 +696,8 @@
       document.getElementById('hero-headline').textContent = settings.heroTitle || defaultSettings.heroTitle;
       document.getElementById('hero-subheadline').textContent = settings.heroSub || defaultSettings.heroSub;
       document.getElementById('announcement-text').textContent = settings.announcement || defaultSettings.announcement;
-      
+      document.getElementById('footer-copyright-text').textContent = settings.footerCopyright || defaultSettings.footerCopyright;
+
       const logoImg = document.getElementById('header-logo-img');
       const logoIcon = document.getElementById('header-logo-icon');
       if (settings.logoUrl && settings.logoUrl.trim() !== '') {
@@ -726,6 +732,7 @@
       document.getElementById('cust-hero-title').value = settings.heroTitle || defaultSettings.heroTitle;
       document.getElementById('cust-hero-sub').value = settings.heroSub || defaultSettings.heroSub;
       document.getElementById('cust-announcement').value = settings.announcement || defaultSettings.announcement;
+      document.getElementById('cust-footer-copyright').value = settings.footerCopyright || defaultSettings.footerCopyright;
     }
 
     function handleSiteCustomization(e) {
@@ -738,6 +745,7 @@
         heroImg: document.getElementById('cust-hero-img').value,
         logoUrl: document.getElementById('cust-logo-url').value,
         announcement: document.getElementById('cust-announcement').value,
+        footerCopyright: document.getElementById('cust-footer-copyright').value,
         primaryColor: document.getElementById('cust-primary-color').value,
         accentColor: document.getElementById('cust-accent-color').value,
         footerBgColor: document.getElementById('cust-footer-bg').value,
@@ -748,7 +756,7 @@
 
       db.ref('settings').set(settings);
       applyStylesAndSettings();
-      alert('Logo, footer colors, styles, and branding updated successfully!');
+      alert('Logo, footer text, colors, styles, and branding updated successfully!');
     }
 
     function renderProducts() {
