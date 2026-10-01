@@ -706,7 +706,7 @@
   </footer>
 
   <script>
-    // Firebase Config with Valid Web API Key
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyDSO44vPx7knub_w6S7W6kbNJ9X5oYtjVc",
       authDomain: "the-butter-smith.firebaseapp.com",
@@ -1376,49 +1376,53 @@
 
       const activeUserEmail = currentUser ? currentUser.email : 'Guest';
       const userKey = sanitizeKey(activeUserEmail);
-      const prof = customerProfiles[userKey] || {};
 
-      if (currentUser && currentUser.email !== 'happiekos@gmail.com') {
-        if (!prof || !prof.name || !prof.phone || !prof.address) {
-          alert('Please complete your profile details before submitting an order.');
-          toggleCartDrawer();
-          openProfileSetupModal();
-          return;
+      // Real-time lookup of customer profile directly from Firebase Database
+      db.ref('profiles/' + userKey).once('value', (snap) => {
+        const prof = snap.val() || {};
+
+        if (currentUser && currentUser.email !== 'happiekos@gmail.com') {
+          if (!prof.name || !prof.phone || !prof.address) {
+            alert('Please complete your profile details before submitting an order.');
+            toggleCartDrawer();
+            openProfileSetupModal();
+            return;
+          }
         }
-      }
 
-      const orderId = 'ORD-' + Date.now().toString().slice(-6);
-      const order = {
-        id: orderId,
-        date: new Date().toLocaleString(),
-        user: activeUserEmail,
-        customerDetails: prof,
-        status: 'Pending',
-        items: [...cart],
-        total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
-      };
+        const orderId = 'ORD-' + Date.now().toString().slice(-6);
+        const order = {
+          id: orderId,
+          date: new Date().toLocaleString(),
+          user: activeUserEmail,
+          customerDetails: prof,
+          status: 'Pending',
+          items: [...cart],
+          total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
+        };
 
-      db.ref('orders/' + orderId).set(order);
+        db.ref('orders/' + orderId).set(order);
 
-      const targetEmail = settings.contactEmail || 'happiekos@gmail.com';
-      const mailSubject = encodeURIComponent(`New Order ${order.id} from ${settings.title || 'The Butter Smith'}`);
-      const mailBody = encodeURIComponent(
-        `Order ID: ${order.id}\n` +
-        `Customer Email: ${order.user}\n` +
-        `Name: ${prof.name || 'N/A'}\n` +
-        `Phone: ${prof.phone || 'N/A'}\n` +
-        `Delivery Address: ${prof.address || 'N/A'}\n` +
-        `Date: ${order.date}\n` +
-        `Total: R${order.total.toFixed(2)}\n\n` +
-        `Items Ordered:\n` + cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
-      );
-      
-      window.open(`mailto:${targetEmail}?subject=${mailSubject}&body=${mailBody}`, '_blank');
+        const targetEmail = settings.contactEmail || 'happiekos@gmail.com';
+        const mailSubject = encodeURIComponent(`New Order ${order.id} from ${settings.title || 'The Butter Smith'}`);
+        const mailBody = encodeURIComponent(
+          `Order ID: ${order.id}\n` +
+          `Customer Email: ${order.user}\n` +
+          `Name: ${prof.name || 'N/A'}\n` +
+          `Phone: ${prof.phone || 'N/A'}\n` +
+          `Delivery Address: ${prof.address || 'N/A'}\n` +
+          `Date: ${order.date}\n` +
+          `Total: R${order.total.toFixed(2)}\n\n` +
+          `Items Ordered:\n` + cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
+        );
+        
+        window.open(`mailto:${targetEmail}?subject=${mailSubject}&body=${mailBody}`, '_blank');
 
-      cart = [];
-      saveCart();
-      toggleCartDrawer();
-      alert(`Order ${order.id} submitted! Details sent to cloud and prepared for email.`);
+        cart = [];
+        saveCart();
+        toggleCartDrawer();
+        alert(`Order ${order.id} submitted! Details sent to cloud and prepared for email.`);
+      });
     }
 
     function renderCategories() {
