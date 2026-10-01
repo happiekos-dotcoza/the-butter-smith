@@ -12,6 +12,7 @@
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <style id="dynamic-styles">
@@ -213,7 +214,6 @@
         <button onclick="switchAdminTab('customers')" id="tab-btn-customers" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Customer Accounts</button>
         <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer</button>
         <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
-        <button onclick="switchAdminTab('security')" id="tab-btn-security" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Security</button>
       </div>
 
       <!-- Admin Tab 1: Products -->
@@ -413,26 +413,6 @@
           <span class="text-xs text-amber-700">Mark orders fulfilled or delete cleared orders</span>
         </div>
         <div id="admin-orders-list" class="space-y-4 text-sm"></div>
-      </div>
-
-      <!-- Admin Tab 5: Security -->
-      <div id="admin-tab-security" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4 max-w-md">
-        <h3 class="font-bold text-primary">Change Admin Password</h3>
-        <form onsubmit="changeAdminPassword(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs font-bold text-amber-800 mb-1">Current Password</label>
-            <input type="password" id="curr-admin-pass" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-amber-800 mb-1">New Password</label>
-            <input type="password" id="new-admin-pass" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required minlength="4">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-amber-800 mb-1">Confirm New Password</label>
-            <input type="password" id="confirm-admin-pass" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          </div>
-          <button type="submit" class="w-full bg-primary text-white font-bold text-sm py-2.5 rounded-xl hover:opacity-90">Update Password</button>
-        </form>
       </div>
     </section>
 
@@ -647,16 +627,28 @@
     </div>
   </div>
 
-  <!-- AUTH MODAL -->
+  <!-- AUTH MODAL (Supports Email/Password + Google Login) -->
   <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-5 sm:p-6 space-y-4 border border-amber-200 shadow-xl">
       <div class="flex justify-between items-center">
         <h3 class="text-base sm:text-lg font-bold text-amber-950" id="auth-modal-title">Log In</h3>
         <button onclick="closeAuthModal()" class="text-amber-400 hover:text-amber-800"><i class="fa-solid fa-xmark"></i></button>
       </div>
+
+      <!-- Google Sign In Button -->
+      <button onclick="loginWithGoogle()" type="button" class="w-full flex items-center justify-center gap-2 bg-white border border-amber-300 p-2.5 rounded-xl font-semibold text-xs sm:text-sm text-amber-950 hover:bg-amber-50 shadow-xs transition">
+        <i class="fa-brands fa-google text-red-500"></i> Continue with Google
+      </button>
+
+      <div class="flex items-center my-2">
+        <div class="flex-grow border-t border-amber-200"></div>
+        <span class="px-2 text-[11px] text-amber-500 font-bold uppercase">Or</span>
+        <div class="flex-grow border-t border-amber-200"></div>
+      </div>
+
       <form onsubmit="handleAuth(event)" class="space-y-3">
         <input type="email" id="auth-email" placeholder="Email Address" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-        <input type="password" id="auth-pass" placeholder="Password" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
+        <input type="password" id="auth-pass" placeholder="Password" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required minlength="6">
         <button type="submit" id="auth-submit-btn" class="w-full bg-primary text-white font-bold py-2.5 rounded-xl hover:opacity-90 text-xs sm:text-sm">Log In</button>
       </form>
       <div class="text-center pt-2 border-t border-amber-100">
@@ -685,7 +677,7 @@
   </footer>
 
   <script>
-    // Firebase Realtime Database Config
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyDS044vPx7knub_w6S7W6kbNJ9X5oYtjVc",
       authDomain: "the-butter-smith.firebaseapp.com",
@@ -698,9 +690,11 @@
     };
 
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.database();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-    const sanitizeKey = (email) => email.replace(/[^a-zA-Z0-9]/g, '_');
+    const sanitizeKey = (email) => email ? email.replace(/[^a-zA-Z0-9]/g, '_') : 'guest';
 
     const defaultProducts = [
       { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.' },
@@ -743,8 +737,7 @@
     let settings = JSON.parse(localStorage.getItem('bs_settings')) || defaultSettings;
     let cart = JSON.parse(localStorage.getItem('bs_cart')) || [];
     let orders = [];
-    let currentUser = JSON.parse(localStorage.getItem('bs_user')) || null;
-    let adminPass = 'admin123';
+    let currentUser = null;
     let customerAccounts = {};
     let customerProfiles = {};
     let selectedCategory = 'All';
@@ -766,7 +759,15 @@
       renderProducts();
       renderCategories();
       updateCartUI();
-      updateAuthUI();
+
+      // Firebase Session Observer
+      auth.onAuthStateChanged((user) => {
+        currentUser = user;
+        updateAuthUI();
+        if (user) {
+          loadCustomerProfile();
+        }
+      });
 
       db.ref('products').on('value', (snap) => {
         if (snap.exists()) { products = snap.val(); renderProducts(); renderCategories(); }
@@ -774,10 +775,6 @@
 
       db.ref('settings').on('value', (snap) => {
         if (snap.exists()) { settings = snap.val(); applyStylesAndSettings(); }
-      });
-
-      db.ref('accounts').on('value', (snap) => {
-        if (snap.exists()) customerAccounts = snap.val();
       });
 
       db.ref('profiles').on('value', (snap) => {
@@ -820,13 +817,9 @@
       document.getElementById('announcement-text').textContent = settings.announcement || defaultSettings.announcement;
       document.getElementById('footer-copyright-text').textContent = settings.footerCopyright || defaultSettings.footerCopyright;
 
-      // Render Footer Socials
       renderFooterSocialLinks();
-
-      // Render Admin Social Links List
       renderAdminSocialLinksList();
 
-      // Update Contact Modal Information
       const eMail = settings.contactEmail || defaultSettings.contactEmail;
       const pPhone = settings.contactPhone || defaultSettings.contactPhone;
       const aAddress = settings.contactAddress || defaultSettings.contactAddress;
@@ -940,11 +933,11 @@
             </div>
             <div>
               <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Button Label Name</label>
-              <input type="text" value="${s.name}" onchange="updateSocialLinkField('${s.id}', 'name', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg" placeholder="e.g. Facebook - The Brownie Bar">
+              <input type="text" value="${s.name}" onchange="updateSocialLinkField('${s.id}', 'name', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
             </div>
             <div>
               <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Target Web Link / URL</label>
-              <input type="text" value="${s.url}" onchange="updateSocialLinkField('${s.id}', 'url', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg" placeholder="https://facebook.com/yourpage">
+              <input type="text" value="${s.url}" onchange="updateSocialLinkField('${s.id}', 'url', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
             </div>
           </div>
         </div>
@@ -1370,7 +1363,7 @@
 
       if (viewName === 'admin') {
         if (!currentUser || currentUser.email !== 'happiekos@gmail.com') {
-          alert('Access Restricted. Log in as Admin to access this panel.');
+          alert('Access Restricted. Log in as Admin (happiekos@gmail.com) to access this panel.');
           openAuthModal();
           document.getElementById('view-store').classList.remove('hidden');
           return;
@@ -1401,40 +1394,43 @@
       e.preventDefault();
       const email = document.getElementById('auth-email').value.trim().toLowerCase();
       const pass = document.getElementById('auth-pass').value;
-      const userKey = sanitizeKey(email);
 
-      if (email === 'happiekos@gmail.com') {
-        if (pass !== adminPass) {
-          alert('Incorrect Admin Password!');
-          return;
-        }
+      if (isRegisterMode) {
+        auth.createUserWithEmailAndPassword(email, pass)
+          .then((userCredential) => {
+            closeAuthModal();
+            navigateTo('account');
+            document.getElementById('profile-alert-banner').classList.remove('hidden');
+          })
+          .catch((error) => alert('Registration Error: ' + error.message));
       } else {
-        db.ref('accounts/' + userKey).set(pass);
-      }
-
-      currentUser = { email: email };
-      localStorage.setItem('bs_user', JSON.stringify(currentUser));
-      updateAuthUI();
-      closeAuthModal();
-
-      if (email === 'happiekos@gmail.com') {
-        navigateTo('admin');
-      } else {
-        const prof = customerProfiles[userKey];
-        if (!prof || !prof.name || !prof.phone || !prof.address) {
-          navigateTo('account');
-          document.getElementById('profile-alert-banner').classList.remove('hidden');
-        } else {
-          navigateTo('store');
-        }
+        auth.signInWithEmailAndPassword(email, pass)
+          .then((userCredential) => {
+            closeAuthModal();
+            if (email === 'happiekos@gmail.com') navigateTo('admin');
+            else navigateTo('store');
+          })
+          .catch((error) => alert('Login Failed: ' + error.message));
       }
     }
 
+    function loginWithGoogle() {
+      auth.signInWithPopup(googleProvider)
+        .then((result) => {
+          closeAuthModal();
+          const user = result.user;
+          if (user.email === 'happiekos@gmail.com') navigateTo('admin');
+          else navigateTo('store');
+        })
+        .catch((error) => alert('Google Sign-In Error: ' + error.message));
+    }
+
     function logout() {
-      currentUser = null;
-      localStorage.removeItem('bs_user');
-      updateAuthUI();
-      navigateTo('store');
+      auth.signOut().then(() => {
+        currentUser = null;
+        updateAuthUI();
+        navigateTo('store');
+      });
     }
 
     function updateAuthUI() {
@@ -1489,9 +1485,12 @@
         address: document.getElementById('cust-address').value.trim()
       };
 
-      db.ref('profiles/' + userKey).set(profile);
-      document.getElementById('profile-alert-banner').classList.add('hidden');
-      alert('Delivery address and contact details saved to cloud successfully!');
+      db.ref('profiles/' + userKey).set(profile)
+        .then(() => {
+          document.getElementById('profile-alert-banner').classList.add('hidden');
+          alert('Delivery address and contact details saved to cloud successfully!');
+        })
+        .catch((err) => alert('Error saving address: ' + err.message));
     }
 
     function loadCustomerProfile() {
@@ -1508,7 +1507,7 @@
     }
 
     function switchAdminTab(tab) {
-      ['products', 'customers', 'customize', 'orders', 'security'].forEach(t => {
+      ['products', 'customers', 'customize', 'orders'].forEach(t => {
         document.getElementById(`admin-tab-${t}`).classList.add('hidden');
         document.getElementById(`tab-btn-${t}`).classList.replace('text-primary', 'text-amber-600');
         document.getElementById(`tab-btn-${t}`).classList.replace('border-primary', 'border-transparent');
