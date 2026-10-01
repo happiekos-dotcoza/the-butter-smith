@@ -1433,10 +1433,55 @@
         saveCart();
         toggleCartDrawer();
         
-        if (confirm(`Order ${order.id} submitted successfully!\nTotal: R${orderTotal.toFixed(2)}\n\nWould you like to open Yoco now to pay for this order by card?`)) {
-          window.open(yocoPaymentLink, '_blank');
-        }
+        // Open the clickable Yoco payment success modal for the customer
+        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink);
       });
+    }
+
+    function openYocoPaymentModal(orderId, total, link) {
+      let modal = document.getElementById('yoco-success-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'yoco-success-modal';
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4';
+        modal.innerHTML = `
+          <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-amber-200 shadow-2xl relative text-amber-950 text-center">
+            <div class="w-14 h-14 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-2xl font-bold border border-amber-300">
+              <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <div class="space-y-1">
+              <h3 class="brand-font text-2xl font-bold text-amber-950">Order Placed Successfully!</h3>
+              <p class="text-xs text-amber-800" id="yoco-modal-order-id">Order Reference: #</p>
+            </div>
+            <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 space-y-1">
+              <span class="text-xs text-amber-700 uppercase font-bold">Total Amount Due</span>
+              <p class="text-3xl font-extrabold text-amber-950" id="yoco-modal-total">R0.00</p>
+            </div>
+            <p class="text-xs text-amber-800">
+              Click below to complete your secure payment instantly via our Yoco portal:
+            </p>
+            <div class="space-y-2.5">
+              <a id="yoco-pay-btn" href="#" target="_blank" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
+                <i class="fa-solid fa-lock"></i> Pay Now with Yoco Card
+              </a>
+              <button onclick="closeYocoPaymentModal()" class="w-full bg-amber-100 text-amber-900 font-bold py-2.5 rounded-xl hover:bg-amber-200 transition text-xs">
+                Close & Return to Store
+              </button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+
+      document.getElementById('yoco-modal-order-id').textContent = `Order Reference: #${orderId}`;
+      document.getElementById('yoco-modal-total').textContent = `R${total.toFixed(2)}`;
+      document.getElementById('yoco-pay-btn').href = link;
+      modal.classList.remove('hidden');
+    }
+
+    function closeYocoPaymentModal() {
+      const modal = document.getElementById('yoco-success-modal');
+      if (modal) modal.classList.add('hidden');
     }
 
     function renderCategories() {
