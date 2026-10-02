@@ -230,8 +230,15 @@
             <input type="text" id="prod-cat" placeholder="Category (e.g., Compound Butter)" class="p-2.5 text-sm border border-amber-200 rounded-xl" required>
             <input type="text" id="prod-img" placeholder="Image URL" class="p-2.5 text-sm border border-amber-200 rounded-xl" required>
             <input type="text" id="prod-variants" placeholder="Variants comma-separated with +prices (e.g. 100g Tub:+0, 250g Tub:+35, 500g Tub:+80)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl">
+            
             <textarea id="prod-ingredients" placeholder="Ingredients & Allergens (e.g., Pure Cultured Butter, Fresh Garlic, Parsley, Sea Salt. Contains Milk.)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
+            
+            <textarea id="prod-storage" placeholder="Storage, Usage & Shelf Life (e.g., Keep refrigerated between 2°C and 5°C. Suitable for freezing.)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
+            
+            <textarea id="prod-delivery-info" placeholder="Delivery Information (e.g., Fresh insulated delivery available across Centurion and Gauteng.)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
+
             <textarea id="prod-desc" placeholder="Product Description" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-20" required></textarea>
+
             <div class="sm:col-span-2 flex justify-end space-x-2">
               <button type="button" onclick="resetProductForm()" class="px-4 py-2 text-sm text-amber-700 bg-amber-100 rounded-xl">Cancel</button>
               <button type="submit" class="px-6 py-2 text-sm font-bold text-white bg-primary rounded-xl hover:opacity-90">Save Product</button>
@@ -524,9 +531,7 @@
             <i class="fa-solid fa-chevron-down text-amber-500 transition-transform" id="acc-storage-icon"></i>
           </button>
           <div id="acc-storage" class="hidden p-3.5 sm:p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80 space-y-1">
-            <p>• Keep refrigerated between 2°C and 5°C.</p>
-            <p>• Suitable for freezing for up to 6 months.</p>
-            <p>• Best consumed within 30 days of opening.</p>
+            <p id="modal-storage-text">• Keep refrigerated between 2°C and 5°C.<br>• Suitable for freezing for up to 6 months.<br>• Best consumed within 30 days of opening.</p>
           </div>
         </div>
 
@@ -536,7 +541,7 @@
             <i class="fa-solid fa-chevron-down text-amber-500 transition-transform" id="acc-delivery-icon"></i>
           </button>
           <div id="acc-delivery" class="hidden p-3.5 sm:p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80">
-            <p>Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.</p>
+            <p id="modal-delivery-text">Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.</p>
           </div>
         </div>
       </div>
@@ -734,10 +739,10 @@
     const sanitizeKey = (email) => email ? email.replace(/[^a-zA-Z0-9]/g, '_') : 'guest';
 
     const defaultProducts = [
-      { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.' },
-      { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Smoked Paprika, Cayenne Chilli, Sea Salt. Contains Milk.' },
-      { id: '3', title: 'Sweet Honey & Cinnamon Butter', category: 'Compound Butter', price: 60, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Raw honey and cinnamon whipped for hot pancakes and fresh breads.', variants: '100g Tub:+0, 250g Tub:+30, 500g Tub:+70', ingredients: 'Pure Cultured Butter, Raw Local Honey, Ground Cinnamon. Contains Milk.' },
-      { id: '4', title: 'Dried Fruit Relish', category: 'Relish', price: 55, img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80', desc: 'Slow-cooked artisanal dried fruit chutney, pairs perfectly with cheeses.', variants: '250g Jar:+0, 500g Jar:+40', ingredients: 'Dried Apricots, Peaches, Raisins, Apple Cider Vinegar, Brown Sugar, Spices.' }
+      { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
+      { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Smoked Paprika, Cayenne Chilli, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
+      { id: '3', title: 'Sweet Honey & Cinnamon Butter', category: 'Compound Butter', price: 60, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Raw honey and cinnamon whipped for hot pancakes and fresh breads.', variants: '100g Tub:+0, 250g Tub:+30, 500g Tub:+70', ingredients: 'Pure Cultured Butter, Raw Local Honey, Ground Cinnamon. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
+      { id: '4', title: 'Dried Fruit Relish', category: 'Relish', price: 55, img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80', desc: 'Slow-cooked artisanal dried fruit chutney, pairs perfectly with cheeses.', variants: '250g Jar:+0, 500g Jar:+40', ingredients: 'Dried Apricots, Peaches, Raisins, Apple Cider Vinegar, Brown Sugar, Spices.', storage: 'Store in a cool, dry place. Refrigerate after opening and consume within 60 days.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' }
     ];
 
     const defaultSocials = [
@@ -1139,7 +1144,11 @@
       document.getElementById('modal-prod-title').textContent = p.title;
       document.getElementById('modal-prod-cat').textContent = p.category;
       document.getElementById('modal-prod-desc').textContent = p.desc;
+      
       document.getElementById('modal-ingredients-text').textContent = p.ingredients || 'Pure Cultured Butter, Natural Spices & Fresh Herbs. Contains Milk.';
+      document.getElementById('modal-storage-text').textContent = p.storage || 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.';
+      document.getElementById('modal-delivery-text').textContent = p.deliveryInfo || 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.';
+      
       document.getElementById('modal-qty-display').textContent = modalQty;
 
       const variantSelect = document.getElementById('modal-variant-select');
@@ -1275,12 +1284,14 @@
       const desc = document.getElementById('prod-desc').value;
       const variants = document.getElementById('prod-variants').value || 'Standard:+0';
       const ingredients = document.getElementById('prod-ingredients').value || '';
+      const storage = document.getElementById('prod-storage').value || '';
+      const deliveryInfo = document.getElementById('prod-delivery-info').value || '';
 
       const idx = products.findIndex(p => p.id === id);
       if (idx > -1) {
-        products[idx] = { id, title, price, category, img, desc, variants, ingredients };
+        products[idx] = { id, title, price, category, img, desc, variants, ingredients, storage, deliveryInfo };
       } else {
-        products.push({ id, title, price, category, img, desc, variants, ingredients });
+        products.push({ id, title, price, category, img, desc, variants, ingredients, storage, deliveryInfo });
       }
 
       db.ref('products').set(products);
@@ -1301,6 +1312,8 @@
       document.getElementById('prod-desc').value = p.desc;
       document.getElementById('prod-variants').value = p.variants || '';
       document.getElementById('prod-ingredients').value = p.ingredients || '';
+      document.getElementById('prod-storage').value = p.storage || '';
+      document.getElementById('prod-delivery-info').value = p.deliveryInfo || '';
       document.getElementById('product-form-title').textContent = 'Edit Product';
     }
 
@@ -1313,6 +1326,8 @@
       document.getElementById('prod-desc').value = '';
       document.getElementById('prod-variants').value = '';
       document.getElementById('prod-ingredients').value = '';
+      document.getElementById('prod-storage').value = '';
+      document.getElementById('prod-delivery-info').value = '';
       document.getElementById('product-form-title').textContent = 'Add New Product';
     }
 
