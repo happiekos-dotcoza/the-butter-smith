@@ -64,7 +64,7 @@
       <div class="flex items-center space-x-2.5 cursor-pointer" onclick="navigateTo('store')">
         <div id="header-logo-wrapper" class="w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-amber-400 bg-amber-100 text-amber-800 shadow-sm shrink-0">
           <i id="header-logo-icon" class="fa-solid fa-butter text-base sm:text-xl hidden"></i>
-          <img id="header-logo-img" src="https://firebasestorage.googleapis.com/v0/b/the-butter-smith.appspot.com/o/logo.png?alt=media" alt="Logo" class="w-full h-full object-cover">
+          <img id="header-logo-img" src="https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png" alt="Logo" class="w-full h-full object-cover">
         </div>
         <div class="leading-tight">
           <span class="brand-font text-lg sm:text-2xl font-bold tracking-tight text-amber-950 block" id="header-brand-name">The Butter Smith</span>
@@ -1002,45 +1002,48 @@
       const container = document.getElementById('social-links-admin-list');
       const list = settings.socialLinks || defaultSocials;
 
-      container.innerHTML = list.map((s, index) => `
-        <div class="p-3.5 bg-white rounded-xl border border-amber-200 space-y-3">
-          <div class="flex items-center justify-between gap-2">
-            <span class="font-bold text-xs text-amber-900 flex items-center gap-1.5">
-              <i class="${socialIconMap[s.platform] || 'fa-solid fa-link'} text-base text-primary"></i>
-              Social Link #${index + 1}
-            </span>
-            <div class="flex items-center gap-2">
-              <label class="text-[11px] font-semibold text-amber-800 flex items-center gap-1 cursor-pointer">
-                <input type="checkbox" onchange="toggleSocialLinkActive('${s.id}', this.checked)" ${s.enabled ? 'checked' : ''} class="rounded text-primary focus:ring-amber-500">
-                Visible
-              </label>
-              <button type="button" onclick="deleteSocialLink('${s.id}')" class="text-xs text-red-600 hover:text-red-800 font-bold px-2 py-1 rounded bg-red-50 hover:bg-red-100">Delete</button>
+      container.innerHTML = list.map((s, index) => {
+        const currentIconClass = socialIconMap[s.platform] || 'fa-solid fa-link';
+        return `
+          <div class="p-3.5 bg-white rounded-xl border border-amber-200 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-xs text-amber-900 flex items-center gap-1.5">
+                <i class="${currentIconClass} text-base text-primary"></i>
+                Social Link #${index + 1}
+              </span>
+              <div class="flex items-center gap-2">
+                <label class="text-[11px] font-semibold text-amber-800 flex items-center gap-1 cursor-pointer">
+                  <input type="checkbox" onchange="toggleSocialLinkActive('${s.id}', this.checked)" ${s.enabled ? 'checked' : ''} class="rounded text-primary focus:ring-amber-500">
+                  Visible
+                </label>
+                <button type="button" onclick="deleteSocialLink('${s.id}')" class="text-xs text-red-600 hover:text-red-800 font-bold px-2 py-1 rounded bg-red-50 hover:bg-red-100">Delete</button>
+              </div>
             </div>
-          </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Platform Icon</label>
-              <select onchange="updateSocialLinkField('${s.id}', 'platform', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
-                <option value="facebook" ${s.platform === 'facebook' ? 'selected' : ''}>Facebook</option>
-                <option value="instagram" ${s.platform === 'instagram' ? 'selected' : ''}>Instagram</option>
-                <option value="whatsapp" ${s.platform === 'whatsapp' ? 'selected' : ''}>WhatsApp</option>
-                <option value="tiktok" ${s.platform === 'tiktok' ? 'selected' : ''}>TikTok</option>
-                <option value="twitter" ${s.platform === 'twitter' ? 'selected' : ''}>X / Twitter</option>
-                <option value="youtube" ${s.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Button Label Name</label>
-              <input type="text" value="${s.name}" onchange="updateSocialLinkField('${s.id}', 'name', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
-            </div>
-            <div>
-              <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Target Web Link / URL</label>
-              <input type="text" value="${s.url}" onchange="updateSocialLinkField('${s.id}', 'url', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Platform Icon</label>
+                <select onchange="updateSocialLinkPlatform('${s.id}', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
+                  <option value="facebook" ${s.platform === 'facebook' ? 'selected' : ''}>Facebook</option>
+                  <option value="instagram" ${s.platform === 'instagram' ? 'selected' : ''}>Instagram</option>
+                  <option value="whatsapp" ${s.platform === 'whatsapp' ? 'selected' : ''}>WhatsApp</option>
+                  <option value="tiktok" ${s.platform === 'tiktok' ? 'selected' : ''}>TikTok</option>
+                  <option value="twitter" ${s.platform === 'twitter' ? 'selected' : ''}>X / Twitter</option>
+                  <option value="youtube" ${s.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Button Label Name</label>
+                <input type="text" value="${s.name}" onchange="updateSocialLinkField('${s.id}', 'name', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Target Web Link / URL</label>
+                <input type="text" value="${s.url}" onchange="updateSocialLinkField('${s.id}', 'url', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function addNewSocialLinkItem() {
@@ -1048,12 +1051,20 @@
       const newId = 'soc-' + Date.now();
       settings.socialLinks.push({
         id: newId,
-        name: 'Facebook - The Brownie Bar',
+        name: 'Facebook Page',
         platform: 'facebook',
         url: 'https://facebook.com',
         enabled: true
       });
       renderAdminSocialLinksList();
+    }
+
+    function updateSocialLinkPlatform(id, val) {
+      const item = settings.socialLinks.find(s => s.id === id);
+      if (item) {
+        item.platform = val;
+        renderAdminSocialLinksList();
+      }
     }
 
     function updateSocialLinkField(id, key, val) {
