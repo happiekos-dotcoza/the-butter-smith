@@ -759,7 +759,7 @@
       heroTitle: 'Gourmet Compound Butters & Artisanal Relishes',
       heroSub: 'Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.',
       heroImg: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80',
-      logoUrl: 'https://firebasestorage.googleapis.com/v0/b/the-butter-smith.appspot.com/o/logo.png?alt=media',
+      logoUrl: 'https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png',
       announcement: 'Free Delivery in Centurion for Orders over R250.',
       primaryColor: '#556B2F',
       accentColor: '#6B8E23',
@@ -834,6 +834,11 @@
         if (snap.exists()) {
           const raw = snap.val();
           orders = Object.keys(raw).map(k => raw[k]).reverse();
+        } else {
+          orders = [];
+        }
+        if (currentUser && currentUser.email === 'happiekos@gmail.com') {
+          renderAdminOrders();
         }
       });
     });
@@ -1788,7 +1793,12 @@
 
     function deleteOrder(orderId) {
       if (!confirm(`Are you sure you want to delete order #${orderId}?`)) return;
-      db.ref('orders/' + orderId).remove();
+      db.ref('orders/' + orderId).remove().then(() => {
+        orders = orders.filter(o => o.id !== orderId);
+        renderAdminOrders();
+      }).catch(err => {
+        alert('Error deleting order: ' + err.message);
+      });
     }
   </script>
 </body>
