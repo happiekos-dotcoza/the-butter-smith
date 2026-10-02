@@ -32,12 +32,6 @@
       --heading-font: 'Playfair Display', serif;
       --body-font: 'Inter', sans-serif;
     }
-    
-    /* Custom Whisk Cursor Integration */
-    body, a, button, input, select, textarea, label {
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 512 512'%3E%3Cpath fill='%23556B2F' d='M464 32c-26.5 0-48 21.5-48 48v32H336c-17.7 0-32 14.3-32 32s14.3 32 32 32h80v32c0 88.4-71.6 160-160 160s-160-71.6-160-160v-32h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H96V80c0-26.5-21.5-48-48-48S0 53.5 0 80v32c0 114.9 85.3 210.1 196 222.3V448c0 17.7 14.3 32 32 32s32-14.3 32-32V334.3C426.7 322.1 512 226.9 512 112V80c0-26.5-21.5-48-48-48z'/%3E%3C/svg%3E"), auto;
-    }
-
     body { font-family: var(--body-font); }
     h1, h2, h3, h4, .brand-font { font-family: var(--heading-font); }
     
@@ -902,237 +896,921 @@
     function closePrivacyModal() { document.getElementById('privacy-policy-modal').classList.add('hidden'); }
 
     function openContactModal() { document.getElementById('contact-modal').classList.remove('hidden'); }
-    function closeContactModal() { document.getElementById('contactHere is the updated full code for your website. 
+    function closeContactModal() { document.getElementById('contact-modal').classList.add('hidden'); }
 
-### What was added:
-* **Custom Whisk Cursor:** A custom SVG baking whisk icon has been integrated into the global CSS stylesheet so that when visitors move their mouse around your store, their cursor transforms into a whisk.
+    function applyStylesAndSettings() {
+      const root = document.documentElement;
+      root.style.setProperty('--primary-color', settings.primaryColor || '#556B2F');
+      root.style.setProperty('--accent-color', settings.accentColor || '#6B8E23');
+      root.style.setProperty('--footer-bg-color', settings.footerBgColor || '#3b4e1e');
+      root.style.setProperty('--footer-text-color', settings.footerTextColor || '#fcd34d');
+      root.style.setProperty('--heading-font', settings.headingFont || "'Playfair Display', serif");
+      root.style.setProperty('--body-font', settings.bodyFont || "'Inter', sans-serif");
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="site-title-meta">The Butter Smith - Artisanal Compound Butters</title>
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-  <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
-  
-  <!-- Dynamic Google Fonts -->
-  <link id="font-imports" rel="stylesheet" href="[https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&family=Poppins:wght@500;700&family=Roboto:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&family=Poppins:wght@500;700&family=Roboto:wght@400;700&display=swap)">
-  
-  <!-- Firebase SDKs -->
-  <script src="[https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js](https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js)"></script>
-  <script src="[https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js](https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js)"></script>
-  <script src="[https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js](https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js)"></script>
+      document.getElementById('header-brand-name').textContent = settings.title || defaultSettings.title;
+      document.getElementById('footer-brand').textContent = settings.title || defaultSettings.title;
+      document.getElementById('site-title-meta').textContent = settings.title || defaultSettings.title;
+      document.getElementById('header-tagline').textContent = settings.tagline || defaultSettings.tagline;
+      document.getElementById('hero-headline').textContent = settings.heroTitle || defaultSettings.heroTitle;
+      document.getElementById('hero-subheadline').textContent = settings.heroSub || defaultSettings.heroSub;
+      document.getElementById('announcement-text').textContent = settings.announcement || defaultSettings.announcement;
+      document.getElementById('footer-copyright-text').textContent = settings.footerCopyright || defaultSettings.footerCopyright;
 
-  <!-- EmailJS SDK for Automated Owner Notifications -->
-  <script type="text/javascript" src="[https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js](https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js)"></script>
-  <script type="text/javascript">
-    (function(){
-      emailjs.init("fqQG_XHdWX2BHEO6Z");
-    })();
-  </script>
+      renderFooterSocialLinks();
+      renderAdminSocialLinksList();
 
-  <style id="dynamic-styles">
-    :root {
-      --primary-color: #556B2F;
-      --accent-color: #6B8E23;
-      --footer-bg-color: #3b4e1e;
-      --footer-text-color: #fcd34d;
-      --heading-font: 'Playfair Display', serif;
-      --body-font: 'Inter', sans-serif;
-    }
-    
-    /* Custom Whisk Cursor for the entire site */
-    body, a, button, input, select, textarea {
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' width='24' height='24' viewBox='0 0 512 512'%3E%3Cpath fill='%23556B2F' d='M464 32c-26.5 0-48 21.5-48 48v32H336c-17.7 0-32 14.3-32 32s14.3 32 32 32h80v32c0 88.4-71.6 160-160 160s-160-71.6-160-160v-32h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H96V80c0-26.5-21.5-48-48-48S0 53.5 0 80v32c0 114.9 85.3 210.1 196 222.3V448c0 17.7 14.3 32 32 32s32-14.3 32-32V334.3C426.7 322.1 512 226.9 512 112V80c0-26.5-21.5-48-48-48z'/%3E%3C/svg%3E"), auto;
-    }
+      const eMail = settings.contactEmail || defaultSettings.contactEmail;
+      const pPhone = settings.contactPhone || defaultSettings.contactPhone;
+      const aAddress = settings.contactAddress || defaultSettings.contactAddress;
+      const mUrl = settings.mapUrl || defaultSettings.mapUrl;
 
-    body { font-family: var(--body-font); }
-    h1, h2, h3, h4, .brand-font { font-family: var(--heading-font); }
-    
-    .bg-primary { background-color: var(--primary-color) !important; }
-    .text-primary { color: var(--primary-color) !important; }
-    .border-primary { border-color: var(--primary-color) !important; }
-    
-    .bg-accent { background-color: var(--accent-color) !important; }
-    .text-accent { color: var(--accent-color) !important; }
-    .border-accent { border-color: var(--accent-color) !important; }
+      const emailLink = document.getElementById('display-modal-email');
+      emailLink.textContent = eMail;
+      emailLink.href = `mailto:${eMail}`;
 
-    .site-footer {
-      background-color: var(--footer-bg-color) !important;
-      color: var(--footer-text-color) !important;
-    }
-  </style>
-</head>
-<body class="bg-amber-50/30 text-amber-950 min-h-screen flex flex-col">
+      const phoneLink = document.getElementById('display-modal-phone');
+      phoneLink.textContent = pPhone;
+      phoneLink.href = `tel:${pPhone.replace(/\s+/g, '')}`;
 
-  <!-- Announcement Bar -->
-  <div id="announcement-bar" class="bg-primary text-white text-[11px] sm:text-sm text-center py-2 px-3 font-medium flex justify-between items-center shadow-sm">
-    <span class="w-full text-center truncate" id="announcement-text">Free Delivery in Centurion for Orders over R250.</span>
-  </div>
+      document.getElementById('display-modal-address').textContent = aAddress;
+      document.getElementById('display-modal-map').src = mUrl;
 
-  <!-- Mobile-Optimized Clean Header -->
-  <header class="bg-white/95 backdrop-blur-md border-b border-amber-200/80 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
+      const logoImg = document.getElementById('header-logo-img');
+      const logoIcon = document.getElementById('header-logo-icon');
+      if (settings.logoUrl && settings.logoUrl.trim() !== '') {
+        logoImg.src = settings.logoUrl;
+        logoImg.classList.remove('hidden');
+        logoIcon.classList.add('hidden');
+      } else {
+        logoImg.classList.add('hidden');
+        logoIcon.classList.remove('hidden');
+      }
+
+      if (settings.heroImg) {
+        document.getElementById('hero-image-display').src = settings.heroImg;
+      }
+
+      document.getElementById('cust-primary-color').value = settings.primaryColor || '#556B2F';
+      document.getElementById('cust-accent-color').value = settings.accentColor || '#6B8E23';
+      document.getElementById('cust-footer-bg').value = settings.footerBgColor || '#3b4e1e';
+      document.getElementById('cust-footer-text').value = settings.footerTextColor || '#fcd34d';
       
-      <!-- Logo & Brand Title -->
-      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="navigateTo('store')">
-        <div id="header-logo-wrapper" class="w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-amber-400 bg-amber-100 text-amber-800 shadow-sm shrink-0">
-          <i id="header-logo-icon" class="fa-solid fa-butter text-base sm:text-xl hidden"></i>
-          <img id="header-logo-img" src="[https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png](https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png)" alt="Logo" class="w-full h-full object-cover">
-        </div>
-        <div class="leading-tight">
-          <span class="brand-font text-lg sm:text-2xl font-bold tracking-tight text-amber-950 block" id="header-brand-name">The Butter Smith</span>
-          <span class="text-[9px] sm:text-xs text-amber-700 font-semibold tracking-wider uppercase block" id="header-tagline">Artisanal Small-Batch Blends</span>
-        </div>
-      </div>
+      document.getElementById('primary-hex-display').textContent = settings.primaryColor || '#556B2F';
+      document.getElementById('accent-hex-display').textContent = settings.accentColor || '#6B8E23';
+      document.getElementById('footer-bg-hex-display').textContent = settings.footerBgColor || '#3b4e1e';
+      document.getElementById('footer-text-hex-display').textContent = settings.footerTextColor || '#fcd34d';
 
-      <!-- Desktop Navigation Links -->
-      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-        <button onclick="navigateTo('store')" class="text-amber-900 hover:text-primary transition">Shop Catalog</button>
-        <button onclick="navigateTo('account')" id="nav-account-btn" class="text-amber-900 hover:text-primary transition">My Account</button>
-        <button onclick="navigateTo('admin')" id="nav-admin-btn" class="hidden bg-amber-100 text-primary px-3.5 py-1.5 rounded-xl border border-amber-300 hover:bg-amber-200 transition font-semibold">
-          <i class="fa-solid fa-gauge-high mr-1.5"></i> Admin Dashboard
-        </button>
-      </nav>
+      document.getElementById('cust-heading-font').value = settings.headingFont || "'Playfair Display', serif";
+      document.getElementById('cust-body-font').value = settings.bodyFont || "'Inter', sans-serif";
+      document.getElementById('cust-logo-url').value = settings.logoUrl || '';
+      document.getElementById('cust-hero-img').value = settings.heroImg || defaultSettings.heroImg;
+      document.getElementById('cust-site-title').value = settings.title || defaultSettings.title;
+      document.getElementById('cust-site-tagline').value = settings.tagline || defaultSettings.tagline;
+      document.getElementById('cust-hero-title').value = settings.heroTitle || defaultSettings.heroTitle;
+      document.getElementById('cust-hero-sub').value = settings.heroSub || defaultSettings.heroSub;
+      document.getElementById('cust-announcement').value = settings.announcement || defaultSettings.announcement;
+      document.getElementById('cust-footer-copyright').value = settings.footerCopyright || defaultSettings.footerCopyright;
 
-      <!-- Header Controls -->
-      <div class="flex items-center space-x-2 sm:space-x-3">
+      document.getElementById('cust-contact-email').value = eMail;
+      document.getElementById('cust-contact-phone').value = pPhone;
+      document.getElementById('cust-contact-address').value = aAddress;
+      document.getElementById('cust-map-url').value = mUrl;
+    }
+
+    function renderFooterSocialLinks() {
+      const container = document.getElementById('footer-social-links-bar');
+      const list = settings.socialLinks || defaultSocials;
+      const activeLinks = list.filter(s => s.enabled);
+
+      if (activeLinks.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = activeLinks.map(s => {
+        const iconClass = socialIconMap[s.platform] || 'fa-solid fa-link';
+        return `
+          <a href="${s.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white/10 hover:bg-white/20 transition text-amber-200 border border-amber-300/30" title="${s.name}">
+            <i class="${iconClass} text-sm"></i>
+            <span>${s.name}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderAdminSocialLinksList() {
+      const container = document.getElementById('social-links-admin-list');
+      const list = settings.socialLinks || defaultSocials;
+
+      container.innerHTML = list.map((s, index) => {
+        const currentIconClass = socialIconMap[s.platform] || 'fa-solid fa-link';
+        return `
+          <div class="p-3.5 bg-white rounded-xl border border-amber-200 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-xs text-amber-900 flex items-center gap-1.5">
+                <i class="${currentIconClass} text-base text-primary"></i>
+                Social Link #${index + 1}
+              </span>
+              <div class="flex items-center gap-2">
+                <label class="text-[11px] font-semibold text-amber-800 flex items-center gap-1 cursor-pointer">
+                  <input type="checkbox" onchange="toggleSocialLinkActive('${s.id}', this.checked)" ${s.enabled ? 'checked' : ''} class="rounded text-primary focus:ring-amber-500">
+                  Visible
+                </label>
+                <button type="button" onclick="deleteSocialLink('${s.id}')" class="text-xs text-red-600 hover:text-red-800 font-bold px-2 py-1 rounded bg-red-50 hover:bg-red-100">Delete</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Platform Icon</label>
+                <select onchange="updateSocialLinkPlatform('${s.id}', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
+                  <option value="facebook" ${s.platform === 'facebook' ? 'selected' : ''}>Facebook</option>
+                  <option value="instagram" ${s.platform === 'instagram' ? 'selected' : ''}>Instagram</option>
+                  <option value="whatsapp" ${s.platform === 'whatsapp' ? 'selected' : ''}>WhatsApp</option>
+                  <option value="tiktok" ${s.platform === 'tiktok' ? 'selected' : ''}>TikTok</option>
+                  <option value="twitter" ${s.platform === 'twitter' ? 'selected' : ''}>X / Twitter</option>
+                  <option value="youtube" ${s.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Button Label Name</label>
+                <input type="text" value="${s.name}" onchange="updateSocialLinkField('${s.id}', 'name', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Target Web Link / URL</label>
+                <input type="text" value="${s.url}" onchange="updateSocialLinkField('${s.id}', 'url', this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg">
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function addNewSocialLinkItem() {
+      if (!settings.socialLinks) settings.socialLinks = [];
+      const newId = 'soc-' + Date.now();
+      settings.socialLinks.push({
+        id: newId,
+        name: 'Facebook Page',
+        platform: 'facebook',
+        url: 'https://facebook.com',
+        enabled: true
+      });
+      renderAdminSocialLinksList();
+    }
+
+    function updateSocialLinkPlatform(id, val) {
+      const item = settings.socialLinks.find(s => s.id === id);
+      if (item) {
+        item.platform = val;
+        renderAdminSocialLinksList();
+      }
+    }
+
+    function updateSocialLinkField(id, key, val) {
+      const item = settings.socialLinks.find(s => s.id === id);
+      if (item) item[key] = val;
+    }
+
+    function toggleSocialLinkActive(id, isChecked) {
+      const item = settings.socialLinks.find(s => s.id === id);
+      if (item) item.enabled = isChecked;
+    }
+
+    function deleteSocialLink(id) {
+      if (!confirm('Are you sure you want to delete this social link?')) return;
+      settings.socialLinks = settings.socialLinks.filter(s => s.id !== id);
+      renderAdminSocialLinksList();
+    }
+
+    function handleSiteCustomization(e) {
+      e.preventDefault();
+      settings = {
+        title: document.getElementById('cust-site-title').value,
+        tagline: document.getElementById('cust-site-tagline').value,
+        heroTitle: document.getElementById('cust-hero-title').value,
+        heroSub: document.getElementById('cust-hero-sub').value,
+        heroImg: document.getElementById('cust-hero-img').value,
+        logoUrl: document.getElementById('cust-logo-url').value,
+        announcement: document.getElementById('cust-announcement').value,
+        footerCopyright: document.getElementById('cust-footer-copyright').value,
+        contactEmail: document.getElementById('cust-contact-email').value,
+        contactPhone: document.getElementById('cust-contact-phone').value,
+        contactAddress: document.getElementById('cust-contact-address').value,
+        mapUrl: document.getElementById('cust-map-url').value,
+        primaryColor: document.getElementById('cust-primary-color').value,
+        accentColor: document.getElementById('cust-accent-color').value,
+        footerBgColor: document.getElementById('cust-footer-bg').value,
+        footerTextColor: document.getElementById('cust-footer-text').value,
+        headingFont: document.getElementById('cust-heading-font').value,
+        bodyFont: document.getElementById('cust-body-font').value,
+        socialLinks: settings.socialLinks || defaultSocials
+      };
+
+      db.ref('settings').set(settings);
+      applyStylesAndSettings();
+      alert('Settings, social links, contact details, map, and colors updated successfully!');
+    }
+
+    function renderProducts() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const grid = document.getElementById('product-grid');
+
+      const filtered = products.filter(p => {
+        const matchesCat = selectedCategory === 'All' || p.category === selectedCategory;
+        const matchesQuery = p.title.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
+        return matchesCat && matchesQuery;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-amber-700">No products found.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(p => `
+        <div onclick="openProductModal('${p.id}')" class="bg-white rounded-2xl border border-amber-200/80 overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+          <div class="relative overflow-hidden">
+            <img src="${p.img}" alt="${p.title}" class="w-full h-44 sm:h-48 object-cover group-hover:scale-105 transition duration-300">
+            <span class="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-xs">View Details</span>
+          </div>
+          <div class="p-4 sm:p-5 flex-grow flex flex-col justify-between space-y-3">
+            <div>
+              <span class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider">${p.category}</span>
+              <h3 class="font-bold text-base sm:text-lg text-amber-950 mt-0.5 group-hover:text-primary transition">${p.title}</h3>
+              <p class="text-amber-800/80 text-xs leading-relaxed mt-1 line-clamp-2">${p.desc}</p>
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t border-amber-100">
+              <span class="text-lg sm:text-xl font-extrabold text-amber-950">R${p.price.toFixed(2)}</span>
+              <button onclick="event.stopPropagation(); openProductModal('${p.id}')" class="bg-primary text-white text-[11px] sm:text-xs font-bold px-3.5 py-2 rounded-xl hover:opacity-90 transition flex items-center">
+                <i class="fa-solid fa-eye mr-1"></i> Options
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openProductModal(id) {
+      const p = products.find(item => item.id === id);
+      if (!p) return;
+      activeModalProduct = p;
+      modalQty = 1;
+
+      document.getElementById('modal-prod-img').src = p.img;
+      document.getElementById('modal-prod-title').textContent = p.title;
+      document.getElementById('modal-prod-cat').textContent = p.category;
+      document.getElementById('modal-prod-desc').textContent = p.desc;
+      
+      document.getElementById('modal-ingredients-text').textContent = p.ingredients || 'Pure Cultured Butter, Natural Spices & Fresh Herbs. Contains Milk.';
+      document.getElementById('modal-storage-text').textContent = p.storage || 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.';
+      document.getElementById('modal-delivery-text').textContent = p.deliveryInfo || 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.';
+      
+      document.getElementById('modal-qty-display').textContent = modalQty;
+
+      const variantSelect = document.getElementById('modal-variant-select');
+      variantSelect.innerHTML = '';
+
+      const varList = (p.variants || 'Standard:+0').split(',');
+      varList.forEach((vStr) => {
+        const parts = vStr.trim().split(':+');
+        const vName = parts[0];
+        const vAddPrice = parseFloat(parts[1] || 0);
+        const opt = document.createElement('option');
+        opt.value = vAddPrice;
+        opt.textContent = `${vName} (${vAddPrice > 0 ? '+R' + vAddPrice.toFixed(2) : 'Standard Price'})`;
+        opt.dataset.variantName = vName;
+        variantSelect.appendChild(opt);
+      });
+
+      updateModalVariantPrice();
+      document.getElementById('product-detail-modal').classList.remove('hidden');
+    }
+
+    function closeProductModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
+
+    function updateModalVariantPrice() {
+      if (!activeModalProduct) return;
+      const select = document.getElementById('modal-variant-select');
+      const addedPrice = parseFloat(select.value || 0);
+      const unitPrice = activeModalProduct.price + addedPrice;
+      const totalPrice = unitPrice * modalQty;
+      document.getElementById('modal-prod-price').textContent = `R${totalPrice.toFixed(2)}`;
+    }
+
+    function adjustModalQty(delta) {
+      modalQty += delta;
+      if (modalQty < 1) modalQty = 1;
+      document.getElementById('modal-qty-display').textContent = modalQty;
+      updateModalVariantPrice();
+    }
+
+    function addModalItemToCart() {
+      if (!activeModalProduct) return;
+      const select = document.getElementById('modal-variant-select');
+      const selectedOption = select.options[select.selectedIndex];
+      const variantName = selectedOption ? selectedOption.dataset.variantName : 'Standard';
+      const addedPrice = parseFloat(select.value || 0);
+      const finalUnitPrice = activeModalProduct.price + addedPrice;
+
+      const itemCartId = `${activeModalProduct.id}-${variantName}`;
+      const existing = cart.find(item => item.cartId === itemCartId);
+
+      if (existing) {
+        existing.qty += modalQty;
+      } else {
+        cart.push({
+          cartId: itemCartId,
+          id: activeModalProduct.id,
+          title: `${activeModalProduct.title} (${variantName})`,
+          price: finalUnitPrice,
+          qty: modalQty
+        });
+      }
+
+      saveCart();
+      closeProductModal();
+      toggleCartDrawer(true);
+    }
+
+    function toggleAccordion(id) {
+      const content = document.getElementById(id);
+      const icon = document.getElementById(`${id}-icon`);
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        if (icon) icon.classList.add('rotate-180');
+      } else {
+        content.classList.add('hidden');
+        if (icon) icon.classList.remove('rotate-180');
+      }
+    }
+
+    function renderAdminProducts() {
+      const tbody = document.getElementById('admin-product-table-body');
+      tbody.innerHTML = products.map(p => `
+        <tr class="border-b border-amber-100 hover:bg-amber-50/50">
+          <td class="p-3 font-bold">${p.title}</td>
+          <td class="p-3 text-amber-700">${p.category}</td>
+          <td class="p-3 font-bold">R${p.price.toFixed(2)}</td>
+          <td class="p-3 text-right space-x-2">
+            <button onclick="editProduct('${p.id}')" class="text-xs bg-amber-100 text-primary px-2.5 py-1 rounded-lg font-bold">Edit</button>
+            <button onclick="deleteProduct('${p.id}')" class="text-xs bg-red-100 text-red-700 px-2.5 py-1 rounded-lg font-bold">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderAdminCustomers() {
+      const container = document.getElementById('admin-customers-list');
+      const badge = document.getElementById('customer-count-badge');
+      const userKeys = Object.keys(customerProfiles);
+
+      badge.textContent = `${userKeys.length} Registered`;
+
+      if (userKeys.length === 0) {
+        container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No customer accounts registered yet.</p>`;
+        return;
+      }
+
+      container.innerHTML = userKeys.map(k => {
+        const prof = customerProfiles[k] || {};
+        const email = prof.email || k.replace(/_/g, '.');
+        return `
+          <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-2">
+            <div class="flex justify-between items-center font-bold text-amber-950">
+              <span class="text-primary"><i class="fa-regular fa-user mr-1.5"></i> ${email}</span>
+              <span class="text-[10px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300">Customer Account</span>
+            </div>
+            <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
+              <p><strong>Full Name:</strong> ${prof.name || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
+              <p><strong>Cell Phone:</strong> ${prof.phone || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
+              <p><strong>Delivery Address:</strong> ${prof.address || '<span class="text-red-500 italic">&lt;No saved address&gt;</span>'}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleProductSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-prod-id').value || Date.now().toString();
+      const title = document.getElementById('prod-title').value;
+      const price = parseFloat(document.getElementById('prod-price').value);
+      const category = document.getElementById('prod-cat').value;
+      const img = document.getElementById('prod-img').value;
+      const desc = document.getElementById('prod-desc').value;
+      const variants = document.getElementById('prod-variants').value || 'Standard:+0';
+      const ingredients = document.getElementById('prod-ingredients').value || '';
+      const storage = document.getElementById('prod-storage').value || '';
+      const deliveryInfo = document.getElementById('prod-delivery-info').value || '';
+
+      const idx = products.findIndex(p => p.id === id);
+      if (idx > -1) {
+        products[idx] = { id, title, price, category, img, desc, variants, ingredients, storage, deliveryInfo };
+      } else {
+        products.push({ id, title, price, category, img, desc, variants, ingredients, storage, deliveryInfo });
+      }
+
+      db.ref('products').set(products);
+      resetProductForm();
+      renderAdminProducts();
+      renderProducts();
+      renderCategories();
+    }
+
+    function editProduct(id) {
+      const p = products.find(item => item.id === id);
+      if (!p) return;
+      document.getElementById('edit-prod-id').value = p.id;
+      document.getElementById('prod-title').value = p.title;
+      document.getElementById('prod-price').value = p.price;
+      document.getElementById('prod-cat').value = p.category;
+      document.getElementById('prod-img').value = p.img;
+      document.getElementById('prod-desc').value = p.desc;
+      document.getElementById('prod-variants').value = p.variants || '';
+      document.getElementById('prod-ingredients').value = p.ingredients || '';
+      document.getElementById('prod-storage').value = p.storage || '';
+      document.getElementById('prod-delivery-info').value = p.deliveryInfo || '';
+      document.getElementById('product-form-title').textContent = 'Edit Product';
+    }
+
+    function resetProductForm() {
+      document.getElementById('edit-prod-id').value = '';
+      document.getElementById('prod-title').value = '';
+      document.getElementById('prod-price').value = '';
+      document.getElementById('prod-cat').value = '';
+      document.getElementById('prod-img').value = '';
+      document.getElementById('prod-desc').value = '';
+      document.getElementById('prod-variants').value = '';
+      document.getElementById('prod-ingredients').value = '';
+      document.getElementById('prod-storage').value = '';
+      document.getElementById('prod-delivery-info').value = '';
+      document.getElementById('product-form-title').textContent = 'Add New Product';
+    }
+
+    function deleteProduct(id) {
+      if (!confirm('Are you sure you want to delete this product?')) return;
+      products = products.filter(p => p.id !== id);
+      db.ref('products').set(products);
+      renderAdminProducts();
+      renderProducts();
+      renderCategories();
+    }
+
+    function saveCart() {
+      localStorage.setItem('bs_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      document.getElementById('cart-count').textContent = count;
+      document.getElementById('cart-total-price').textContent = `R${total.toFixed(2)}`;
+
+      const container = document.getElementById('cart-items-container');
+      if (cart.length === 0) {
+        container.innerHTML = `<p class="text-center text-amber-600 text-sm py-8">Your cart is currently empty.</p>`;
+        return;
+      }
+
+      container.innerHTML = cart.map(item => `
+        <div class="flex items-center justify-between p-3 bg-amber-50/50 rounded-xl border border-amber-200/60">
+          <div>
+            <h4 class="font-bold text-xs sm:text-sm text-amber-950">${item.title}</h4>
+            <span class="text-[11px] sm:text-xs text-amber-700">R${item.price.toFixed(2)} x ${item.qty}</span>
+          </div>
+          <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <button onclick="changeQty('${item.cartId}', -1)" class="w-6 h-6 bg-amber-200 text-amber-900 rounded font-bold text-xs">-</button>
+            <span class="text-xs font-bold">${item.qty}</span>
+            <button onclick="changeQty('${item.cartId}', 1)" class="w-6 h-6 bg-amber-200 text-amber-900 rounded font-bold text-xs">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function changeQty(cartId, delta) {
+      const item = cart.find(i => i.cartId === cartId);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) cart = cart.filter(i => i.cartId !== cartId);
+      }
+      saveCart();
+    }
+
+    function toggleCartDrawer(forceOpen = false) {
+      const drawer = document.getElementById('cart-drawer');
+      const panel = document.getElementById('cart-drawer-panel');
+
+      if (forceOpen || drawer.classList.contains('pointer-events-none')) {
+        drawer.classList.remove('pointer-events-none', 'opacity-0');
+        panel.classList.remove('translate-x-full');
+      } else {
+        drawer.classList.add('pointer-events-none', 'opacity-0');
+        panel.classList.add('translate-x-full');
+      }
+    }
+
+    function submitOrder() {
+      if (cart.length === 0) return alert('Cart is empty.');
+
+      if (!currentUser) {
+        alert('Please log in or create an account to place your order.');
+        toggleCartDrawer();
+        openAuthModal();
+        return;
+      }
+
+      const activeUserEmail = currentUser.email;
+      const userKey = sanitizeKey(activeUserEmail);
+
+      db.ref('profiles/' + userKey).once('value', (snap) => {
+        const prof = snap.val() || {};
+
+        if (currentUser.email !== 'happiekos@gmail.com') {
+          if (!prof.name || !prof.phone || !prof.address) {
+            alert('Please complete your profile details before submitting an order.');
+            toggleCartDrawer();
+            openProfileSetupModal();
+            return;
+          }
+        }
+
+        const orderId = 'ORD-' + Date.now().toString().slice(-6);
+        const orderTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
         
-        <!-- Desktop Auth Status -->
-        <div id="desktop-auth-container" class="hidden md:block">
-          <button onclick="openAuthModal()" id="desktop-login-btn" class="text-xs sm:text-sm font-semibold text-amber-900 hover:text-primary px-3 py-2">
-            <i class="fa-regular fa-user mr-1"></i> Log In
-          </button>
-          <div id="desktop-user-pill" class="hidden flex items-center space-x-2 bg-amber-100 px-3 py-1.5 rounded-full border border-amber-200 text-xs font-semibold">
-            <span id="desktop-user-email-display" class="text-amber-950"></span>
-            <button onclick="logout()" class="text-amber-600 hover:text-amber-900 ml-1" title="Log Out"><i class="fa-solid fa-right-from-bracket"></i></button>
+        const order = {
+          id: orderId,
+          date: new Date().toLocaleString(),
+          user: activeUserEmail,
+          customerDetails: prof,
+          status: 'Pending',
+          items: [...cart],
+          total: orderTotal
+        };
+
+        // Save order to Firebase automatically
+        db.ref('orders/' + orderId).set(order);
+
+        // Send automatic background notification email to store owner via EmailJS
+        const emailParams = {
+          order_id: orderId,
+          customer_email: activeUserEmail,
+          customer_name: prof.name || 'N/A',
+          customer_phone: prof.phone || 'N/A',
+          customer_address: prof.address || 'N/A',
+          order_total: `R${orderTotal.toFixed(2)}`,
+          order_items: cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
+        };
+
+        emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
+          .then(() => console.log('Notification email sent to owner successfully!'))
+          .catch((err) => console.log('Email notification skipped/failed:', err));
+
+        const yocoPaymentLink = 'https://pay.yoco.com/thebuttersmithdeli';
+
+        cart = [];
+        saveCart();
+        toggleCartDrawer();
+        
+        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof);
+      });
+    }
+
+    function openYocoPaymentModal(orderId, total, link, prof) {
+      let modal = document.getElementById('yoco-success-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'yoco-success-modal';
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4';
+        modal.innerHTML = `
+          <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 border border-amber-200 shadow-2xl relative text-amber-950 text-center">
+            <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-xl font-bold border border-amber-300">
+              <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <div class="space-y-0.5">
+              <h3 class="brand-font text-xl font-bold text-amber-950">Order Placed Successfully!</h3>
+              <p class="text-xs text-amber-800" id="yoco-modal-order-id">Order Reference: #</p>
+            </div>
+            
+            <!-- Customer Details Preview Box -->
+            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-left text-xs space-y-1">
+              <p class="font-bold text-primary border-b border-amber-200 pb-1 mb-1"><i class="fa-solid fa-user mr-1"></i> Shipping Details</p>
+              <p><strong>Name:</strong> <span id="yoco-modal-name"></span></p>
+              <p><strong>Phone:</strong> <span id="yoco-modal-phone"></span></p>
+              <p><strong>Address:</strong> <span id="yoco-modal-address"></span></p>
+            </div>
+
+            <!-- Amount Due & Copy Reference Box -->
+            <div class="bg-amber-100/70 p-3.5 rounded-xl border border-amber-300 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-amber-900 uppercase font-bold">Total Amount Due</span>
+                <p class="text-2xl font-extrabold text-amber-950" id="yoco-modal-total">R0.00</p>
+              </div>
+              
+              <!-- Copy Reference Button Only -->
+              <div class="pt-1">
+                <button onclick="copySpecificValue('reference')" class="w-full bg-white hover:bg-amber-50 text-amber-900 font-bold px-3 py-2.5 rounded-xl text-xs border border-amber-300 shadow-xs flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-copy text-primary"></i> Copy Payment Reference Number
+                </button>
+              </div>
+              
+              <div class="text-[11px] text-amber-800 bg-white p-2 rounded-lg border border-amber-200 text-center">
+                Reference Code: <strong id="yoco-ref-code"></strong>
+              </div>
+            </div>
+
+            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs text-amber-900 text-left space-y-1.5">
+              <p class="font-bold text-primary"><i class="fa-solid fa-circle-info mr-1"></i> Payment Instructions:</p>
+              <p>1. Before clicking Open Yoco Payment place please copy Payment Reference number.</p>
+              <p>2. Make sure of the amount you need to pay. You will need to type the amount in on the Yoco Payment Page.</p>
+              <p>3. Paste reference number into the Reference Block.</p>
+              <p>4. Enter your details.</p>
+            </div>
+
+            <div class="space-y-2">
+              <a id="yoco-pay-btn" href="#" target="_blank" onclick="handleYocoPayClick(event)" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
+                <i class="fa-solid fa-lock"></i> Open Yoco Payment Page
+              </a>
+              <button onclick="closeYocoPaymentModal()" class="w-full bg-amber-100 text-amber-900 font-bold py-2 rounded-xl hover:bg-amber-200 transition text-xs">
+                Close & Return to Store
+              </button>
+            </div>
           </div>
-        </div>
+        `;
+        document.body.appendChild(modal);
+      }
 
-        <!-- Cart Trigger Button -->
-        <button onclick="toggleCartDrawer()" class="relative p-2 sm:p-2.5 bg-amber-100 text-primary rounded-full hover:bg-amber-200 transition">
-          <i class="fa-solid fa-basket-shopping text-base sm:text-lg"></i>
-          <span id="cart-count" class="absolute -top-1 -right-1 bg-accent text-white text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center">0</span>
+      document.getElementById('yoco-modal-order-id').textContent = `Order Reference: #${orderId}`;
+      document.getElementById('yoco-modal-total').textContent = `R${total.toFixed(2)}`;
+      document.getElementById('yoco-ref-code').textContent = orderId;
+      document.getElementById('yoco-modal-name').textContent = prof.name || 'N/A';
+      document.getElementById('yoco-modal-phone').textContent = prof.phone || 'N/A';
+      document.getElementById('yoco-modal-address').textContent = prof.address || 'N/A';
+      document.getElementById('yoco-pay-btn').href = link;
+      modal.classList.remove('hidden');
+    }
+
+    function copySpecificValue(type) {
+      if (type === 'reference') {
+        const refText = document.getElementById('yoco-ref-code').textContent.trim();
+        navigator.clipboard.writeText(refText).then(() => {
+          alert('Reference Code copied to clipboard! You can now paste it into Yoco.');
+        });
+      }
+    }
+
+    function handleYocoPayClick(e) {
+      const refCode = document.getElementById('yoco-ref-code').textContent.trim();
+      navigator.clipboard.writeText(refCode).catch(err => {
+        console.log('Clipboard copy failed:', err);
+      });
+    }
+
+    function closeYocoPaymentModal() {
+      const modal = document.getElementById('yoco-success-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function renderCategories() {
+      const cats = ['All', ...new Set(products.map(p => p.category))];
+      const container = document.getElementById('category-filter-list');
+      container.innerHTML = cats.map(c => `
+        <button onclick="setCategory('${c}')" class="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition ${selectedCategory === c ? 'bg-primary text-white' : 'bg-white text-amber-900 border border-amber-200 hover:bg-amber-100'}">
+          ${c}
         </button>
+      `).join('');
+    }
 
-        <!-- Mobile Hamburger Button -->
-        <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-amber-950 hover:text-primary focus:outline-none">
-          <i class="fa-solid fa-bars text-xl"></i>
-        </button>
+    function setCategory(cat) {
+      selectedCategory = cat;
+      renderCategories();
+      renderProducts();
+    }
 
-      </div>
-    </div>
+    function navigateTo(viewName) {
+      document.getElementById('view-store').classList.add('hidden');
+      document.getElementById('view-account').classList.add('hidden');
+      document.getElementById('view-admin').classList.add('hidden');
 
-    <!-- Mobile Dropdown Navigation Menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-amber-50/95 border-b border-amber-200 px-4 py-4 space-y-3 text-sm font-semibold shadow-lg">
+      if (viewName === 'admin') {
+        if (!currentUser || currentUser.email !== 'happiekos@gmail.com') {
+          alert('Access Restricted. Log in as Admin (happiekos@gmail.com) to access this panel.');
+          openAuthModal();
+          document.getElementById('view-store').classList.remove('hidden');
+          return;
+        }
+        document.getElementById('view-admin').classList.remove('hidden');
+        renderAdminProducts();
+        renderAdminCustomers();
+        renderAdminOrders();
+      } else if (viewName === 'account') {
+        document.getElementById('view-account').classList.remove('hidden');
+        loadCustomerProfile();
+      } else {
+        document.getElementById('view-store').classList.remove('hidden');
+      }
+    }
+
+    function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
+    function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
+
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      document.getElementById('auth-modal-title').textContent = isRegisterMode ? 'Create Account' : 'Log In';
+      document.getElementById('auth-submit-btn').textContent = isRegisterMode ? 'Create Account' : 'Log In';
+      document.getElementById('auth-toggle-btn').textContent = isRegisterMode ? 'Already have an account? Log In' : 'Need an account? Create one here';
+    }
+
+    function handleAuth(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim().toLowerCase();
+      const pass = document.getElementById('auth-pass').value;
+
+      if (isRegisterMode) {
+        auth.createUserWithEmailAndPassword(email, pass)
+          .then((userCredential) => {
+            closeAuthModal();
+            checkMandatoryProfileSetup();
+          })
+          .catch((error) => alert('Registration Error: ' + error.message));
+      } else {
+        auth.signInWithEmailAndPassword(email, pass)
+          .then((userCredential) => {
+            closeAuthModal();
+            if (email === 'happiekos@gmail.com') navigateTo('admin');
+            else checkMandatoryProfileSetup();
+          })
+          .catch((error) => alert('Login Failed: ' + error.message));
+      }
+    }
+
+    function loginWithGoogle() {
+      auth.signInWithPopup(googleProvider)
+        .then((result) => {
+          closeAuthModal();
+          const user = result.user;
+          if (user.email === 'happiekos@gmail.com') navigateTo('admin');
+          else checkMandatoryProfileSetup();
+        })
+        .catch((error) => alert('Google Sign-In Error: ' + error.message));
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        currentUser = null;
+        updateAuthUI();
+        closeProfileSetupModal();
+        navigateTo('store');
+      });
+    }
+
+    function updateAuthUI() {
+      const desktopLoginBtn = document.getElementById('desktop-login-btn');
+      const desktopUserPill = document.getElementById('desktop-user-pill');
+      const desktopEmail = document.getElementById('desktop-user-email-display');
       
-      <!-- Mobile Auth Status Banner -->
-      <div id="mobile-auth-container" class="pb-3 border-b border-amber-200/80">
-        <button onclick="openAuthModal(); toggleMobileMenu()" id="mobile-login-btn" class="w-full text-left py-2 px-3 bg-amber-100 rounded-xl text-amber-900 font-bold text-xs flex items-center gap-2">
-          <i class="fa-regular fa-user text-sm"></i> Log In / Register Account
-        </button>
-        <div id="mobile-user-pill" class="hidden flex items-center justify-between bg-amber-200/60 p-2.5 rounded-xl text-xs font-semibold">
-          <span class="text-amber-950 truncate max-w-[200px]" id="mobile-user-email-display"></span>
-          <button onclick="logout()" class="text-amber-700 hover:text-red-700 text-xs font-bold bg-white px-2 py-1 rounded-lg border border-amber-300">Log Out</button>
-        </div>
-      </div>
+      const mobileLoginBtn = document.getElementById('mobile-login-btn');
+      const mobileUserPill = document.getElementById('mobile-user-pill');
+      const mobileEmail = document.getElementById('mobile-user-email-display');
 
-      <button onclick="navigateTo('store'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary flex items-center">
-        <i class="fa-solid fa-store w-6 text-amber-700"></i> Shop Catalog
-      </button>
-      <button onclick="navigateTo('account'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary flex items-center">
-        <i class="fa-solid fa-user-gear w-6 text-amber-700"></i> My Account & Address
-      </button>
-      <button onclick="navigateTo('admin'); toggleMobileMenu()" id="mobile-nav-admin-btn" class="hidden w-full text-left py-2 text-primary font-bold flex items-center">
-        <i class="fa-solid fa-gauge-high w-6 text-primary"></i> Admin Dashboard
-      </button>
-    </div>
-  </header>
+      const navAdminBtn = document.getElementById('nav-admin-btn');
+      const mobileNavAdminBtn = document.getElementById('mobile-nav-admin-btn');
 
-  <!-- Main View Router Container -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      if (currentUser) {
+        if (desktopLoginBtn) desktopLoginBtn.classList.add('hidden');
+        if (desktopUserPill) desktopUserPill.classList.remove('hidden');
+        if (desktopEmail) desktopEmail.textContent = currentUser.email;
 
-    <!-- VIEW 1: STORE FRONT -->
-    <section id="view-store" class="space-y-6 sm:space-y-10">
-      
-      <!-- Hero Banner -->
-      <div class="bg-white rounded-3xl border border-amber-200/80 shadow-md p-5 sm:p-10 grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
-        <div class="md:col-span-7 space-y-3 sm:space-y-4">
-          <span class="inline-block bg-amber-100 text-primary text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full border border-amber-200" id="hero-badge">
-            Crafted Fresh in Centurion
-          </span>
-          <h1 class="brand-font text-2xl sm:text-5xl font-extrabold text-amber-950 leading-tight" id="hero-headline">
-            Gourmet Compound Butters & Artisanal Relishes
-          </h1>
-          <p class="text-amber-800 text-xs sm:text-base leading-relaxed" id="hero-subheadline">
-            Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.
-          </p>
-          <div class="pt-2 flex flex-wrap items-center gap-4">
-            <a href="#product-grid" class="w-full sm:w-auto text-center bg-primary text-white font-bold px-6 py-3 rounded-xl shadow-md hover:opacity-90 transition text-sm flex items-center justify-center">
-              <i class="fa-solid fa-basket-shopping mr-2"></i> Shop Our Lineup
-            </a>
+        if (mobileLoginBtn) mobileLoginBtn.classList.add('hidden');
+        if (mobileUserPill) mobileUserPill.classList.remove('hidden');
+        if (mobileEmail) mobileEmail.textContent = currentUser.email;
+
+        if (currentUser.email === 'happiekos@gmail.com') {
+          if (navAdminBtn) navAdminBtn.classList.remove('hidden');
+          if (mobileNavAdminBtn) mobileNavAdminBtn.classList.remove('hidden');
+        } else {
+          if (navAdminBtn) navAdminBtn.classList.add('hidden');
+          if (mobileNavAdminBtn) mobileNavAdminBtn.classList.add('hidden');
+        }
+      } else {
+        if (desktopLoginBtn) desktopLoginBtn.classList.remove('hidden');
+        if (desktopUserPill) desktopUserPill.classList.add('hidden');
+
+        if (mobileLoginBtn) mobileLoginBtn.classList.remove('hidden');
+        if (mobileUserPill) mobileUserPill.classList.add('hidden');
+
+        if (navAdminBtn) navAdminBtn.classList.add('hidden');
+        if (mobileNavAdminBtn) mobileNavAdminBtn.classList.add('hidden');
+      }
+    }
+
+    function saveCustomerAddress(e) {
+      e.preventDefault();
+      if (!currentUser) { alert('Please log in first.'); return; }
+
+      const userKey = sanitizeKey(currentUser.email);
+      const profile = {
+        email: currentUser.email,
+        name: document.getElementById('cust-name').value.trim(),
+        phone: document.getElementById('cust-phone').value.trim(),
+        address: document.getElementById('cust-address').value.trim()
+      };
+
+      db.ref('profiles/' + userKey).set(profile)
+        .then(() => {
+          alert('Delivery address and contact details saved to cloud successfully!');
+        })
+        .catch((err) => alert('Error saving address: ' + err.message));
+    }
+
+    function loadCustomerProfile() {
+      if (!currentUser) return;
+      const userKey = sanitizeKey(currentUser.email);
+      db.ref('profiles/' + userKey).once('value', (snap) => {
+        if (snap.exists()) {
+          const prof = snap.val();
+          document.getElementById('cust-name').value = prof.name || '';
+          document.getElementById('cust-phone').value = prof.phone || '';
+          document.getElementById('cust-address').value = prof.address || '';
+        }
+      });
+    }
+
+    function switchAdminTab(tab) {
+      ['products', 'customers', 'customize', 'orders'].forEach(t => {
+        document.getElementById(`admin-tab-${t}`).classList.add('hidden');
+        document.getElementById(`tab-btn-${t}`).classList.replace('text-primary', 'text-amber-600');
+        document.getElementById(`tab-btn-${t}`).classList.replace('border-primary', 'border-transparent');
+      });
+      document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-btn-${tab}`).classList.replace('text-amber-600', 'text-primary');
+      document.getElementById(`tab-btn-${tab}`).classList.replace('border-transparent', 'border-primary');
+
+      if (tab === 'customers') renderAdminCustomers();
+      if (tab === 'orders') renderAdminOrders();
+    }
+
+    function renderAdminOrders() {
+      const container = document.getElementById('admin-orders-list');
+      if (orders.length === 0) {
+        container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No orders received yet.</p>`;
+        return;
+      }
+
+      container.innerHTML = orders.map(o => {
+        const isDone = o.status === 'Completed';
+        const cd = o.customerDetails || {};
+        return `
+          <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3">
+            <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950">
+              <div class="flex items-center gap-2">
+                <span>Order #${o.id}</span>
+                <span class="text-xs px-2.5 py-0.5 rounded-full font-bold ${isDone ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-amber-100 text-amber-800 border border-amber-300'}">
+                  ${o.status || 'Pending'}
+                </span>
+              </div>
+              <span class="text-base text-primary">R${o.total.toFixed(2)}</span>
+            </div>
+            <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
+              <p><strong>Customer Email:</strong> ${o.user}</p>
+              <p><strong>Full Name:</strong> ${cd.name || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
+              <p><strong>Cell Phone:</strong> ${cd.phone || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
+              <p><strong>Delivery Address:</strong> ${cd.address || '<span class="text-red-500 italic">&lt;No saved address&gt;</span>'}</p>
+              <p class="text-[10px] text-amber-600 pt-1">Date: ${o.date}</p>
+            </div>
+            <ul class="text-xs space-y-1 list-disc pl-4 text-amber-900 bg-white p-3 rounded-xl border border-amber-100">
+              ${o.items.map(i => `<li>${i.title} x ${i.qty} (R${(i.price * i.qty).toFixed(2)})</li>`).join('')}
+            </ul>
+            <div class="flex justify-end items-center gap-2 pt-1">
+              <button onclick="toggleOrderStatus('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl transition ${isDone ? 'bg-amber-100 text-amber-900 hover:bg-amber-200' : 'bg-green-700 text-white hover:bg-green-800'}">
+                <i class="fa-solid ${isDone ? 'fa-rotate-left' : 'fa-check'} mr-1"></i> ${isDone ? 'Mark Pending' : 'Mark Completed'}
+              </button>
+              <button onclick="deleteOrder('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-100 text-red-700 hover:bg-red-200 transition">
+                <i class="fa-solid fa-trash mr-1"></i> Delete Order
+              </button>
+            </div>
           </div>
-        </div>
+        `;
+      }).join('');
+    }
 
-        <div class="md:col-span-5 flex justify-center">
-          <div class="w-full h-52 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100">
-            <img id="hero-image-display" src="[https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80](https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80)" alt="Hero Featured Product" class="w-full h-full object-cover">
-          </div>
-        </div>
-      </div>
+    function toggleOrderStatus(orderId) {
+      const order = orders.find(o => o.id === orderId);
+      if (order) {
+        const nextStatus = order.status === 'Completed' ? 'Pending' : 'Completed';
+        db.ref('orders/' + orderId + '/status').set(nextStatus);
+      }
+    }
 
-      <!-- Categories & Search Bar -->
-      <div class="flex flex-col md:flex-row gap-4 justify-between items-center border-b border-amber-200/80 pb-6">
-        <div class="flex flex-wrap gap-2 w-full md:w-auto" id="category-filter-list"></div>
-        <div class="relative w-full md:w-72">
-          <input type="text" id="search-input" onkeyup="renderProducts()" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
-          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-amber-400 text-xs"></i>
-        </div>
-      </div>
-
-      <!-- Product Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" id="product-grid"></div>
-    </section>
-
-    <!-- VIEW 2: CUSTOMER ACCOUNT -->
-    <section id="view-account" class="hidden max-w-3xl mx-auto space-y-6">
-      <h2 class="text-xl sm:text-2xl font-bold text-amber-950">My Account & Shipping Details</h2>
-      <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-base sm:text-lg text-primary">Saved Address & Contact Info</h3>
-        <form id="address-form" onsubmit="saveCustomerAddress(event)" class="space-y-3">
-          <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          <input type="text" id="cust-phone" placeholder="Cell Phone Number (e.g. 082 123 4567)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          <textarea id="cust-address" placeholder="Delivery Address (Street, Suburb, City, Postal Code)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl h-24" required></textarea>
-          <button type="submit" class="w-full sm:w-auto bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Delivery Address</button>
-        </form>
-      </div>
-
-      <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-base sm:text-lg text-primary">Order History</h3>
-        <div id="customer-order-history" class="text-sm text-amber-800 space-y-2">
-          <p class="text-amber-600 italic">No previous orders found.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- VIEW 3: ADMIN DASHBOARD -->
-    <section id="view-admin" class="hidden space-y-6 sm:space-y-8">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-amber-200 pb-4">
-        <div>
-          <h2 class="text-xl sm:text-2xl font-bold text-amber-950">Admin Control Panel</h2>
-          <p class="text-xs text-amber-700">Manage products, customer accounts, styles, and orders.</p>
-        </div>
-        <span class="bg-amber-100 text-primary text-xs font-bold px-3 py-1 rounded-full border border-amber-300">Logged in as Admin</span>
-      </div>
-
-      <!-- Admin Navigation Tabs -->
-      <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto pb-1">
-        <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Product List</button>
-        <button onclick="switchAdminTab('customers')" id="tab-btn-customers" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Customer Accounts</button>
-        <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer</button>
-        <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
-      </div>
-
-      <!-- Admin
+    function deleteOrder(orderId) {
+      if (!confirm(`Are you sure you want to delete order #${orderId}?`)) return;
+      db.ref('orders/' + orderId).remove().then(() => {
+        orders = orders.filter(o => o.id !== orderId);
+        renderAdminOrders();
+      }).catch(err => {
+        alert('Error deleting order: ' + err.message);
+      });
+    }
+  </script>
+</body>
+</html>
