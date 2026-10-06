@@ -10,6 +10,9 @@
   <!-- Dynamic Google Fonts -->
   <link id="font-imports" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&family=Poppins:wght@500;700&family=Roboto:wght@400;700&display=swap">
   
+  <!-- Google Maps Places API for Address Verification -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSO44vPx7knub_w6S7W6kbNJ9X5oYtjVc&libraries=places"></script>
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -47,13 +50,14 @@
       background-color: var(--footer-bg-color) !important;
       color: var(--footer-text-color) !important;
     }
+    .pac-container { z-index: 99999 !important; font-family: var(--body-font); }
   </style>
 </head>
 <body class="bg-amber-50/30 text-amber-950 min-h-screen flex flex-col">
 
   <!-- Announcement Bar -->
   <div id="announcement-bar" class="bg-primary text-white text-[11px] sm:text-sm text-center py-2 px-3 font-medium flex justify-between items-center shadow-sm">
-    <span class="w-full text-center truncate" id="announcement-text">Free Delivery in Centurion for Orders over R250.</span>
+    <span class="w-full text-center truncate" id="announcement-text">Free Centurion Delivery over R400 | Free National Delivery over R800</span>
   </div>
 
   <!-- Mobile-Optimized Clean Header -->
@@ -188,7 +192,7 @@
         <form id="address-form" onsubmit="saveCustomerAddress(event)" class="space-y-3">
           <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
           <input type="text" id="cust-phone" placeholder="Cell Phone Number (e.g. 082 123 4567)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          <textarea id="cust-address" placeholder="Delivery Address (Street, Suburb, City, Postal Code)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl h-24" required></textarea>
+          <textarea id="cust-address" placeholder="Start typing delivery address for Google Maps verification..." class="w-full p-2.5 text-sm border border-amber-200 rounded-xl h-24" required></textarea>
           <button type="submit" class="w-full sm:w-auto bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Delivery Address</button>
         </form>
       </div>
@@ -451,8 +455,8 @@
           <input type="text" id="setup-phone" placeholder="082 123 4567" class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
         </div>
         <div>
-          <label class="block text-xs font-bold text-amber-900 mb-1">Delivery Address</label>
-          <textarea id="setup-address" placeholder="Street, Suburb, City, Postal Code" class="w-full p-3 text-sm border border-amber-200 rounded-xl h-24 focus:ring-2 focus:ring-amber-500" required></textarea>
+          <label class="block text-xs font-bold text-amber-900 mb-1">Delivery Address (Google verified)</label>
+          <textarea id="setup-address" placeholder="Start typing address..." class="w-full p-3 text-sm border border-amber-200 rounded-xl h-24 focus:ring-2 focus:ring-amber-500" required></textarea>
         </div>
 
         <button type="submit" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition text-sm shadow-md flex justify-center items-center gap-2">
@@ -657,12 +661,20 @@
         <button onclick="toggleCartDrawer()" class="text-amber-500 hover:text-amber-800"><i class="fa-solid fa-xmark text-xl"></i></button>
       </div>
       <div id="cart-items-container" class="flex-grow overflow-y-auto py-4 space-y-3"></div>
-      <div class="border-t border-amber-200 pt-4 space-y-4">
-        <div class="flex justify-between font-bold text-base sm:text-lg text-amber-950">
+      <div class="border-t border-amber-200 pt-4 space-y-3">
+        <div class="flex justify-between text-xs sm:text-sm text-amber-800">
+          <span>Subtotal:</span>
+          <span id="cart-subtotal-price">R0.00</span>
+        </div>
+        <div class="flex justify-between text-xs sm:text-sm text-amber-800">
+          <span>Estimated Delivery:</span>
+          <span id="cart-delivery-display">Calculated at checkout</span>
+        </div>
+        <div class="flex justify-between font-bold text-base sm:text-lg text-amber-950 border-t border-amber-100 pt-2">
           <span>Total:</span>
           <span id="cart-total-price">R0.00</span>
         </div>
-        <button onclick="submitOrder()" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-90 transition flex justify-center items-center text-xs sm:text-sm">
+        <button onclick="initiateCheckout()" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-90 transition flex justify-center items-center text-xs sm:text-sm">
           <i class="fa-solid fa-paper-plane mr-2"></i> Submit Order to Store
         </button>
       </div>
@@ -760,7 +772,7 @@
       heroSub: 'Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.',
       heroImg: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80',
       logoUrl: 'https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png',
-      announcement: 'Free Delivery in Centurion for Orders over R250.',
+      announcement: 'Free Centurion Delivery over R400 | Free National Delivery over R800',
       primaryColor: '#556B2F',
       accentColor: '#6B8E23',
       footerBgColor: '#3b4e1e',
@@ -786,6 +798,7 @@
     let activeModalProduct = null;
     let modalQty = 1;
     let isRegisterMode = false;
+    let addressAutocompleteSetupDone = false;
 
     const socialIconMap = {
       facebook: 'fa-brands fa-facebook',
@@ -801,6 +814,7 @@
       renderProducts();
       renderCategories();
       updateCartUI();
+      initGoogleAutocomplete();
 
       auth.onAuthStateChanged((user) => {
         currentUser = user;
@@ -843,6 +857,35 @@
       });
     });
 
+    function initGoogleAutocomplete() {
+      if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.places === 'undefined') return;
+      
+      const setupField = document.getElementById('setup-address');
+      const custField = document.getElementById('cust-address');
+
+      if (setupField && !setupField.dataset.autocompleteInitialized) {
+        const autocomplete1 = new google.maps.places.Autocomplete(setupField, { componentRestrictions: { country: 'za' } });
+        autocomplete1.addListener('place_changed', () => {
+          const place = autocomplete1.getPlace();
+          if (place && place.formatted_address) {
+            setupField.value = place.formatted_address;
+          }
+        });
+        setupField.dataset.autocompleteInitialized = 'true';
+      }
+
+      if (custField && !custField.dataset.autocompleteInitialized) {
+        const autocomplete2 = new google.maps.places.Autocomplete(custField, { componentRestrictions: { country: 'za' } });
+        autocomplete2.addListener('place_changed', () => {
+          const place = autocomplete2.getPlace();
+          if (place && place.formatted_address) {
+            custField.value = place.formatted_address;
+          }
+        });
+        custField.dataset.autocompleteInitialized = 'true';
+      }
+    }
+
     function checkMandatoryProfileSetup() {
       if (!currentUser || currentUser.email === 'happiekos@gmail.com') {
         closeProfileSetupModal();
@@ -862,6 +905,7 @@
 
     function openProfileSetupModal() {
       document.getElementById('profile-setup-modal').classList.remove('hidden');
+      setTimeout(initGoogleAutocomplete, 300);
     }
 
     function closeProfileSetupModal() {
@@ -884,6 +928,7 @@
           closeProfileSetupModal();
           alert('Profile completed! You can now browse products and place orders.');
           navigateTo('store');
+          updateCartUI();
         })
         .catch((err) => alert('Error saving details: ' + err.message));
     }
@@ -1361,11 +1406,59 @@
       updateCartUI();
     }
 
+    function calculateDeliveryDetails(address = '') {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const lowerAddr = address.toLowerCase();
+      
+      const isCenturion = lowerAddr.includes('centurion') || 
+                          lowerAddr.includes('lyttelton') || 
+                          lowerAddr.includes('pierre van ryneveld') || 
+                          lowerAddr.includes('irene') || 
+                          lowerAddr.includes('highveld') || 
+                          lowerAddr.includes('rooihuiskraal') || 
+                          lowerAddr.includes('amberfield') || 
+                          lowerAddr.includes('doringkloof');
+
+      if (isCenturion) {
+        if (subtotal >= 400) {
+          return { type: 'centurion', fee: 0, isFree: true, threshold: 400, short: 0 };
+        } else {
+          return { type: 'centurion', fee: 20, isFree: false, threshold: 400, short: 400 - subtotal };
+        }
+      } else {
+        if (subtotal >= 800) {
+          return { type: 'national', fee: 0, isFree: true, threshold: 800, short: 0 };
+        } else {
+          return { type: 'national', fee: 69, isFree: false, threshold: 800, short: 800 - subtotal };
+        }
+      }
+    }
+
     function updateCartUI() {
       const count = cart.reduce((sum, item) => sum + item.qty, 0);
-      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      
       document.getElementById('cart-count').textContent = count;
-      document.getElementById('cart-total-price').textContent = `R${total.toFixed(2)}`;
+      document.getElementById('cart-subtotal-price').textContent = `R${subtotal.toFixed(2)}`;
+
+      if (currentUser && currentUser.email === 'happiekos@gmail.com') {
+        document.getElementById('cart-delivery-display').textContent = 'Admin Free Delivery';
+        document.getElementById('cart-total-price').textContent = `R${subtotal.toFixed(2)}`;
+      } else if (currentUser) {
+        const userKey = sanitizeKey(currentUser.email);
+        db.ref('profiles/' + userKey).once('value', (snap) => {
+          const prof = snap.val() || {};
+          const addr = prof.address || '';
+          const delivery = calculateDeliveryDetails(addr);
+          
+          let deliveryText = delivery.fee === 0 ? 'Free Delivery' : `R${delivery.fee}.00 (${delivery.type === 'centurion' ? 'Centurion' : 'National'})`;
+          document.getElementById('cart-delivery-display').textContent = deliveryText;
+          document.getElementById('cart-total-price').textContent = `R${(subtotal + delivery.fee).toFixed(2)}`;
+        });
+      } else {
+        document.getElementById('cart-delivery-display').textContent = 'Log in / set address at checkout';
+        document.getElementById('cart-total-price').textContent = `R${subtotal.toFixed(2)}`;
+      }
 
       const container = document.getElementById('cart-items-container');
       if (cart.length === 0) {
@@ -1410,7 +1503,7 @@
       }
     }
 
-    function submitOrder() {
+    function initiateCheckout() {
       if (cart.length === 0) return alert('Cart is empty.');
 
       if (!currentUser) {
@@ -1435,8 +1528,82 @@
           }
         }
 
+        const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0, isFree: true, type: 'admin', short: 0 } : calculateDeliveryDetails(prof.address || '');
+
+        if (!delivery.isFree) {
+          openDeliveryNoticeModal(delivery);
+        } else {
+          executeOrderSubmission(delivery.fee);
+        }
+      });
+    }
+
+    function openDeliveryNoticeModal(delivery) {
+      let modal = document.getElementById('delivery-notice-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'delivery-notice-modal';
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4';
+        modal.innerHTML = `
+          <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 border border-amber-200 shadow-2xl relative text-amber-950 text-center">
+            <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-xl font-bold border border-amber-300">
+              <i class="fa-solid fa-truck"></i>
+            </div>
+            <div class="space-y-1">
+              <h3 class="brand-font text-xl font-bold text-amber-950">Delivery Fee Applies</h3>
+              <p class="text-xs text-amber-800" id="delivery-notice-msg">You do not qualify for free delivery for this order.</p>
+            </div>
+            
+            <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-1 text-left">
+              <p>• <strong>Fee:</strong> <span id="notice-fee-val">R20.00</span></p>
+              <p>• <strong>Add R<span id="notice-short-val">0</span> more</strong> to your cart to unlock Free Delivery!</p>
+            </div>
+
+            <div class="space-y-2 pt-2">
+              <button onclick="closeDeliveryNoticeModal(); toggleCartDrawer();" class="w-full bg-amber-100 text-amber-900 font-bold py-3 rounded-xl hover:bg-amber-200 transition text-xs sm:text-sm flex items-center justify-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Go Back & Add More Items
+              </button>
+              <button onclick="closeDeliveryNoticeModal(); executeOrderSubmissionWithCurrentFee();" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-95 transition text-xs sm:text-sm shadow-md">
+                Continue to Checkout With Fee
+              </button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+
+      document.getElementById('delivery-notice-msg').textContent = delivery.type === 'centurion' 
+        ? `Centurion orders under R400 carry a R20 delivery fee.`
+        : `National orders under R800 carry a R69 delivery fee.`;
+      
+      document.getElementById('notice-fee-val').textContent = `R${delivery.fee}.00`;
+      document.getElementById('notice-short-val').textContent = delivery.short.toFixed(2);
+      modal.classList.remove('hidden');
+    }
+
+    function closeDeliveryNoticeModal() {
+      const modal = document.getElementById('delivery-notice-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function executeOrderSubmissionWithCurrentFee() {
+      const userKey = sanitizeKey(currentUser.email);
+      db.ref('profiles/' + userKey).once('value', (snap) => {
+        const prof = snap.val() || {};
+        const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0 } : calculateDeliveryDetails(prof.address || '');
+        executeOrderSubmission(delivery.fee);
+      });
+    }
+
+    function executeOrderSubmission(deliveryFee) {
+      const activeUserEmail = currentUser.email;
+      const userKey = sanitizeKey(activeUserEmail);
+
+      db.ref('profiles/' + userKey).once('value', (snap) => {
+        const prof = snap.val() || {};
         const orderId = 'ORD-' + Date.now().toString().slice(-6);
-        const orderTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const orderTotal = subtotal + deliveryFee;
         
         const order = {
           id: orderId,
@@ -1445,26 +1612,26 @@
           customerDetails: prof,
           status: 'Pending',
           items: [...cart],
+          subtotal: subtotal,
+          deliveryFee: deliveryFee,
           total: orderTotal
         };
 
-        // Save order to Firebase automatically
         db.ref('orders/' + orderId).set(order);
 
-        // Send automatic background notification email to store owner via EmailJS
         const emailParams = {
           order_id: orderId,
           customer_email: activeUserEmail,
           customer_name: prof.name || 'N/A',
           customer_phone: prof.phone || 'N/A',
           customer_address: prof.address || 'N/A',
-          order_total: `R${orderTotal.toFixed(2)}`,
+          order_total: `R${orderTotal.toFixed(2)} (Delivery: R${deliveryFee}.00)`,
           order_items: cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
         };
 
         emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
-          .then(() => console.log('Notification email sent to owner successfully!'))
-          .catch((err) => console.log('Email notification skipped/failed:', err));
+          .then(() => console.log('Notification email sent successfully!'))
+          .catch((err) => console.log('Email notification failed:', err));
 
         const yocoPaymentLink = 'https://pay.yoco.com/thebuttersmithdeli';
 
@@ -1472,11 +1639,11 @@
         saveCart();
         toggleCartDrawer();
         
-        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof);
+        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof, deliveryFee);
       });
     }
 
-    function openYocoPaymentModal(orderId, total, link, prof) {
+    function openYocoPaymentModal(orderId, total, link, prof, deliveryFee) {
       let modal = document.getElementById('yoco-success-modal');
       if (!modal) {
         modal = document.createElement('div');
@@ -1492,22 +1659,20 @@
               <p class="text-xs text-amber-800" id="yoco-modal-order-id">Order Reference: #</p>
             </div>
             
-            <!-- Customer Details Preview Box -->
             <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-left text-xs space-y-1">
               <p class="font-bold text-primary border-b border-amber-200 pb-1 mb-1"><i class="fa-solid fa-user mr-1"></i> Shipping Details</p>
               <p><strong>Name:</strong> <span id="yoco-modal-name"></span></p>
               <p><strong>Phone:</strong> <span id="yoco-modal-phone"></span></p>
               <p><strong>Address:</strong> <span id="yoco-modal-address"></span></p>
+              <p><strong>Delivery Fee:</strong> <span id="yoco-modal-delivery"></span></p>
             </div>
 
-            <!-- Amount Due & Copy Reference Box -->
             <div class="bg-amber-100/70 p-3.5 rounded-xl border border-amber-300 space-y-2">
               <div class="flex justify-between items-center">
                 <span class="text-xs text-amber-900 uppercase font-bold">Total Amount Due</span>
                 <p class="text-2xl font-extrabold text-amber-950" id="yoco-modal-total">R0.00</p>
               </div>
               
-              <!-- Copy Reference Button Only -->
               <div class="pt-1">
                 <button onclick="copySpecificValue('reference')" class="w-full bg-white hover:bg-amber-50 text-amber-900 font-bold px-3 py-2.5 rounded-xl text-xs border border-amber-300 shadow-xs flex items-center justify-center gap-1.5">
                   <i class="fa-solid fa-copy text-primary"></i> Copy Payment Reference Number
@@ -1521,10 +1686,9 @@
 
             <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs text-amber-900 text-left space-y-1.5">
               <p class="font-bold text-primary"><i class="fa-solid fa-circle-info mr-1"></i> Payment Instructions:</p>
-              <p>1. Before clicking Open Yoco Payment place please copy Payment Reference number.</p>
-              <p>2. Make sure of the amount you need to pay. You will need to type the amount in on the Yoco Payment Page.</p>
+              <p>1. Copy Payment Reference number before opening Yoco.</p>
+              <p>2. Enter total amount on Yoco Payment Page.</p>
               <p>3. Paste reference number into the Reference Block.</p>
-              <p>4. Enter your details.</p>
             </div>
 
             <div class="space-y-2">
@@ -1546,6 +1710,7 @@
       document.getElementById('yoco-modal-name').textContent = prof.name || 'N/A';
       document.getElementById('yoco-modal-phone').textContent = prof.phone || 'N/A';
       document.getElementById('yoco-modal-address').textContent = prof.address || 'N/A';
+      document.getElementById('yoco-modal-delivery').textContent = deliveryFee === 0 ? 'Free Delivery' : `R${deliveryFee}.00`;
       document.getElementById('yoco-pay-btn').href = link;
       modal.classList.remove('hidden');
     }
@@ -1554,7 +1719,7 @@
       if (type === 'reference') {
         const refText = document.getElementById('yoco-ref-code').textContent.trim();
         navigator.clipboard.writeText(refText).then(() => {
-          alert('Reference Code copied to clipboard! You can now paste it into Yoco.');
+          alert('Reference Code copied to clipboard!');
         });
       }
     }
@@ -1606,6 +1771,7 @@
       } else if (viewName === 'account') {
         document.getElementById('view-account').classList.remove('hidden');
         loadCustomerProfile();
+        setTimeout(initGoogleAutocomplete, 300);
       } else {
         document.getElementById('view-store').classList.remove('hidden');
       }
@@ -1719,6 +1885,7 @@
       db.ref('profiles/' + userKey).set(profile)
         .then(() => {
           alert('Delivery address and contact details saved to cloud successfully!');
+          updateCartUI();
         })
         .catch((err) => alert('Error saving address: ' + err.message));
     }
@@ -1732,6 +1899,7 @@
           document.getElementById('cust-name').value = prof.name || '';
           document.getElementById('cust-phone').value = prof.phone || '';
           document.getElementById('cust-address').value = prof.address || '';
+          updateCartUI();
         }
       });
     }
@@ -1760,6 +1928,7 @@
       container.innerHTML = orders.map(o => {
         const isDone = o.status === 'Completed';
         const cd = o.customerDetails || {};
+        const deliveryFeeDisplay = o.deliveryFee !== undefined ? `R${o.deliveryFee}.00` : 'Free / Included';
         return `
           <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3">
             <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950">
@@ -1776,6 +1945,7 @@
               <p><strong>Full Name:</strong> ${cd.name || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
               <p><strong>Cell Phone:</strong> ${cd.phone || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
               <p><strong>Delivery Address:</strong> ${cd.address || '<span class="text-red-500 italic">&lt;No saved address&gt;</span>'}</p>
+              <p><strong>Delivery Fee Charged:</strong> ${deliveryFeeDisplay}</p>
               <p class="text-[10px] text-amber-600 pt-1">Date: ${o.date}</p>
             </div>
             <ul class="text-xs space-y-1 list-disc pl-4 text-amber-900 bg-white p-3 rounded-xl border border-amber-100">
