@@ -233,6 +233,14 @@
             <input type="number" step="0.01" id="prod-price" placeholder="Base Price in ZAR (e.g., 65.00)" class="p-2.5 text-sm border border-amber-200 rounded-xl" required>
             <input type="text" id="prod-cat" placeholder="Category (e.g., Compound Butter)" class="p-2.5 text-sm border border-amber-200 rounded-xl" required>
             <input type="text" id="prod-img" placeholder="Image URL" class="p-2.5 text-sm border border-amber-200 rounded-xl" required>
+            
+            <div class="sm:col-span-2 flex items-center bg-amber-50 p-3 rounded-xl border border-amber-200">
+              <input type="checkbox" id="prod-visible" class="w-4 h-4 text-primary rounded border-amber-300 focus:ring-amber-500" checked>
+              <label for="prod-visible" class="ml-2.5 text-xs font-bold text-amber-950 cursor-pointer">
+                Product Visible to Public (Uncheck to mark Out of Stock / Hidden)
+              </label>
+            </div>
+
             <input type="text" id="prod-variants" placeholder="Variants comma-separated with +prices (e.g. 100g Tub:+0, 250g Tub:+35, 500g Tub:+80)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl">
             
             <textarea id="prod-ingredients" placeholder="Ingredients & Allergens (e.g., Pure Cultured Butter, Fresh Garlic, Parsley, Sea Salt. Contains Milk.)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
@@ -257,6 +265,7 @@
                 <th class="p-3">Product</th>
                 <th class="p-3">Category</th>
                 <th class="p-3">Base Price</th>
+                <th class="p-3">Status</th>
                 <th class="p-3 text-right">Actions</th>
               </tr>
             </thead>
@@ -751,10 +760,10 @@
     const sanitizeKey = (email) => email ? email.replace(/[^a-zA-Z0-9]/g, '_') : 'guest';
 
     const defaultProducts = [
-      { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
-      { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Smoked Paprika, Cayenne Chilli, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
-      { id: '3', title: 'Sweet Honey & Cinnamon Butter', category: 'Compound Butter', price: 60, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Raw honey and cinnamon whipped for hot pancakes and fresh breads.', variants: '100g Tub:+0, 250g Tub:+30, 500g Tub:+70', ingredients: 'Pure Cultured Butter, Raw Local Honey, Ground Cinnamon. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
-      { id: '4', title: 'Dried Fruit Relish', category: 'Relish', price: 55, img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80', desc: 'Slow-cooked artisanal dried fruit chutney, pairs perfectly with cheeses.', variants: '250g Jar:+0, 500g Jar:+40', ingredients: 'Dried Apricots, Peaches, Raisins, Apple Cider Vinegar, Brown Sugar, Spices.', storage: 'Store in a cool, dry place. Refrigerate after opening and consume within 60 days.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' }
+      { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, visible: true, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
+      { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, visible: true, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Smoked Paprika, Cayenne Chilli, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
+      { id: '3', title: 'Sweet Honey & Cinnamon Butter', category: 'Compound Butter', price: 60, visible: true, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Raw honey and cinnamon whipped for hot pancakes and fresh breads.', variants: '100g Tub:+0, 250g Tub:+30, 500g Tub:+70', ingredients: 'Pure Cultured Butter, Raw Local Honey, Ground Cinnamon. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
+      { id: '4', title: 'Dried Fruit Relish', category: 'Relish', price: 55, visible: true, img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80', desc: 'Slow-cooked artisanal dried fruit chutney, pairs perfectly with cheeses.', variants: '250g Jar:+0, 500g Jar:+40', ingredients: 'Dried Apricots, Peaches, Raisins, Apple Cider Vinegar, Brown Sugar, Spices.', storage: 'Store in a cool, dry place. Refrigerate after opening and consume within 60 days.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' }
     ];
 
     const defaultSocials = [
@@ -798,7 +807,6 @@
     let activeModalProduct = null;
     let modalQty = 1;
     let isRegisterMode = false;
-    let addressAutocompleteSetupDone = false;
 
     const socialIconMap = {
       facebook: 'fa-brands fa-facebook',
@@ -828,11 +836,23 @@
       });
 
       db.ref('products').on('value', (snap) => {
-        if (snap.exists()) { products = snap.val(); renderProducts(); renderCategories(); }
+        if (snap.exists()) { 
+          products = snap.val(); 
+          localStorage.setItem('bs_products', JSON.stringify(products));
+          renderProducts(); 
+          renderCategories(); 
+          if (currentUser && currentUser.email === 'happiekos@gmail.com') {
+            renderAdminProducts();
+          }
+        }
       });
 
       db.ref('settings').on('value', (snap) => {
-        if (snap.exists()) { settings = snap.val(); applyStylesAndSettings(); }
+        if (snap.exists()) { 
+          settings = snap.val(); 
+          localStorage.setItem('bs_settings', JSON.stringify(settings));
+          applyStylesAndSettings(); 
+        }
       });
 
       db.ref('profiles').on('value', (snap) => {
@@ -1153,6 +1173,7 @@
       };
 
       db.ref('settings').set(settings);
+      localStorage.setItem('bs_settings', JSON.stringify(settings));
       applyStylesAndSettings();
       alert('Settings, social links, contact details, map, and colors updated successfully!');
     }
@@ -1162,13 +1183,14 @@
       const grid = document.getElementById('product-grid');
 
       const filtered = products.filter(p => {
+        if (p.visible === false) return false; // Hide out-of-stock items from public
         const matchesCat = selectedCategory === 'All' || p.category === selectedCategory;
         const matchesQuery = p.title.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
         return matchesCat && matchesQuery;
       });
 
       if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-12 text-amber-700">No products found.</div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-amber-700">No products currently available.</div>`;
         return;
       }
 
@@ -1197,7 +1219,7 @@
 
     function openProductModal(id) {
       const p = products.find(item => item.id === id);
-      if (!p) return;
+      if (!p || p.visible === false) return;
       activeModalProduct = p;
       modalQty = 1;
 
@@ -1291,17 +1313,28 @@
 
     function renderAdminProducts() {
       const tbody = document.getElementById('admin-product-table-body');
-      tbody.innerHTML = products.map(p => `
-        <tr class="border-b border-amber-100 hover:bg-amber-50/50">
-          <td class="p-3 font-bold">${p.title}</td>
-          <td class="p-3 text-amber-700">${p.category}</td>
-          <td class="p-3 font-bold">R${p.price.toFixed(2)}</td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick="editProduct('${p.id}')" class="text-xs bg-amber-100 text-primary px-2.5 py-1 rounded-lg font-bold">Edit</button>
-            <button onclick="deleteProduct('${p.id}')" class="text-xs bg-red-100 text-red-700 px-2.5 py-1 rounded-lg font-bold">Delete</button>
-          </td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = products.map(p => {
+        const isVisible = p.visible !== false;
+        return `
+          <tr class="border-b border-amber-100 hover:bg-amber-50/50">
+            <td class="p-3 font-bold flex items-center gap-2">
+              <img src="${p.img}" class="w-8 h-8 rounded-lg object-cover border border-amber-200">
+              <span>${p.title}</span>
+            </td>
+            <td class="p-3 text-amber-700">${p.category}</td>
+            <td class="p-3 font-bold">R${p.price.toFixed(2)}</td>
+            <td class="p-3">
+              <span class="text-xs px-2.5 py-1 rounded-full font-bold ${isVisible ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-red-100 text-red-700 border border-red-300'}">
+                ${isVisible ? 'In Stock (Visible)' : 'Out of Stock (Hidden)'}
+              </span>
+            </td>
+            <td class="p-3 text-right space-x-2">
+              <button onclick="editProduct('${p.id}')" class="text-xs bg-amber-100 text-primary px-2.5 py-1 rounded-lg font-bold">Edit</button>
+              <button onclick="deleteProduct('${p.id}')" class="text-xs bg-red-100 text-red-700 px-2.5 py-1 rounded-lg font-bold">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function renderAdminCustomers() {
@@ -1342,6 +1375,7 @@
       const price = parseFloat(document.getElementById('prod-price').value);
       const category = document.getElementById('prod-cat').value;
       const img = document.getElementById('prod-img').value;
+      const visible = document.getElementById('prod-visible').checked;
       const desc = document.getElementById('prod-desc').value;
       const variants = document.getElementById('prod-variants').value || 'Standard:+0';
       const ingredients = document.getElementById('prod-ingredients').value || '';
@@ -1350,12 +1384,13 @@
 
       const idx = products.findIndex(p => p.id === id);
       if (idx > -1) {
-        products[idx] = { id, title, price, category, img, desc, variants, ingredients, storage, deliveryInfo };
+        products[idx] = { id, title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo };
       } else {
-        products.push({ id, title, price, category, img, desc, variants, ingredients, storage, deliveryInfo });
+        products.push({ id, title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo });
       }
 
       db.ref('products').set(products);
+      localStorage.setItem('bs_products', JSON.stringify(products));
       resetProductForm();
       renderAdminProducts();
       renderProducts();
@@ -1370,6 +1405,7 @@
       document.getElementById('prod-price').value = p.price;
       document.getElementById('prod-cat').value = p.category;
       document.getElementById('prod-img').value = p.img;
+      document.getElementById('prod-visible').checked = p.visible !== false;
       document.getElementById('prod-desc').value = p.desc;
       document.getElementById('prod-variants').value = p.variants || '';
       document.getElementById('prod-ingredients').value = p.ingredients || '';
@@ -1384,6 +1420,7 @@
       document.getElementById('prod-price').value = '';
       document.getElementById('prod-cat').value = '';
       document.getElementById('prod-img').value = '';
+      document.getElementById('prod-visible').checked = true;
       document.getElementById('prod-desc').value = '';
       document.getElementById('prod-variants').value = '';
       document.getElementById('prod-ingredients').value = '';
@@ -1396,6 +1433,7 @@
       if (!confirm('Are you sure you want to delete this product?')) return;
       products = products.filter(p => p.id !== id);
       db.ref('products').set(products);
+      localStorage.setItem('bs_products', JSON.stringify(products));
       renderAdminProducts();
       renderProducts();
       renderCategories();
@@ -1737,7 +1775,7 @@
     }
 
     function renderCategories() {
-      const cats = ['All', ...new Set(products.map(p => p.category))];
+      const cats = ['All', ...new Set(products.filter(p => p.visible !== false).map(p => p.category))];
       const container = document.getElementById('category-filter-list');
       container.innerHTML = cats.map(c => `
         <button onclick="setCategory('${c}')" class="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition ${selectedCategory === c ? 'bg-primary text-white' : 'bg-white text-amber-900 border border-amber-200 hover:bg-amber-100'}">
