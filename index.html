@@ -145,7 +145,7 @@
     <!-- VIEW 1: STORE FRONT -->
     <section id="view-store" class="space-y-6 sm:space-y-10">
       
-      <!-- Hero Banner -->
+      <!-- Hero Banner with Carousel -->
       <div class="bg-white rounded-3xl border border-amber-200/80 shadow-md p-5 sm:p-10 grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
         <div class="md:col-span-7 space-y-3 sm:space-y-4">
           <span class="inline-block bg-amber-100 text-primary text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full border border-amber-200" id="hero-badge">
@@ -164,9 +164,21 @@
           </div>
         </div>
 
+        <!-- Carousel Container Column -->
         <div class="md:col-span-5 flex justify-center">
-          <div class="w-full h-52 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100">
-            <img id="hero-image-display" src="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80" alt="Hero Featured Product" class="w-full h-full object-cover">
+          <div class="w-full h-52 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100 group">
+            <div id="hero-carousel-slides" class="w-full h-full relative"></div>
+            
+            <!-- Carousel Navigation Arrows -->
+            <button onclick="prevHeroSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs transition opacity-0 group-hover:opacity-100">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button onclick="nextHeroSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs transition opacity-0 group-hover:opacity-100">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <!-- Carousel Dots -->
+            <div id="hero-carousel-dots" class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10"></div>
           </div>
         </div>
       </div>
@@ -295,6 +307,20 @@
             </div>
           </div>
 
+          <!-- Hero Carousel Picture Links Manager -->
+          <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
+            <h4 class="font-bold text-amber-900 text-sm">Hero Product Carousel Pictures</h4>
+            <p class="text-xs text-amber-700">Add picture URLs of the products you want to showcase in the hero carousel slider.</p>
+            
+            <div id="hero-carousel-admin-list" class="space-y-3"></div>
+
+            <div class="pt-2">
+              <button type="button" onclick="addHeroCarouselImageItem()" class="bg-amber-200 text-amber-900 font-bold text-xs px-4 py-2 rounded-xl hover:bg-amber-300 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> Add Carousel Image URL
+              </button>
+            </div>
+          </div>
+
           <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
             <h4 class="font-bold text-amber-900 text-sm">Theme Colors & Fonts</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -347,11 +373,7 @@
           </div>
 
           <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
-            <h4 class="font-bold text-amber-900 text-sm">Hero Content</h4>
-            <div>
-              <label class="block text-xs font-bold text-amber-800 mb-1">Hero Image URL</label>
-              <input type="text" id="cust-hero-img" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
-            </div>
+            <h4 class="font-bold text-amber-900 text-sm">Hero Text Content</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-bold text-amber-800 mb-1">Hero Headline</label>
@@ -774,12 +796,18 @@
       { id: 'soc5', name: 'WhatsApp Us', platform: 'whatsapp', url: 'https://wa.me/27820000000', enabled: true }
     ];
 
+    const defaultHeroImages = [
+      'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=800&q=80'
+    ];
+
     const defaultSettings = {
       title: 'The Butter Smith',
       tagline: 'Artisanal Small-Batch Blends',
       heroTitle: 'Gourmet Compound Butters & Artisanal Relishes',
       heroSub: 'Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.',
-      heroImg: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80',
+      heroImages: defaultHeroImages,
       logoUrl: 'https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png',
       announcement: 'Free Centurion Delivery over R400 | Free National Delivery over R800',
       primaryColor: '#556B2F',
@@ -807,6 +835,8 @@
     let activeModalProduct = null;
     let modalQty = 1;
     let isRegisterMode = false;
+    let currentHeroSlideIndex = 0;
+    let heroCarouselInterval = null;
 
     const socialIconMap = {
       facebook: 'fa-brands fa-facebook',
@@ -823,6 +853,7 @@
       renderCategories();
       updateCartUI();
       initGoogleAutocomplete();
+      startHeroCarousel();
 
       auth.onAuthStateChanged((user) => {
         currentUser = user;
@@ -852,6 +883,7 @@
           settings = snap.val(); 
           localStorage.setItem('bs_settings', JSON.stringify(settings));
           applyStylesAndSettings(); 
+          startHeroCarousel();
         }
       });
 
@@ -904,6 +936,59 @@
         });
         custField.dataset.autocompleteInitialized = 'true';
       }
+    }
+
+    function startHeroCarousel() {
+      if (heroCarouselInterval) clearInterval(heroCarouselInterval);
+      renderHeroCarousel();
+      heroCarouselInterval = setInterval(() => {
+        nextHeroSlide();
+      }, 4000);
+    }
+
+    function renderHeroCarousel() {
+      const slidesContainer = document.getElementById('hero-carousel-slides');
+      const dotsContainer = document.getElementById('hero-carousel-dots');
+      const images = settings.heroImages || defaultHeroImages;
+
+      if (!slidesContainer || !dotsContainer) return;
+
+      if (images.length === 0) {
+        slidesContainer.innerHTML = `<img src="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">`;
+        dotsContainer.innerHTML = '';
+        return;
+      }
+
+      if (currentHeroSlideIndex >= images.length) currentHeroSlideIndex = 0;
+
+      slidesContainer.innerHTML = images.map((imgUrl, idx) => `
+        <div class="absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === currentHeroSlideIndex ? 'opacity-150 z-10' : 'opacity-0 z-0'}">
+          <img src="${imgUrl}" alt="Hero Slide ${idx + 1}" class="w-full h-full object-cover">
+        </div>
+      `).join('');
+
+      dotsContainer.innerHTML = images.map((_, idx) => `
+        <button onclick="goToHeroSlide(${idx})" class="w-2.5 h-2.5 rounded-full transition-all ${idx === currentHeroSlideIndex ? 'bg-white scale-110 shadow' : 'bg-white/50 hover:bg-white/80'}"></button>
+      `).join('');
+    }
+
+    function nextHeroSlide() {
+      const images = settings.heroImages || defaultHeroImages;
+      if (images.length === 0) return;
+      currentHeroSlideIndex = (currentHeroSlideIndex + 1) % images.length;
+      renderHeroCarousel();
+    }
+
+    function prevHeroSlide() {
+      const images = settings.heroImages || defaultHeroImages;
+      if (images.length === 0) return;
+      currentHeroSlideIndex = (currentHeroSlideIndex - 1 + images.length) % images.length;
+      renderHeroCarousel();
+    }
+
+    function goToHeroSlide(idx) {
+      currentHeroSlideIndex = idx;
+      renderHeroCarousel();
     }
 
     function checkMandatoryProfileSetup() {
@@ -983,6 +1068,7 @@
 
       renderFooterSocialLinks();
       renderAdminSocialLinksList();
+      renderAdminHeroCarouselList();
 
       const eMail = settings.contactEmail || defaultSettings.contactEmail;
       const pPhone = settings.contactPhone || defaultSettings.contactPhone;
@@ -1011,10 +1097,6 @@
         logoIcon.classList.remove('hidden');
       }
 
-      if (settings.heroImg) {
-        document.getElementById('hero-image-display').src = settings.heroImg;
-      }
-
       document.getElementById('cust-primary-color').value = settings.primaryColor || '#556B2F';
       document.getElementById('cust-accent-color').value = settings.accentColor || '#6B8E23';
       document.getElementById('cust-footer-bg').value = settings.footerBgColor || '#3b4e1e';
@@ -1028,7 +1110,6 @@
       document.getElementById('cust-heading-font').value = settings.headingFont || "'Playfair Display', serif";
       document.getElementById('cust-body-font').value = settings.bodyFont || "'Inter', sans-serif";
       document.getElementById('cust-logo-url').value = settings.logoUrl || '';
-      document.getElementById('cust-hero-img').value = settings.heroImg || defaultSettings.heroImg;
       document.getElementById('cust-site-title').value = settings.title || defaultSettings.title;
       document.getElementById('cust-site-tagline').value = settings.tagline || defaultSettings.tagline;
       document.getElementById('cust-hero-title').value = settings.heroTitle || defaultSettings.heroTitle;
@@ -1040,6 +1121,38 @@
       document.getElementById('cust-contact-phone').value = pPhone;
       document.getElementById('cust-contact-address').value = aAddress;
       document.getElementById('cust-map-url').value = mUrl;
+    }
+
+    function renderAdminHeroCarouselList() {
+      const container = document.getElementById('hero-carousel-admin-list');
+      const images = settings.heroImages || defaultHeroImages;
+
+      if (!container) return;
+
+      container.innerHTML = images.map((url, index) => `
+        <div class="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-amber-200">
+          <img src="${url}" class="w-10 h-10 object-cover rounded-lg border border-amber-300 shrink-0">
+          <input type="text" value="${url}" onchange="updateHeroCarouselUrl(${index}, this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg font-mono">
+          <button type="button" onclick="deleteHeroCarouselImage(${index})" class="text-xs text-red-600 hover:text-red-800 font-bold px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 shrink-0">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    function addHeroCarouselImageItem() {
+      if (!settings.heroImages) settings.heroImages = [];
+      settings.heroImages.push('https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80');
+      renderAdminHeroCarouselList();
+    }
+
+    function updateHeroCarouselUrl(index, val) {
+      if (!settings.heroImages) settings.heroImages = defaultHeroImages;
+      settings.heroImages[index] = val;
+    }
+
+    function deleteHeroCarouselImage(index) {
+      if (!settings.heroImages) return;
+      settings.heroImages.splice(index, 1);
+      renderAdminHeroCarouselList();
     }
 
     function renderFooterSocialLinks() {
@@ -1155,7 +1268,7 @@
         tagline: document.getElementById('cust-site-tagline').value,
         heroTitle: document.getElementById('cust-hero-title').value,
         heroSub: document.getElementById('cust-hero-sub').value,
-        heroImg: document.getElementById('cust-hero-img').value,
+        heroImages: settings.heroImages || defaultHeroImages,
         logoUrl: document.getElementById('cust-logo-url').value,
         announcement: document.getElementById('cust-announcement').value,
         footerCopyright: document.getElementById('cust-footer-copyright').value,
@@ -1175,7 +1288,8 @@
       db.ref('settings').set(settings);
       localStorage.setItem('bs_settings', JSON.stringify(settings));
       applyStylesAndSettings();
-      alert('Settings, social links, contact details, map, and colors updated successfully!');
+      startHeroCarousel();
+      alert('Settings, hero carousel pictures, contact details, map, and colors updated successfully!');
     }
 
     function renderProducts() {
@@ -1183,7 +1297,7 @@
       const grid = document.getElementById('product-grid');
 
       const filtered = products.filter(p => {
-        if (p.visible === false) return false; // Hide out-of-stock items from public
+        if (p.visible === false) return false;
         const matchesCat = selectedCategory === 'All' || p.category === selectedCategory;
         const matchesQuery = p.title.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
         return matchesCat && matchesQuery;
