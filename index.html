@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Updated Title & Social Preview Meta Tags -->
   <title id="site-title-meta">The Butter Smith Deli - Handcrafted Spreads & Small-Batch Bakes</title>
+  <meta property="og:title" content="The Butter Smith Deli - Handcrafted Spreads & Small-Batch Bakes">
+  <meta property="og:description" content="Handcrafted compound butters, artisanal barks, relishes, and small-batch bakes crafted fresh in Centurion.">
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -71,8 +75,8 @@
           <img id="header-logo-img" src="https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png" alt="Logo" class="w-full h-full object-cover">
         </div>
         <div class="leading-tight">
-          <span class="brand-font text-lg sm:text-2xl font-bold tracking-tight text-amber-950 block" id="header-brand-name">The Butter Smith</span>
-          <span class="text-[9px] sm:text-xs text-amber-700 font-semibold tracking-wider uppercase block" id="header-tagline">Artisanal Small-Batch Blends</span>
+          <span class="brand-font text-lg sm:text-2xl font-bold tracking-tight text-amber-950 block" id="header-brand-name">The Butter Smith Deli</span>
+          <span class="text-[9px] sm:text-xs text-amber-700 font-semibold tracking-wider uppercase block" id="header-tagline">Handcrafted Spreads & Small-Batch Bakes</span>
         </div>
       </div>
 
@@ -152,10 +156,10 @@
             Crafted Fresh in Centurion
           </span>
           <h1 class="brand-font text-2xl sm:text-5xl font-extrabold text-amber-950 leading-tight" id="hero-headline">
-            Gourmet Compound Butters & Artisanal Relishes
+            Handcrafted Spreads & Small-Batch Bakes
           </h1>
           <p class="text-amber-800 text-xs sm:text-base leading-relaxed" id="hero-subheadline">
-            Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.
+            Elevate your meals and snack moments with our handcrafted compound butters, barks, relishes, and small-batch bakes.
           </p>
           <div class="pt-2 flex flex-wrap items-center gap-4">
             <a href="#product-grid" class="w-full sm:w-auto text-center bg-primary text-white font-bold px-6 py-3 rounded-xl shadow-md hover:opacity-90 transition text-sm flex items-center justify-center">
@@ -652,7 +656,7 @@
       </div>
 
       <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
-        <p>At <strong>The Butter Smith</strong>, we respect your privacy and are committed to protecting your personal information in full compliance with the <strong>Protection of Personal Information Act (Act 4 of 2013) ("POPIA")</strong> of South Africa.</p>
+        <p>At <strong>The Butter Smith Deli</strong>, we respect your privacy and are committed to protecting your personal information in full compliance with the <strong>Protection of Personal Information Act (Act 4 of 2013) ("POPIA")</strong> of South Africa.</p>
 
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h4 class="font-bold text-primary flex items-center"><i class="fa-solid fa-shield-halved mr-2"></i> 1. Information We Collect</h4>
@@ -751,7 +755,7 @@
       <!-- Dynamic Social Icons Footer Bar -->
       <div id="footer-social-links-bar" class="flex flex-wrap justify-center items-center gap-2.5 py-1"></div>
 
-      <p>&copy; <span id="footer-year">2026</span> <span id="footer-brand">The Butter Smith</span>. <span id="footer-copyright-text">All rights reserved.</span></p>
+      <p>&copy; <span id="footer-year">2026</span> <span id="footer-brand">The Butter Smith Deli</span>. <span id="footer-copyright-text">All rights reserved.</span></p>
       <p>For Orders & Inquiries please contact us <button onclick="openContactModal()" class="font-bold underline uppercase tracking-wider hover:opacity-80 transition cursor-pointer">HERE</button></p>
       <div class="pt-1">
         <button onclick="openPrivacyModal()" class="underline hover:opacity-80 text-[11px] font-semibold transition">
@@ -803,10 +807,10 @@
     ];
 
     const defaultSettings = {
-      title: 'The Butter Smith',
-      tagline: 'Artisanal Small-Batch Blends',
-      heroTitle: 'Gourmet Compound Butters & Artisanal Relishes',
-      heroSub: 'Elevate your steaks, fresh breads, and roasted veggies with our garlic & herb, sweet honey, and smoked chilli butter blends.',
+      title: 'The Butter Smith Deli',
+      tagline: 'Handcrafted Spreads & Small-Batch Bakes',
+      heroTitle: 'Handcrafted Spreads & Small-Batch Bakes',
+      heroSub: 'Elevate your meals and snack moments with our handcrafted compound butters, barks, relishes, and small-batch bakes.',
       heroImages: defaultHeroImages,
       logoUrl: 'https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png',
       announcement: 'Free Centurion Delivery over R400 | Free National Delivery over R800',
@@ -1059,7 +1063,7 @@
 
       document.getElementById('header-brand-name').textContent = settings.title || defaultSettings.title;
       document.getElementById('footer-brand').textContent = settings.title || defaultSettings.title;
-      document.getElementById('site-title-meta').textContent = settings.title || defaultSettings.title;
+      document.getElementById('site-title-meta').textContent = (settings.title || defaultSettings.title) + " - Handcrafted Spreads & Small-Batch Bakes";
       document.getElementById('header-tagline').textContent = settings.tagline || defaultSettings.tagline;
       document.getElementById('hero-headline').textContent = settings.heroTitle || defaultSettings.heroTitle;
       document.getElementById('hero-subheadline').textContent = settings.heroSub || defaultSettings.heroSub;
