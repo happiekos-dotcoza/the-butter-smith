@@ -90,8 +90,6 @@
 
       <!-- Header Controls -->
       <div class="flex items-center space-x-2 sm:space-x-3">
-        
-        <!-- Desktop Auth Status -->
         <div id="desktop-auth-container" class="hidden md:block">
           <button onclick="openAuthModal()" id="desktop-login-btn" class="text-xs sm:text-sm font-semibold text-amber-900 hover:text-primary px-3 py-2">
             <i class="fa-regular fa-user mr-1"></i> Log In
@@ -102,17 +100,14 @@
           </div>
         </div>
 
-        <!-- Cart Trigger Button -->
         <button onclick="toggleCartDrawer()" class="relative p-2 sm:p-2.5 bg-amber-100 text-primary rounded-full hover:bg-amber-200 transition">
           <i class="fa-solid fa-basket-shopping text-base sm:text-lg"></i>
           <span id="cart-count" class="absolute -top-1 -right-1 bg-accent text-white text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center">0</span>
         </button>
 
-        <!-- Mobile Hamburger Button -->
         <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-amber-950 hover:text-primary focus:outline-none">
           <i class="fa-solid fa-bars text-xl"></i>
         </button>
-
       </div>
     </div>
 
@@ -163,7 +158,6 @@
           </div>
         </div>
 
-        <!-- Carousel Container Column -->
         <div class="md:col-span-5 flex justify-center">
           <div class="w-full h-52 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100 group">
             <div id="hero-carousel-slides" class="w-full h-full relative"></div>
@@ -180,7 +174,6 @@
         </div>
       </div>
 
-      <!-- Categories & Search Bar -->
       <div class="flex flex-col md:flex-row gap-4 justify-between items-center border-b border-amber-200/80 pb-6">
         <div class="flex flex-wrap gap-2 w-full md:w-auto" id="category-filter-list"></div>
         <div class="relative w-full md:w-72">
@@ -189,7 +182,6 @@
         </div>
       </div>
 
-      <!-- Product Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" id="product-grid"></div>
     </section>
 
@@ -224,7 +216,6 @@
         <span class="bg-amber-100 text-primary text-xs font-bold px-3 py-1 rounded-full border border-amber-300">Logged in as Admin</span>
       </div>
 
-      <!-- Admin Navigation Tabs -->
       <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto pb-1">
         <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Product List</button>
         <button onclick="switchAdminTab('analytics')" id="tab-btn-analytics" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Analytics & Visits</button>
@@ -239,6 +230,7 @@
           <h3 class="font-bold text-primary" id="product-form-title">Add New Product</h3>
           <form onsubmit="handleProductSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input type="hidden" id="edit-prod-id">
+            <input type="hidden" id="edit-prod-created-at">
             <input type="text" id="prod-title" placeholder="Product Name (e.g., Garlic & Herb Butter)" class="p-2.5 text-sm border border-amber-200 rounded-xl" required>
             <input type="number" step="0.01" id="prod-price" placeholder="Base Price in ZAR (e.g., 65.00)" class="p-2.5 text-sm border border-amber-200 rounded-xl" required>
             <input type="text" id="prod-cat" placeholder="Category (e.g., Compound Butter)" class="p-2.5 text-sm border border-amber-200 rounded-xl" required>
@@ -299,7 +291,6 @@
 
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
           <h3 class="font-bold text-primary text-base">Most Frequently Viewed Products (Popularity & Interest)</h3>
-          <p class="text-xs text-amber-700">Compare what items visitors look at most frequently against what they add to cart and purchase.</p>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm text-amber-950 min-w-[400px]">
               <thead class="bg-amber-100/60 text-primary font-bold border-b border-amber-200">
@@ -819,10 +810,10 @@
     const sanitizeKey = (email) => email ? email.replace(/[^a-zA-Z0-9]/g, '_') : 'guest';
 
     const defaultProducts = [
-      { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, visible: true, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery or free market collection in Centurion.' },
-      { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, visible: true, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Smoked Paprika, Cayenne Chilli, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C.', deliveryInfo: 'Fresh insulated delivery or free market collection in Centurion.' },
-      { id: '3', title: 'Sweet Honey & Cinnamon Butter', category: 'Compound Butter', price: 60, visible: true, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Raw honey and cinnamon whipped for hot pancakes and fresh breads.', variants: '100g Tub:+0, 250g Tub:+30, 500g Tub:+70', ingredients: 'Pure Cultured Butter, Raw Local Honey, Ground Cinnamon. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C.', deliveryInfo: 'Fresh insulated delivery or free market collection in Centurion.' },
-      { id: '4', title: 'Dried Fruit Relish', category: 'Relish', price: 55, visible: true, img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80', desc: 'Slow-cooked artisanal dried fruit chutney, pairs perfectly with cheeses.', variants: '250g Jar:+0, 500g Jar:+40', ingredients: 'Dried Apricots, Peaches, Raisins, Apple Cider Vinegar, Brown Sugar, Spices.', storage: 'Store in a cool, dry place. Refrigerate after opening.', deliveryInfo: 'Fresh delivery or free market collection in Centurion.' }
+      { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, visible: true, createdAt: Date.now() - 2 * 86400000, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery or free market collection in Centurion.' },
+      { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, visible: true, createdAt: Date.now() - 10 * 86400000, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Smoked Paprika, Cayenne Chilli, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C.', deliveryInfo: 'Fresh insulated delivery or free market collection in Centurion.' },
+      { id: '3', title: 'Sweet Honey & Cinnamon Butter', category: 'Compound Butter', price: 60, visible: true, createdAt: Date.now() - 3 * 86400000, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Raw honey and cinnamon whipped for hot pancakes and fresh breads.', variants: '100g Tub:+0, 250g Tub:+30, 500g Tub:+70', ingredients: 'Pure Cultured Butter, Raw Local Honey, Ground Cinnamon. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C.', deliveryInfo: 'Fresh insulated delivery or free market collection in Centurion.' },
+      { id: '4', title: 'Dried Fruit Relish', category: 'Relish', price: 55, visible: true, createdAt: Date.now() - 20 * 86400000, img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80', desc: 'Slow-cooked artisanal dried fruit chutney, pairs perfectly with cheeses.', variants: '250g Jar:+0, 500g Jar:+40', ingredients: 'Dried Apricots, Peaches, Raisins, Apple Cider Vinegar, Brown Sugar, Spices.', storage: 'Store in a cool, dry place. Refrigerate after opening.', deliveryInfo: 'Fresh delivery or free market collection in Centurion.' }
     ];
 
     const defaultSocials = [
@@ -871,7 +862,7 @@
     let activeModalProduct = null;
     let modalQty = 1;
     let isRegisterMode = false;
-    let currentFulfillmentMode = 'delivery'; // 'delivery' or 'collection'
+    let currentFulfillmentMode = 'delivery';
     let currentHeroSlideIndex = 0;
     let heroCarouselInterval = null;
 
@@ -939,6 +930,7 @@
 
       db.ref('analytics/productViews').on('value', (snap) => {
         if (snap.exists()) productViews = snap.val();
+        renderProducts(); // Re-render to update Best Seller badges dynamically
         if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminAnalytics();
       });
 
@@ -957,6 +949,7 @@
         } else {
           orders = [];
         }
+        renderProducts();
         if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminOrders();
       });
     });
@@ -975,14 +968,16 @@
 
     function logProductView(productId, productTitle) {
       db.ref('analytics/productViews/' + productId).transaction((curr) => {
-        if (!curr) return { title: productTitle, count: 1 };
-        return { title: productTitle, count: (curr.count || 0) + 1 };
+        if (!curr) return { title: productTitle, count: 1, firstBestSellerTime: Date.now() };
+        return { 
+          title: productTitle, 
+          count: (curr.count || 0) + 1, 
+          firstBestSellerTime: curr.firstBestSellerTime || Date.now() 
+        };
       });
     }
 
-    function closeWelcomeModal() {
-      document.getElementById('welcome-discount-modal').classList.add('hidden');
-    }
+    function closeWelcomeModal() { document.getElementById('welcome-discount-modal').classList.add('hidden'); }
 
     function initGoogleAutocomplete() {
       if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.places === 'undefined') return;
@@ -1044,24 +1039,16 @@
       currentHeroSlideIndex = (currentHeroSlideIndex + 1) % images.length;
       renderHeroCarousel();
     }
-
     function prevHeroSlide() {
       const images = settings.heroImages || defaultHeroImages;
       if (images.length === 0) return;
       currentHeroSlideIndex = (currentHeroSlideIndex - 1 + images.length) % images.length;
       renderHeroCarousel();
     }
-
-    function goToHeroSlide(idx) {
-      currentHeroSlideIndex = idx;
-      renderHeroCarousel();
-    }
+    function goToHeroSlide(idx) { currentHeroSlideIndex = idx; renderHeroCarousel(); }
 
     function checkMandatoryProfileSetup() {
-      if (!currentUser || currentUser.email === 'happiekos@gmail.com') {
-        closeProfileSetupModal();
-        return;
-      }
+      if (!currentUser || currentUser.email === 'happiekos@gmail.com') { closeProfileSetupModal(); return; }
       const userKey = sanitizeKey(currentUser.email);
       db.ref('profiles/' + userKey).once('value', (snap) => {
         const prof = snap.val();
@@ -1325,27 +1312,67 @@
         return;
       }
 
-      grid.innerHTML = filtered.map(p => `
-        <div onclick="openProductModal('${p.id}')" class="bg-white rounded-2xl border border-amber-200/80 overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
-          <div class="relative overflow-hidden">
-            <img src="${p.img}" alt="${p.title}" class="w-full h-44 sm:h-48 object-cover group-hover:scale-105 transition duration-300">
-            <span class="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-xs">View Details</span>
-          </div>
-          <div class="p-4 sm:p-5 flex-grow flex flex-col justify-between space-y-3">
-            <div>
-              <span class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider">${p.category}</span>
-              <h3 class="font-bold text-base sm:text-lg text-amber-950 mt-0.5 group-hover:text-primary transition">${p.title}</h3>
-              <p class="text-amber-800/80 text-xs leading-relaxed mt-1 line-clamp-2">${p.desc}</p>
+      // Determine top viewed product for "Best Seller" badge calculation
+      let topProductId = null;
+      let maxViews = -1;
+      Object.keys(productViews).forEach(id => {
+        if (productViews[id].count > maxViews) {
+          maxViews = productViews[id].count;
+          topProductId = id;
+        }
+      });
+
+      const now = Date.now();
+      const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+
+      grid.innerHTML = filtered.map(p => {
+        const isVisible = p.visible !== false;
+        const createdAt = p.createdAt || now;
+        const isNew = (now - createdAt) < oneWeekMs;
+
+        let badgeHtml = '';
+        if (isNew) {
+          badgeHtml = `<span class="absolute top-2 left-2 bg-accent text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-sparkles mr-1"></i> New</span>`;
+        }
+
+        if (topProductId && p.id === topProductId && maxViews > 0) {
+          const firstBestTime = productViews[topProductId].firstBestSellerTime || now;
+          const diffDays = Math.floor((now - firstBestTime) / (1000 * 60 * 60 * 24));
+          
+          let bestSellerText = 'Trending / Best Seller';
+          if (diffDays >= 7) {
+            const weeks = Math.floor(diffDays / 7);
+            bestSellerText = weeks === 1 ? 'Best Seller (1 Week)' : `Best Seller (${weeks} Weeks)`;
+          } else if (diffDays > 0) {
+            bestSellerText = `Best Seller (${diffDays} Days)`;
+          }
+
+          badgeHtml += `<span class="absolute top-2 ${isNew ? 'left-16' : 'left-2'} bg-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-1"></i> ${bestSellerText}</span>`;
+        }
+
+        return `
+          <div onclick="openProductModal('${p.id}')" class="bg-white rounded-2xl border border-amber-200/80 overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+            <div class="relative overflow-hidden">
+              <img src="${p.img}" alt="${p.title}" class="w-full h-44 sm:h-48 object-cover group-hover:scale-105 transition duration-300">
+              ${badgeHtml}
+              <span class="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-xs">View Details</span>
             </div>
-            <div class="flex justify-between items-center pt-2 border-t border-amber-100">
-              <span class="text-lg sm:text-xl font-extrabold text-amber-950">R${p.price.toFixed(2)}</span>
-              <button onclick="event.stopPropagation(); openProductModal('${p.id}')" class="bg-primary text-white text-[11px] sm:text-xs font-bold px-3.5 py-2 rounded-xl hover:opacity-90 transition flex items-center">
-                <i class="fa-solid fa-eye mr-1"></i> Options
-              </button>
+            <div class="p-4 sm:p-5 flex-grow flex flex-col justify-between space-y-3">
+              <div>
+                <span class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider">${p.category}</span>
+                <h3 class="font-bold text-base sm:text-lg text-amber-950 mt-0.5 group-hover:text-primary transition">${p.title}</h3>
+                <p class="text-amber-800/80 text-xs leading-relaxed mt-1 line-clamp-2">${p.desc}</p>
+              </div>
+              <div class="flex justify-between items-center pt-2 border-t border-amber-100">
+                <span class="text-lg sm:text-xl font-extrabold text-amber-950">R${p.price.toFixed(2)}</span>
+                <button onclick="event.stopPropagation(); openProductModal('${p.id}')" class="bg-primary text-white text-[11px] sm:text-xs font-bold px-3.5 py-2 rounded-xl hover:opacity-90 transition flex items-center">
+                  <i class="fa-solid fa-eye mr-1"></i> Options
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function openProductModal(id) {
@@ -1354,7 +1381,6 @@
       activeModalProduct = p;
       modalQty = 1;
 
-      // Log product view analytics
       logProductView(p.id, p.title);
 
       document.getElementById('modal-prod-img').src = p.img;
@@ -1482,13 +1508,11 @@
 
       let totalViewsSum = 0;
       const analyticsTableBody = document.getElementById('admin-analytics-table-body');
-      
       const pKeys = Object.keys(productViews);
       if (pKeys.length === 0) {
         analyticsTableBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-amber-600 italic">No product views recorded yet.</td></tr>`;
         document.getElementById('stat-total-views').textContent = 0;
       } else {
-        // Sort by view count descending
         const sortedViews = pKeys.map(k => ({ id: k, ...productViews[k] })).sort((a, b) => b.count - a.count);
         totalViewsSum = sortedViews.reduce((sum, item) => sum + item.count, 0);
         document.getElementById('stat-total-views').textContent = totalViewsSum;
@@ -1536,9 +1560,9 @@
               <span class="text-[10px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300">Customer Account</span>
             </div>
             <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
-              <p><strong>Full Name:</strong> ${prof.name || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
-              <p><strong>Cell Phone:</strong> ${prof.phone || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
-              <p><strong>Delivery Address:</strong> ${prof.address || '<span class="text-red-500 italic">&lt;No saved address&gt;</span>'}</p>
+              <p><strong>Full Name:</strong> ${prof.name || 'N/A'}</p>
+              <p><strong>Cell Phone:</strong> ${prof.phone || 'N/A'}</p>
+              <p><strong>Delivery Address:</strong> ${prof.address || 'N/A'}</p>
             </div>
           </div>
         `;
@@ -1548,6 +1572,7 @@
     function handleProductSubmit(e) {
       e.preventDefault();
       const id = document.getElementById('edit-prod-id').value || Date.now().toString();
+      const createdAt = parseInt(document.getElementById('edit-prod-created-at').value) || Date.now();
       const title = document.getElementById('prod-title').value;
       const price = parseFloat(document.getElementById('prod-price').value);
       const category = document.getElementById('prod-cat').value;
@@ -1560,8 +1585,11 @@
       const deliveryInfo = document.getElementById('prod-delivery-info').value || '';
 
       const idx = products.findIndex(p => p.id === id);
-      if (idx > -1) products[idx] = { id, title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo };
-      else products.push({ id, title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo });
+      if (idx > -1) {
+        products[idx] = { id, createdAt, title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo };
+      } else {
+        products.push({ id, createdAt: Date.now(), title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo });
+      }
 
       db.ref('products').set(products);
       localStorage.setItem('bs_products', JSON.stringify(products));
@@ -1575,6 +1603,7 @@
       const p = products.find(item => item.id === id);
       if (!p) return;
       document.getElementById('edit-prod-id').value = p.id;
+      document.getElementById('edit-prod-created-at').value = p.createdAt || Date.now();
       document.getElementById('prod-title').value = p.title;
       document.getElementById('prod-price').value = p.price;
       document.getElementById('prod-cat').value = p.category;
@@ -1590,6 +1619,7 @@
 
     function resetProductForm() {
       document.getElementById('edit-prod-id').value = '';
+      document.getElementById('edit-prod-created-at').value = '';
       document.getElementById('prod-title').value = '';
       document.getElementById('prod-price').value = '';
       document.getElementById('prod-cat').value = '';
@@ -1803,8 +1833,8 @@
         };
 
         emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
-          .then(() => console.log('Notification email sent successfully!'))
-          .catch((err) => console.log('Email notification failed:', err));
+          .then(() => console.log('Notification email sent!'))
+          .catch((err) => console.log('Email failed:', err));
 
         const yocoPaymentLink = 'https://pay.yoco.com/thebuttersmithdeli';
 
