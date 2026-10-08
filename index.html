@@ -54,6 +54,26 @@
       color: var(--footer-text-color) !important;
     }
     .pac-container { z-index: 99999 !important; font-family: var(--body-font); }
+
+    /* Custom Red Circular Badge for Best Seller */
+    .badge-bestseller-circle {
+      width: 68px;
+      height: 68px;
+      border-radius: 9999px;
+      background-color: #dc2626;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25);
+      font-size: 8.5px;
+      font-weight: 800;
+      line-height: 1.1;
+      text-transform: uppercase;
+      padding: 4px;
+    }
   </style>
 </head>
 <body class="bg-amber-50/30 text-amber-950 min-h-screen flex flex-col">
@@ -1332,22 +1352,22 @@
 
         let badgeHtml = '';
         if (isNew) {
-          badgeHtml = `<span class="absolute top-2 left-2 bg-accent text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-sparkles mr-1"></i> New</span>`;
+          badgeHtml = `<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow uppercase tracking-wider z-10"><i class="fa-solid fa-sparkles mr-1"></i> New</span>`;
         }
 
         if (topProductId && p.id === topProductId && maxViews > 0) {
           const firstBestTime = productViews[topProductId].firstBestSellerTime || now;
           const diffDays = Math.floor((now - firstBestTime) / (1000 * 60 * 60 * 24));
           
-          let bestSellerText = 'Trending / Best Seller';
+          let bestSellerText = 'Best Seller';
           if (diffDays >= 7) {
             const weeks = Math.floor(diffDays / 7);
-            bestSellerText = weeks === 1 ? 'Best Seller (1 Week)' : `Best Seller (${weeks} Weeks)`;
+            bestSellerText = weeks === 1 ? 'Best Seller 1 Wk' : `Best Seller ${weeks} Wks`;
           } else if (diffDays > 0) {
-            bestSellerText = `Best Seller (${diffDays} Days)`;
+            bestSellerText = `Best Seller ${diffDays} Days`;
           }
 
-          badgeHtml += `<span class="absolute top-2 ${isNew ? 'left-16' : 'left-2'} bg-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-1"></i> ${bestSellerText}</span>`;
+          badgeHtml += `<div class="absolute top-2 right-2 badge-bestseller-circle z-10"><span><i class="fa-solid fa-fire text-xs"></i></span><span>${bestSellerText}</span></div>`;
         }
 
         return `
@@ -1355,7 +1375,7 @@
             <div class="relative overflow-hidden">
               <img src="${p.img}" alt="${p.title}" class="w-full h-44 sm:h-48 object-cover group-hover:scale-105 transition duration-300">
               ${badgeHtml}
-              <span class="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-xs">View Details</span>
+              <span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-xs">View Details</span>
             </div>
             <div class="p-4 sm:p-5 flex-grow flex flex-col justify-between space-y-3">
               <div>
