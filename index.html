@@ -721,7 +721,7 @@
 
   <!-- POPIA PRIVACY POLICY MODAL -->
   <div id="privacy-policy-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
-    <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto text-amber-950 space-y-4">
+    <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto text-amber-950 space-y-5">
       <button onclick="closePrivacyModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-base sm:text-lg z-10">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -732,7 +732,58 @@
       </div>
 
       <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
-        <p>At <strong>The Butter Smith Deli</strong>, we respect your privacy and are committed to protecting your personal information in full compliance with POPIA.</p>
+        <p class="italic font-medium">At <strong>The Butter Smith Deli</strong>, we respect your privacy and are committed to protecting your personal information in accordance with the Protection of Personal Information Act (POPIA) of South Africa.</p>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">1. INFORMATION WE COLLECT</h3>
+          <p>We collect personal information necessary to process orders, fulfill courier deliveries, and provide customer support. This includes:</p>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li><strong>Personal Identifier:</strong> Full Name, Email Address, and Contact Cell Phone Number.</li>
+            <li><strong>Delivery Details:</strong> Physical Delivery Address (verified via Google Maps Places API).</li>
+            <li><strong>Transaction & Activity Data:</strong> Order history, cart selections, and live site interaction analytics (such as approximate IP-based location and browser device information for security and site usage analysis).</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">2. PURPOSE OF DATA PROCESSING</h3>
+          <p>Your personal information is collected and processed exclusively for the following lawful business operations:</p>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li>Processing, fulfilling, and dispatching your purchases.</li>
+            <li>Communicating order confirmations, invoice summaries, and delivery tracking updates via automated system email notifications (EmailJS).</li>
+            <li>Facilitating secure online payments via authorized third-party payment providers (Yoco).</li>
+            <li>Improving store navigation, inventory planning, and user experience through anonymized website presence analytics.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">3. THIRD-PARTY DATA SHARING</h3>
+          <p>We do not sell, rent, or trade your personal information to third parties. Data is shared strictly with trusted service infrastructure required to operate our business:</p>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li><strong>Courier Partners:</strong> Name, delivery address, and phone number provided to shipping couriers (e.g., PUDO, The Courier Guy) solely to complete door-to-door transit.</li>
+            <li><strong>Payment Gateways:</strong> Payment transactions are handled directly through Yoco's secure platform. We do not store or process complete credit card details on our servers.</li>
+            <li><strong>Cloud Databases & Notification Tools:</strong> Encrypted store database hosting provided by Google Firebase and transactional email dispatch handled via EmailJS.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">4. DATA SECURITY & PROTECTION</h3>
+          <p>We enforce technical and operational measures to protect your personal data against loss, unauthorized access, or disclosure. Account details are secured via standard authentication protocols provided by Google Firebase Cloud Infrastructure.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">5. YOUR POPIA RIGHTS</h3>
+          <p>Under the POPIA framework, you retain the following rights regarding your personal information:</p>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li><strong>Access & Review:</strong> View your saved contact and shipping address anytime under the "My Account" section.</li>
+            <li><strong>Correction:</strong> Update or modify your profile and address details directly through your account dashboard.</li>
+            <li><strong>Deletion & Erasure:</strong> Request the deletion or removal of your registered profile and personal data from our active databases by contacting our support team.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-1">
+          <h3 class="font-bold text-primary text-sm sm:text-base">6. PRIVACY CONTACT & ENQUIRIES</h3>
+          <p>For any POPIA-related questions, access requests, or privacy concerns, please contact our Information Officer at <a href="mailto:happiekos@gmail.com" class="underline font-bold text-primary">happiekos@gmail.com</a>.</p>
+        </div>
       </div>
 
       <div class="pt-3 border-t border-amber-200 flex justify-end">
