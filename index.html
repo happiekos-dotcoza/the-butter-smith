@@ -238,7 +238,7 @@
 
       <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto pb-1">
         <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Product List</button>
-        <button onclick="switchAdminTab('analytics')" id="tab-btn-analytics" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Analytics & Visits</button>
+        <button onclick="switchAdminTab('analytics')" id="tab-btn-analytics" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Analytics & Live Visitors</button>
         <button onclick="switchAdminTab('customers')" id="tab-btn-customers" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Customer Accounts</button>
         <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer</button>
         <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
@@ -292,9 +292,15 @@
         </div>
       </div>
 
-      <!-- Admin Tab 2: Analytics & Visits -->
+      <!-- Admin Tab 2: Analytics & Live Visitors -->
       <div id="admin-tab-analytics" class="hidden space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-xs space-y-1">
+            <span class="text-xs font-bold text-amber-700 uppercase">Live Active Now</span>
+            <p class="text-3xl font-extrabold text-green-600 flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></span> <span id="stat-live-count">0</span>
+            </p>
+          </div>
           <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-xs space-y-1">
             <span class="text-xs font-bold text-amber-700 uppercase">Total Site Visits</span>
             <p class="text-3xl font-extrabold text-primary" id="stat-total-visits">0</p>
@@ -306,6 +312,26 @@
           <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-xs space-y-1">
             <span class="text-xs font-bold text-amber-700 uppercase">Registered Customers</span>
             <p class="text-3xl font-extrabold text-amber-950" id="stat-total-customers">0</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="font-bold text-primary text-base">🟢 Live Visitors Online Right Now (Location, Software & Activity)</h3>
+            <span class="text-xs text-amber-600 italic">Updates live via Firebase presence</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-amber-950 min-w-[600px]">
+              <thead class="bg-amber-100/60 text-primary font-bold border-b border-amber-200">
+                <tr>
+                  <th class="p-3">Visitor / Email</th>
+                  <th class="p-3">Location (City, Country)</th>
+                  <th class="p-3">Device & Browser Software</th>
+                  <th class="p-3">Current Action / Product Viewed</th>
+                </tr>
+              </thead>
+              <tbody id="admin-live-visitors-tbody"></tbody>
+            </table>
           </div>
         </div>
 
@@ -326,7 +352,7 @@
         </div>
 
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
-          <h3 class="font-bold text-primary text-base">Recent Site Visitor Log</h3>
+          <h3 class="font-bold text-primary text-base">Historical Visitor Log</h3>
           <div id="admin-visitor-log-list" class="space-y-2 text-xs text-amber-800 max-h-60 overflow-y-auto"></div>
         </div>
       </div>
@@ -572,8 +598,8 @@
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-8 items-start">
         <div class="md:col-span-6 space-y-4">
-          <div class="w-full h-56 sm:h-96 rounded-2xl overflow-hidden shadow-md border border-amber-200 bg-white flex items-center justify-center p-2">
-            <img id="modal-prod-img" src="" alt="Product Photo" class="w-full h-full object-contain">
+          <div class="w-full h-56 sm:h-96 rounded-2xl overflow-hidden shadow-md border border-amber-200 bg-white flex items-center justify-center">
+            <img id="modal-prod-img" src="" alt="Product Photo" class="w-full h-full object-cover">
           </div>
         </div>
 
@@ -875,6 +901,7 @@
     let cart = JSON.parse(localStorage.getItem('bs_cart')) || [];
     let orders = [];
     let visitorLogs = [];
+    let liveVisitors = {};
     let productViews = {};
     let currentUser = null;
     let customerProfiles = {};
@@ -885,6 +912,8 @@
     let currentFulfillmentMode = 'delivery';
     let currentHeroSlideIndex = 0;
     let heroCarouselInterval = null;
+    let visitorSessionId = 'SESS-' + Math.random().toString(36).substring(2, 9);
+    let visitorLocationStr = 'Resolving Location...';
 
     const socialIconMap = {
       facebook: 'fa-brands fa-facebook',
@@ -902,7 +931,7 @@
       updateCartUI();
       initGoogleAutocomplete();
       startHeroCarousel();
-      logSiteVisit();
+      resolveVisitorLocationAndLog();
 
       if (!localStorage.getItem('bs_welcome_shown')) {
         setTimeout(() => {
@@ -917,8 +946,10 @@
         if (user) {
           loadCustomerProfile();
           checkMandatoryProfileSetup();
+          updateLivePresence('Browsing Store (Logged In)');
         } else {
           closeProfileSetupModal();
+          updateLivePresence('Browsing Store (Guest)');
         }
       });
 
@@ -950,7 +981,7 @@
 
       db.ref('analytics/productViews').on('value', (snap) => {
         if (snap.exists()) productViews = snap.val();
-        renderProducts(); // Re-render to update Best Seller badges dynamically
+        renderProducts();
         if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminAnalytics();
       });
 
@@ -958,6 +989,15 @@
         if (snap.exists()) {
           const raw = snap.val();
           visitorLogs = Object.keys(raw).map(k => raw[k]).reverse();
+        }
+        if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminAnalytics();
+      });
+
+      db.ref('analytics/liveVisitors').on('value', (snap) => {
+        if (snap.exists()) {
+          liveVisitors = snap.val();
+        } else {
+          liveVisitors = {};
         }
         if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminAnalytics();
       });
@@ -972,18 +1012,83 @@
         renderProducts();
         if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminOrders();
       });
+
+      // Heartbeat every 20s to keep live presence active
+      setInterval(() => {
+        updateLivePresence(window.currentActionDesc || 'Browsing Store');
+      }, 20000);
+
+      // Clean up live presence on window close
+      window.addEventListener('beforeunload', () => {
+        db.ref('analytics/liveVisitors/' + visitorSessionId).remove();
+      });
     });
 
-    function logSiteVisit() {
+    function getSimpleBrowserAndOS() {
+      const ua = navigator.userAgent;
+      let browser = 'Unknown Browser';
+      let os = 'Unknown OS';
+
+      if (ua.includes('Firefox')) browser = 'Mozilla Firefox';
+      else if (ua.includes('SamsungBrowser')) browser = 'Samsung Internet';
+      else if (ua.includes('Opera') || ua.includes('OPR')) browser = 'Opera';
+      else if (ua.includes('Edge')) browser = 'Microsoft Edge';
+      else if (ua.includes('Chrome')) browser = 'Google Chrome';
+      else if (ua.includes('Safari')) browser = 'Apple Safari';
+
+      if (ua.includes('Win')) os = 'Windows PC';
+      else if (ua.includes('Mac')) os = 'macOS / iOS';
+      else if (ua.includes('Android')) os = 'Android Mobile';
+      else if (ua.includes('like Mac') || ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS Device';
+      else if (ua.includes('Linux')) os = 'Linux';
+
+      return `${os} (${browser})`;
+    }
+
+    function resolveVisitorLocationAndLog() {
+      fetch('https://ipapi.co/json/')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.city && data.country_name) {
+            visitorLocationStr = `${data.city}, ${data.country_name}`;
+          } else {
+            visitorLocationStr = 'South Africa (Local)';
+          }
+          logSiteVisitWithLocation();
+        })
+        .catch(() => {
+          visitorLocationStr = 'Centurion, South Africa';
+          logSiteVisitWithLocation();
+        });
+    }
+
+    function logSiteVisitWithLocation() {
       const visitId = 'VIS-' + Date.now();
+      const softwareInfo = getSimpleBrowserAndOS();
       const visitData = {
         id: visitId,
         time: new Date().toLocaleString(),
-        userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile User' : 'Desktop User',
+        location: visitorLocationStr,
+        software: softwareInfo,
         userEmail: currentUser ? currentUser.email : 'Guest Visitor'
       };
       db.ref('analytics/visitors/' + visitId).set(visitData);
       db.ref('analytics/totalVisits').transaction((current) => (current || 0) + 1);
+      updateLivePresence('Browsing Store Front');
+    }
+
+    function updateLivePresence(actionDesc) {
+      window.currentActionDesc = actionDesc;
+      const softwareInfo = getSimpleBrowserAndOS();
+      const presenceObj = {
+        sessionId: visitorSessionId,
+        email: currentUser ? currentUser.email : 'Guest Visitor',
+        location: visitorLocationStr,
+        software: softwareInfo,
+        action: actionDesc,
+        lastActive: Date.now()
+      };
+      db.ref('analytics/liveVisitors/' + visitorSessionId).set(presenceObj);
     }
 
     function logProductView(productId, productTitle) {
@@ -995,6 +1100,7 @@
           firstBestSellerTime: curr.firstBestSellerTime || Date.now() 
         };
       });
+      updateLivePresence(`Viewing product: ${productTitle}`);
     }
 
     function closeWelcomeModal() { document.getElementById('welcome-discount-modal').classList.add('hidden'); }
@@ -1332,7 +1438,6 @@
         return;
       }
 
-      // Determine top viewed product for "Best Seller" badge calculation
       let topProductId = null;
       let maxViews = -1;
       Object.keys(productViews).forEach(id => {
@@ -1372,8 +1477,8 @@
 
         return `
           <div onclick="openProductModal('${p.id}')" class="bg-white rounded-2xl border border-amber-200/80 overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
-            <div class="relative overflow-hidden bg-amber-50/30 flex items-center justify-center h-44 sm:h-48 p-2">
-              <img src="${p.img}" alt="${p.title}" class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
+            <div class="relative overflow-hidden bg-amber-100 h-44 sm:h-48">
+              <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
               ${badgeHtml}
               <span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-xs">View Details</span>
             </div>
@@ -1430,7 +1535,10 @@
       document.getElementById('product-detail-modal').classList.remove('hidden');
     }
 
-    function closeProductModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
+    function closeProductModal() { 
+      document.getElementById('product-detail-modal').classList.add('hidden'); 
+      updateLivePresence('Browsing Store Catalog');
+    }
 
     function updateModalVariantPrice() {
       if (!activeModalProduct) return;
@@ -1467,6 +1575,7 @@
       saveCart();
       closeProductModal();
       toggleCartDrawer(true);
+      updateLivePresence(`Added ${activeModalProduct.title} to cart`);
     }
 
     function toggleAccordion(id) {
@@ -1503,7 +1612,7 @@
         return `
           <tr class="border-b border-amber-100 hover:bg-amber-50/50">
             <td class="p-3 font-bold flex items-center gap-2">
-              <img src="${p.img}" class="w-8 h-8 rounded-lg object-contain bg-amber-50 border border-amber-200">
+              <img src="${p.img}" class="w-8 h-8 rounded-lg object-cover bg-amber-50 border border-amber-200">
               <span>${p.title}</span>
             </td>
             <td class="p-3 text-amber-700">${p.category}</td>
@@ -1523,8 +1632,30 @@
     }
 
     function renderAdminAnalytics() {
+      const liveKeys = Object.keys(liveVisitors);
+      const now = Date.now();
+      const activeList = liveKeys.map(k => liveVisitors[k]).filter(v => (now - v.lastActive) < 120000);
+
+      document.getElementById('stat-live-count').textContent = activeList.length;
       document.getElementById('stat-total-visits').textContent = visitorLogs.length;
       document.getElementById('stat-total-customers').textContent = Object.keys(customerProfiles).length;
+
+      const liveTbody = document.getElementById('admin-live-visitors-tbody');
+      if (activeList.length === 0) {
+        liveTbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-amber-600 italic">No live visitors online right now. (Open the site in another browser tab to test!)</td></tr>`;
+      } else {
+        liveTbody.innerHTML = activeList.map(v => `
+          <tr class="border-b border-amber-100 hover:bg-amber-50/50">
+            <td class="p-3 font-semibold text-amber-950 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping"></span>
+              <span>${v.email}</span>
+            </td>
+            <td class="p-3 text-amber-900 font-medium">📍 ${v.location || 'Unknown Location'}</td>
+            <td class="p-3 text-xs text-amber-800 font-mono">💻 ${v.software || 'Unknown Software'}</td>
+            <td class="p-3 text-xs font-bold text-primary">🛍️ ${v.action || 'Browsing Store'}</td>
+          </tr>
+        `).join('');
+      }
 
       let totalViewsSum = 0;
       const analyticsTableBody = document.getElementById('admin-analytics-table-body');
@@ -1552,7 +1683,7 @@
       } else {
         visitorLogContainer.innerHTML = visitorLogs.slice(0, 25).map(v => `
           <div class="flex justify-between items-center bg-amber-50/50 p-2.5 rounded-xl border border-amber-200">
-            <span><i class="fa-solid fa-user-clock text-primary mr-1.5"></i> ${v.userEmail} (${v.userAgent})</span>
+            <span><i class="fa-solid fa-location-dot text-primary mr-1"></i> ${v.location} | <i class="fa-solid fa-user-clock text-primary mr-1.5"></i> ${v.userEmail} (${v.software})</span>
             <span class="font-mono text-amber-600">${v.time}</span>
           </div>
         `).join('');
@@ -1771,6 +1902,7 @@
       if (forceOpen || drawer.classList.contains('pointer-events-none')) {
         drawer.classList.remove('pointer-events-none', 'opacity-0');
         panel.classList.remove('translate-x-full');
+        updateLivePresence('Viewing Shopping Cart');
       } else {
         drawer.classList.add('pointer-events-none', 'opacity-0');
         panel.classList.add('translate-x-full');
@@ -1862,6 +1994,7 @@
         saveCart();
         toggleCartDrawer();
         openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof, deliveryFee, discountAmount, currentFulfillmentMode);
+        updateLivePresence(`Placed order #${orderId}`);
       });
     }
 
@@ -1961,6 +2094,7 @@
       selectedCategory = cat;
       renderCategories();
       renderProducts();
+      updateLivePresence(`Filtering category: ${cat}`);
     }
 
     function navigateTo(viewName) {
@@ -1980,12 +2114,15 @@
         renderAdminAnalytics();
         renderAdminCustomers();
         renderAdminOrders();
+        updateLivePresence('Viewing Admin Control Panel');
       } else if (viewName === 'account') {
         document.getElementById('view-account').classList.remove('hidden');
         loadCustomerProfile();
         setTimeout(initGoogleAutocomplete, 300);
+        updateLivePresence('Viewing Customer Account');
       } else {
         document.getElementById('view-store').classList.remove('hidden');
+        updateLivePresence('Browsing Store Catalog');
       }
     }
 
