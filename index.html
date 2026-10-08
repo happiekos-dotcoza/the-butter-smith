@@ -743,6 +743,124 @@
     </div>
   </div>
 
+  <!-- REFUND & RETURN POLICY MODAL -->
+  <div id="refund-policy-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto text-amber-950 space-y-5">
+      <button onclick="closeRefundModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-base sm:text-lg z-10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="border-b border-amber-200 pb-3">
+        <span class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider">Store Policy & Terms</span>
+        <h2 class="brand-font text-xl sm:text-3xl font-bold text-amber-950 mt-0.5">Refund, Shipping & Delivery Policy</h2>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
+        <p class="italic font-medium">By placing an order on our website, you agree to our Shipping, Delivery, and Refund Policies.</p>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">1. NO REFUNDS OR CANCELLATIONS</h3>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li><strong>All Sales Are Final:</strong> Due to food safety, hygiene, and the perishable nature of freshly baked goods, we do not offer refunds, exchanges, or returns for any reason (including change of mind, courier delays, personal taste preferences, or incorrect address details).</li>
+            <li><strong>Cancellations:</strong> Orders cannot be cancelled once placed. Exceptional cancellation requests are considered solely at our discretion before preparation begins and will incur a cancellation fee.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">2. SHIPPING & DELIVERY</h3>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li><strong>Door-to-Door Courier:</strong> All orders are shipped via third-party couriers (e.g., The Courier Guy). Delivery timelines are estimates. Once handed over to the courier, The Butter Smith Deli is not responsible for transit delays, handling, or damage. You are welcome to come and collect from our premises in Centurion if you live in the area.</li>
+            <li><strong>Customer Responsibility:</strong> Ensure your delivery details are accurate at checkout. You accept all risks associated with courier delivery, transit damage, unattended parcels, or improper product storage after delivery.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">3. DEFECTIVE OR INCORRECT ORDERS</h3>
+          <p>If an item is missing or incorrect, submit a query to <a href="mailto:happiekos@gmail.com" class="underline font-bold text-primary">happiekos@gmail.com</a> within 24 hours of delivery.</p>
+          <p class="font-semibold pt-1">Your email must include:</p>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li><strong>Order Details:</strong> Order number, date, and best before dates.</li>
+            <li><strong>Explanation:</strong> A clear description of the issue.</li>
+            <li><strong>Photographic Proof:</strong> Clear photos of the product, packaging (inside & outside), packing slip, and courier waybill sticker.</li>
+          </ul>
+          <p class="text-xs text-amber-800 italic pt-1">Incomplete or late submissions will not be reviewed. Investigation does not guarantee a refund, replacement, or store credit.</p>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-amber-200 flex justify-end">
+        <button onclick="closeRefundModal()" class="bg-primary text-white text-xs sm:text-sm font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition">
+          I Understand & Agree
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHIPPING POLICY MODAL -->
+  <div id="shipping-policy-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto text-amber-950 space-y-5">
+      <button onclick="closeShippingModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-base sm:text-lg z-10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="border-b border-amber-200 pb-3">
+        <span class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider">Delivery Guidelines</span>
+        <h2 class="brand-font text-xl sm:text-3xl font-bold text-amber-950 mt-0.5">Shipping Policy</h2>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
+        <p class="italic font-medium">By placing an order on our website, you acknowledge and agree to our shipping guidelines below.</p>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">1. PROCESSING & SCHEDULE</h3>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li><strong>Freshly Baked:</strong> All orders are prepared fresh specifically for each customer and dispatched according to a structured baking and shipping schedule.</li>
+            <li><strong>Delivery Date:</strong> While you may prefer a specific delivery date, delivery times are managed by external couriers. Parcels may arrive before, on, or after your selected date. Please reach out to us if you have a specific date in mind when placing an order.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">2. COURIER & DELIVERY</h3>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li><strong>Door-to-Door Courier:</strong> We use PUDO for most nationwide door-to-door delivery.</li>
+            <li><strong>Rural & Remote Surcharges:</strong> Additional courier fees may apply for rural, remote, or high-risk areas. The Butter Smith Deli reserves the right to request payment of any courier surcharge prior to dispatch. If declined, the order may be cancelled.</li>
+            <li><strong>Special Deliveries:</strong> For same-day, weekend, or public holiday deliveries, contact us before placing your order. Additional courier fees will apply.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">3. FAILED DELIVERIES & RETURN FEES</h3>
+          <p>Customers are responsible for providing accurate address details and ensuring someone is available to receive the parcel.</p>
+          <p class="font-semibold pt-1">If a parcel is returned to us due to an incorrect address, recipient unavailability, or ignored courier contact, the customer is responsible for:</p>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li>Re-paying the courier shipping fee.</li>
+            <li>An additional R50 administration fee.</li>
+          </ul>
+          <p class="text-xs text-amber-800 italic pt-1">Note: Due to the perishable nature of our products, uncollected or returned orders that spoil may be forfeited without a refund.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">4. COURIER RESPONSIBILITY & DELAYS</h3>
+          <p>Once handed over to the courier, delivery timelines, routing, handling, and transit damage are outside of our control.</p>
+          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
+            <li>Over-weekend courier holds do not compromise product freshness or safety.</li>
+            <li>Inspect packages upon delivery and report transit damage directly to the courier.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-1">
+          <h3 class="font-bold text-primary text-sm sm:text-base">5. CONTACT & SUPPORT</h3>
+          <p>For questions or shipping assistance, contact us at <a href="mailto:happiekos@gmail.com" class="underline font-bold text-primary">happiekos@gmail.com</a>. Thank you for your support!</p>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-amber-200 flex justify-end">
+        <button onclick="closeShippingModal()" class="bg-primary text-white text-xs sm:text-sm font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition">
+          Close Policy
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- CART DRAWER MODAL -->
   <div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-xs" onclick="toggleCartDrawer()"></div>
@@ -828,8 +946,16 @@
       <div id="footer-social-links-bar" class="flex flex-wrap justify-center items-center gap-2.5 py-1"></div>
       <p>&copy; <span id="footer-year">2026</span> <span id="footer-brand">The Butter Smith Deli</span>. <span id="footer-copyright-text">All rights reserved.</span></p>
       <p>For Orders & Inquiries please contact us <button onclick="openContactModal()" class="font-bold underline uppercase tracking-wider hover:opacity-80 transition cursor-pointer">HERE</button></p>
-      <div class="pt-1">
-        <button onclick="openPrivacyModal()" class="underline hover:opacity-80 text-[11px] font-semibold transition">
+      <div class="pt-1 flex flex-wrap justify-center items-center gap-4 text-[11px] font-semibold">
+        <button onclick="openShippingModal()" class="underline hover:opacity-80 transition cursor-pointer">
+          <i class="fa-solid fa-truck-fast mr-1"></i> Shipping Policy
+        </button>
+        <span class="opacity-40">•</span>
+        <button onclick="openRefundModal()" class="underline hover:opacity-80 transition cursor-pointer">
+          <i class="fa-solid fa-rotate-left mr-1"></i> Refund & Return Policy
+        </button>
+        <span class="opacity-40">•</span>
+        <button onclick="openPrivacyModal()" class="underline hover:opacity-80 transition cursor-pointer">
           <i class="fa-solid fa-shield-halved mr-1"></i> Privacy Policy & POPIA Notice
         </button>
       </div>
@@ -1210,6 +1336,10 @@
     function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
     function openPrivacyModal() { document.getElementById('privacy-policy-modal').classList.remove('hidden'); }
     function closePrivacyModal() { document.getElementById('privacy-policy-modal').classList.add('hidden'); }
+    function openRefundModal() { document.getElementById('refund-policy-modal').classList.remove('hidden'); }
+    function closeRefundModal() { document.getElementById('refund-policy-modal').classList.add('hidden'); }
+    function openShippingModal() { document.getElementById('shipping-policy-modal').classList.remove('hidden'); }
+    function closeShippingModal() { document.getElementById('shipping-policy-modal').classList.add('hidden'); }
     function openContactModal() { document.getElementById('contact-modal').classList.remove('hidden'); }
     function closeContactModal() { document.getElementById('contact-modal').classList.add('hidden'); }
 
