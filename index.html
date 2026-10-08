@@ -74,6 +74,20 @@
       text-transform: uppercase;
       padding: 4px;
     }
+
+    /* Continuous Ticker Ribbon Animation */
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-ticker {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: ticker-scroll 25s linear infinite;
+    }
+    .ticker-container:hover .animate-ticker {
+      animation-play-state: paused;
+    }
   </style>
 </head>
 <body class="bg-amber-50/30 text-amber-950 min-h-screen flex flex-col">
@@ -200,6 +214,35 @@
           <input type="text" id="search-input" onkeyup="renderProducts()" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-amber-400 text-xs"></i>
         </div>
+      </div>
+
+      <!-- HIGHLIGHTED TOP 4 BEST SELLERS & TRENDING SECTION -->
+      <div id="top-sellers-section" class="bg-gradient-to-r from-amber-100/80 via-amber-50 to-amber-100/80 rounded-3xl border-2 border-amber-300/80 p-4 sm:p-6 shadow-sm space-y-4">
+        
+        <!-- Moving Carousel Ticker Ribbon -->
+        <div class="ticker-container overflow-hidden rounded-xl bg-primary text-white py-2 shadow-xs border border-amber-900/20">
+          <div class="animate-ticker text-xs sm:text-sm font-extrabold uppercase tracking-wider space-x-6">
+            <span>🔥 Selling Like Hotcakes! • Top Trending Favourites • Small-Batch Best Sellers • Order Yours Fresh Today! 🔥</span>
+            <span>🔥 Selling Like Hotcakes! • Top Trending Favourites • Small-Batch Best Sellers • Order Yours Fresh Today! 🔥</span>
+            <span>🔥 Selling Like Hotcakes! • Top Trending Favourites • Small-Batch Best Sellers • Order Yours Fresh Today! 🔥</span>
+            <span>🔥 Selling Like Hotcakes! • Top Trending Favourites • Small-Batch Best Sellers • Order Yours Fresh Today! 🔥</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center px-1">
+          <div>
+            <h2 class="brand-font text-lg sm:text-2xl font-extrabold text-amber-950 flex items-center gap-2">
+              <i class="fa-solid fa-fire text-red-600"></i> Top 4 Trending & Best Sellers
+            </h2>
+            <p class="text-xs text-amber-800">Our absolute crowd favourites crafted fresh this week.</p>
+          </div>
+          <span class="text-[11px] font-bold text-amber-800 bg-amber-200/80 px-3 py-1 rounded-full hidden sm:inline-block border border-amber-300">
+            Most Popular
+          </span>
+        </div>
+
+        <!-- Top 4 Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="top-sellers-grid"></div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" id="product-grid"></div>
@@ -1604,7 +1647,55 @@
       alert('Settings updated successfully!');
     }
 
+    function renderTopSellersGrid() {
+      const topSellersGrid = document.getElementById('top-sellers-grid');
+      if (!topSellersGrid) return;
+
+      const visibleProds = products.filter(p => p.visible !== false);
+      if (visibleProds.length === 0) {
+        topSellersGrid.innerHTML = `<div class="col-span-full text-center py-4 text-xs text-amber-700">No products available.</div>`;
+        return;
+      }
+
+      // Sort products by view count from analytics, or default to latest products
+      const sortedByPopularity = [...visibleProds].sort((a, b) => {
+        const viewsA = (productViews[a.id] && productViews[a.id].count) || 0;
+        const viewsB = (productViews[b.id] && productViews[b.id].count) || 0;
+        if (viewsB !== viewsA) return viewsB - viewsA;
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+
+      const top4 = sortedByPopularity.slice(0, 4);
+
+      topSellersGrid.innerHTML = top4.map((p, idx) => `
+        <div onclick="openProductModal('${p.id}')" class="bg-white rounded-2xl border border-amber-200 overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+          <div class="relative overflow-hidden bg-amber-100 h-36 sm:h-40">
+            <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+            <span class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-extrabold px-2 py-0.5 rounded shadow uppercase tracking-wider z-10 flex items-center gap-1">
+              <i class="fa-solid fa-fire text-amber-300"></i> #${idx + 1} Hot Seller
+            </span>
+            <span class="absolute bottom-2 right-2 bg-black/60 text-white text-[9px] font-bold px-2 py-0.5 rounded backdrop-blur-xs">Quick View</span>
+          </div>
+          <div class="p-3.5 flex-grow flex flex-col justify-between space-y-2">
+            <div>
+              <span class="text-[9px] font-bold text-accent uppercase tracking-wider block truncate">${p.category}</span>
+              <h3 class="font-bold text-sm text-amber-950 mt-0.5 group-hover:text-primary transition line-clamp-1">${p.title}</h3>
+              <p class="text-amber-800/80 text-[11px] leading-snug mt-0.5 line-clamp-2">${p.desc}</p>
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t border-amber-100">
+              <span class="text-base font-extrabold text-amber-950">R${p.price.toFixed(2)}</span>
+              <button onclick="event.stopPropagation(); openProductModal('${p.id}')" class="bg-primary text-white text-[10px] font-bold px-3 py-1.5 rounded-lg hover:opacity-90 transition flex items-center gap-1">
+                <i class="fa-solid fa-eye"></i> Options
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
     function renderProducts() {
+      renderTopSellersGrid();
+
       const query = document.getElementById('search-input').value.toLowerCase();
       const grid = document.getElementById('product-grid');
       const filtered = products.filter(p => {
