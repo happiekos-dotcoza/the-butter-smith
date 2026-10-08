@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Updated Title & Social Preview Meta Tags -->
   <title id="site-title-meta">The Butter Smith Deli - Handcrafted Spreads & Small-Batch Bakes</title>
   <meta property="og:title" content="The Butter Smith Deli - Handcrafted Spreads & Small-Batch Bakes">
   <meta property="og:description" content="Handcrafted compound butters, artisanal barks, relishes, and small-batch bakes crafted fresh in Centurion.">
@@ -61,10 +60,10 @@
 
   <!-- Announcement Bar -->
   <div id="announcement-bar" class="bg-primary text-white text-[11px] sm:text-sm text-center py-2 px-3 font-medium flex justify-between items-center shadow-sm">
-    <span class="w-full text-center truncate" id="announcement-text">Free Centurion Delivery over R400 | Free National Delivery over R800</span>
+    <span class="w-full text-center truncate" id="announcement-text">Free Centurion Delivery over R400 | Free National Delivery over R800 | Free Store Collection</span>
   </div>
 
-  <!-- Mobile-Optimized Clean Header -->
+  <!-- Header -->
   <header class="bg-white/95 backdrop-blur-md border-b border-amber-200/80 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
       
@@ -119,8 +118,6 @@
 
     <!-- Mobile Dropdown Navigation Menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-amber-50/95 border-b border-amber-200 px-4 py-4 space-y-3 text-sm font-semibold shadow-lg">
-      
-      <!-- Mobile Auth Status Banner -->
       <div id="mobile-auth-container" class="pb-3 border-b border-amber-200/80">
         <button onclick="openAuthModal(); toggleMobileMenu()" id="mobile-login-btn" class="w-full text-left py-2 px-3 bg-amber-100 rounded-xl text-amber-900 font-bold text-xs flex items-center gap-2">
           <i class="fa-regular fa-user text-sm"></i> Log In / Register Account
@@ -148,8 +145,6 @@
 
     <!-- VIEW 1: STORE FRONT -->
     <section id="view-store" class="space-y-6 sm:space-y-10">
-      
-      <!-- Hero Banner with Carousel -->
       <div class="bg-white rounded-3xl border border-amber-200/80 shadow-md p-5 sm:p-10 grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
         <div class="md:col-span-7 space-y-3 sm:space-y-4">
           <span class="inline-block bg-amber-100 text-primary text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full border border-amber-200" id="hero-badge">
@@ -173,7 +168,6 @@
           <div class="w-full h-52 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100 group">
             <div id="hero-carousel-slides" class="w-full h-full relative"></div>
             
-            <!-- Carousel Navigation Arrows -->
             <button onclick="prevHeroSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs transition opacity-0 group-hover:opacity-100">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
@@ -181,7 +175,6 @@
               <i class="fa-solid fa-chevron-right"></i>
             </button>
 
-            <!-- Carousel Dots -->
             <div id="hero-carousel-dots" class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10"></div>
           </div>
         </div>
@@ -226,7 +219,7 @@
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-amber-200 pb-4">
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-amber-950">Admin Control Panel</h2>
-          <p class="text-xs text-amber-700">Manage products, customer accounts, styles, and orders.</p>
+          <p class="text-xs text-amber-700">Manage products, analytics, customer accounts, styles, and orders.</p>
         </div>
         <span class="bg-amber-100 text-primary text-xs font-bold px-3 py-1 rounded-full border border-amber-300">Logged in as Admin</span>
       </div>
@@ -234,6 +227,7 @@
       <!-- Admin Navigation Tabs -->
       <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto pb-1">
         <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Product List</button>
+        <button onclick="switchAdminTab('analytics')" id="tab-btn-analytics" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Analytics & Visits</button>
         <button onclick="switchAdminTab('customers')" id="tab-btn-customers" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Customer Accounts</button>
         <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer</button>
         <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
@@ -258,13 +252,9 @@
             </div>
 
             <input type="text" id="prod-variants" placeholder="Variants comma-separated with +prices (e.g. 100g Tub:+0, 250g Tub:+35, 500g Tub:+80)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl">
-            
-            <textarea id="prod-ingredients" placeholder="Ingredients & Allergens (e.g., Pure Cultured Butter, Fresh Garlic, Parsley, Sea Salt. Contains Milk.)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
-            
-            <textarea id="prod-storage" placeholder="Storage, Usage & Shelf Life (e.g., Keep refrigerated between 2°C and 5°C. Suitable for freezing.)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
-            
-            <textarea id="prod-delivery-info" placeholder="Delivery Information (e.g., Fresh insulated delivery available across Centurion and Gauteng.)" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
-
+            <textarea id="prod-ingredients" placeholder="Ingredients & Allergens" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
+            <textarea id="prod-storage" placeholder="Storage & Shelf Life" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
+            <textarea id="prod-delivery-info" placeholder="Delivery Information" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-16"></textarea>
             <textarea id="prod-desc" placeholder="Product Description" class="sm:col-span-2 p-2.5 text-sm border border-amber-200 rounded-xl h-20" required></textarea>
 
             <div class="sm:col-span-2 flex justify-end space-x-2">
@@ -290,7 +280,47 @@
         </div>
       </div>
 
-      <!-- Admin Tab 2: Customer Accounts Directory -->
+      <!-- Admin Tab 2: Analytics & Visits -->
+      <div id="admin-tab-analytics" class="hidden space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-xs space-y-1">
+            <span class="text-xs font-bold text-amber-700 uppercase">Total Site Visits</span>
+            <p class="text-3xl font-extrabold text-primary" id="stat-total-visits">0</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-xs space-y-1">
+            <span class="text-xs font-bold text-amber-700 uppercase">Total Product Views</span>
+            <p class="text-3xl font-extrabold text-accent" id="stat-total-views">0</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-xs space-y-1">
+            <span class="text-xs font-bold text-amber-700 uppercase">Registered Customers</span>
+            <p class="text-3xl font-extrabold text-amber-950" id="stat-total-customers">0</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
+          <h3 class="font-bold text-primary text-base">Most Frequently Viewed Products (Popularity & Interest)</h3>
+          <p class="text-xs text-amber-700">Compare what items visitors look at most frequently against what they add to cart and purchase.</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-amber-950 min-w-[400px]">
+              <thead class="bg-amber-100/60 text-primary font-bold border-b border-amber-200">
+                <tr>
+                  <th class="p-3">Product Title</th>
+                  <th class="p-3">Category</th>
+                  <th class="p-3 text-right">View Count</th>
+                </tr>
+              </thead>
+              <tbody id="admin-analytics-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
+          <h3 class="font-bold text-primary text-base">Recent Site Visitor Log</h3>
+          <div id="admin-visitor-log-list" class="space-y-2 text-xs text-amber-800 max-h-60 overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- Admin Tab 3: Customer Accounts Directory -->
       <div id="admin-tab-customers" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
         <div class="flex justify-between items-center border-b border-amber-200 pb-3">
           <h3 class="font-bold text-primary">Registered Customer Accounts</h3>
@@ -299,7 +329,7 @@
         <div id="admin-customers-list" class="space-y-4 text-sm"></div>
       </div>
 
-      <!-- Admin Tab 3: Customizer -->
+      <!-- Admin Tab 4: Customizer -->
       <div id="admin-tab-customize" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-6 max-w-3xl">
         <h3 class="font-bold text-primary text-lg">Customize Store Logo, Branding, Colors & Fonts</h3>
         <form onsubmit="handleSiteCustomization(event)" class="space-y-6">
@@ -311,13 +341,9 @@
             </div>
           </div>
 
-          <!-- Hero Carousel Picture Links Manager -->
           <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
             <h4 class="font-bold text-amber-900 text-sm">Hero Product Carousel Pictures</h4>
-            <p class="text-xs text-amber-700">Add picture URLs of the products you want to showcase in the hero carousel slider.</p>
-            
             <div id="hero-carousel-admin-list" class="space-y-3"></div>
-
             <div class="pt-2">
               <button type="button" onclick="addHeroCarouselImageItem()" class="bg-amber-200 text-amber-900 font-bold text-xs px-4 py-2 rounded-xl hover:bg-amber-300 transition flex items-center gap-1.5">
                 <i class="fa-solid fa-plus"></i> Add Carousel Image URL
@@ -412,36 +438,31 @@
             </div>
           </div>
 
-          <!-- Contact Details Customization Section -->
           <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
             <h4 class="font-bold text-amber-900 text-sm">Contact Details & Map Pop-Up Settings</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-bold text-amber-800 mb-1">Contact Email</label>
-                <input type="email" id="cust-contact-email" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" placeholder="happiekos@gmail.com">
+                <input type="email" id="cust-contact-email" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
               </div>
               <div>
                 <label class="block text-xs font-bold text-amber-800 mb-1">Telephone Number</label>
-                <input type="text" id="cust-contact-phone" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" placeholder="+27 82 000 0000">
+                <input type="text" id="cust-contact-phone" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
               </div>
             </div>
             <div>
               <label class="block text-xs font-bold text-amber-800 mb-1">Physical Location Address</label>
-              <input type="text" id="cust-contact-address" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" placeholder="Centurion, Gauteng, South Africa">
+              <input type="text" id="cust-contact-address" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
             </div>
             <div>
-              <label class="block text-xs font-bold text-amber-800 mb-1">Google Maps Embed Link (URL or iframe src)</label>
-              <input type="text" id="cust-map-url" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" placeholder="https://www.google.com/maps/embed?pb=...">
+              <label class="block text-xs font-bold text-amber-800 mb-1">Google Maps Embed Link</label>
+              <input type="text" id="cust-map-url" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
             </div>
           </div>
 
-          <!-- Social Media Links Customization Manager -->
           <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 space-y-4">
             <h4 class="font-bold text-amber-900 text-sm">Social Media Links Manager</h4>
-            <p class="text-xs text-amber-700">Add, remove, enable/disable, or update social media links shown in the site footer.</p>
-            
             <div id="social-links-admin-list" class="space-y-3"></div>
-
             <div class="pt-3 border-t border-amber-200">
               <button type="button" onclick="addNewSocialLinkItem()" class="bg-amber-200 text-amber-900 font-bold text-xs px-4 py-2 rounded-xl hover:bg-amber-300 transition flex items-center gap-1.5">
                 <i class="fa-solid fa-plus"></i> Add New Social Link
@@ -455,7 +476,7 @@
         </form>
       </div>
 
-      <!-- Admin Tab 4: Orders -->
+      <!-- Admin Tab 5: Orders -->
       <div id="admin-tab-orders" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
         <div class="flex justify-between items-center border-b border-amber-200 pb-3">
           <h3 class="font-bold text-primary">Incoming Orders</h3>
@@ -497,7 +518,7 @@
     </div>
   </div>
 
-  <!-- UNCLOSABLE FIRST-TIME PROFILE SETUP MODAL -->
+  <!-- PROFILE SETUP MODAL -->
   <div id="profile-setup-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-amber-200 shadow-2xl relative">
       <div class="text-center space-y-1">
@@ -539,14 +560,12 @@
       </button>
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-8 items-start">
-        <!-- Product Photo Column -->
         <div class="md:col-span-6 space-y-4">
           <div class="w-full h-56 sm:h-96 rounded-2xl overflow-hidden shadow-md border border-amber-200 bg-white">
             <img id="modal-prod-img" src="" alt="Product Photo" class="w-full h-full object-cover">
           </div>
         </div>
 
-        <!-- Product Info Column -->
         <div class="md:col-span-6 space-y-4 sm:space-y-5">
           <div>
             <span id="modal-prod-cat" class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider"></span>
@@ -557,16 +576,14 @@
 
           <div class="pt-2 border-t border-amber-200/80">
             <span class="text-xl sm:text-2xl font-extrabold text-amber-950" id="modal-prod-price"></span>
-            <p class="text-[10px] sm:text-[11px] text-amber-700">Taxes included. Delivery calculated at checkout.</p>
+            <p class="text-[10px] sm:text-[11px] text-amber-700">Taxes included. Delivery / Collection calculated at checkout.</p>
           </div>
 
-          <!-- Unit Variants Selection -->
           <div class="space-y-1 sm:space-y-2">
             <label class="block text-xs font-bold text-amber-900">Select Unit Size / Variant:</label>
             <select id="modal-variant-select" onchange="updateModalVariantPrice()" class="w-full p-2.5 sm:p-3 text-xs sm:text-sm bg-white border border-amber-300 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></select>
           </div>
 
-          <!-- Quantity Selection -->
           <div class="space-y-1 sm:space-y-2">
             <label class="block text-xs font-bold text-amber-900">Quantity:</label>
             <div class="flex items-center space-x-3 w-32 sm:w-36 bg-white border border-amber-300 rounded-xl p-1.5 justify-between">
@@ -582,7 +599,6 @@
         </div>
       </div>
 
-      <!-- Accordion Section -->
       <div class="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-amber-200/80 space-y-2.5">
         <div class="bg-white rounded-xl border border-amber-200 overflow-hidden">
           <button onclick="toggleAccordion('acc-ingredients')" class="w-full p-3.5 sm:p-4 text-left font-bold text-amber-950 flex justify-between items-center text-xs sm:text-sm">
@@ -590,7 +606,7 @@
             <i class="fa-solid fa-chevron-down text-amber-500 transition-transform" id="acc-ingredients-icon"></i>
           </button>
           <div id="acc-ingredients" class="hidden p-3.5 sm:p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80">
-            <p id="modal-ingredients-text">Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.</p>
+            <p id="modal-ingredients-text"></p>
           </div>
         </div>
 
@@ -599,18 +615,18 @@
             <span><i class="fa-solid fa-snowflake mr-2 text-primary"></i> Storage, Usage & Shelf Life</span>
             <i class="fa-solid fa-chevron-down text-amber-500 transition-transform" id="acc-storage-icon"></i>
           </button>
-          <div id="acc-storage" class="hidden p-3.5 sm:p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80 space-y-1">
-            <p id="modal-storage-text">• Keep refrigerated between 2°C and 5°C.<br>• Suitable for freezing for up to 6 months.<br>• Best consumed within 30 days of opening.</p>
+          <div id="acc-storage" class="hidden p-3.5 sm:p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80">
+            <p id="modal-storage-text"></p>
           </div>
         </div>
 
         <div class="bg-white rounded-xl border border-amber-200 overflow-hidden">
           <button onclick="toggleAccordion('acc-delivery')" class="w-full p-3.5 sm:p-4 text-left font-bold text-amber-950 flex justify-between items-center text-xs sm:text-sm">
-            <span><i class="fa-solid fa-truck-fast mr-2 text-primary"></i> Delivery Information</span>
+            <span><i class="fa-solid fa-truck-fast mr-2 text-primary"></i> Delivery & Collection Info</span>
             <i class="fa-solid fa-chevron-down text-amber-500 transition-transform" id="acc-delivery-icon"></i>
           </button>
           <div id="acc-delivery" class="hidden p-3.5 sm:p-4 pt-0 text-xs text-amber-800 leading-relaxed border-t border-amber-100/80">
-            <p id="modal-delivery-text">Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.</p>
+            <p id="modal-delivery-text"></p>
           </div>
         </div>
       </div>
@@ -630,38 +646,31 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
-        <!-- Email Details -->
         <div class="bg-white p-4 rounded-2xl border border-amber-200 space-y-1 shadow-xs">
           <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-1">
             <i class="fa-solid fa-envelope mr-1.5 text-accent"></i> Email Us
           </span>
-          <a id="display-modal-email" href="mailto:happiekos@gmail.com" class="font-semibold text-amber-950 hover:text-primary underline block break-all">happiekos@gmail.com</a>
-          <p class="text-[11px] text-amber-700 pt-0.5">We reply within 24 hours.</p>
+          <a id="display-modal-email" href="#" class="font-semibold text-amber-950 hover:text-primary underline block break-all"></a>
         </div>
-
-        <!-- Phone Details -->
         <div class="bg-white p-4 rounded-2xl border border-amber-200 space-y-1 shadow-xs">
           <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-1">
             <i class="fa-solid fa-phone mr-1.5 text-accent"></i> Call / WhatsApp
           </span>
-          <a id="display-modal-phone" href="tel:+27820000000" class="font-semibold text-amber-950 hover:text-primary underline block">+27 82 000 0000</a>
-          <p class="text-[11px] text-amber-700 pt-0.5">Mon–Sat: 08:00 – 17:00</p>
+          <a id="display-modal-phone" href="#" class="font-semibold text-amber-950 hover:text-primary underline block"></a>
         </div>
       </div>
 
-      <!-- Physical Address -->
       <div class="bg-white p-4 rounded-2xl border border-amber-200 space-y-1 shadow-xs">
         <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-1">
-          <i class="fa-solid fa-location-dot mr-1.5 text-accent"></i> Location & Address
+          <i class="fa-solid fa-location-dot mr-1.5 text-accent"></i> Location & Collection Address
         </span>
-        <p id="display-modal-address" class="font-semibold text-amber-950 text-xs sm:text-sm">Centurion, Gauteng, South Africa</p>
+        <p id="display-modal-address" class="font-semibold text-amber-950 text-xs sm:text-sm"></p>
       </div>
 
-      <!-- Google Map Container -->
       <div class="space-y-1.5">
         <span class="text-xs font-bold text-amber-900 block">Find Us On Google Maps:</span>
         <div class="w-full h-56 sm:h-64 rounded-2xl overflow-hidden border border-amber-200 shadow-md bg-amber-100">
-          <iframe id="display-modal-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d57270.28185011707!2d28.140228050000003!3d-25.85694295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e95655d8f615e45%3A0x6b4fb6c3a19eb189!2sCenturion!5e0!3m2!1sen!2sza!4v1710000000000!5m2!1sen!2sza" class="w-full h-full border-0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <iframe id="display-modal-map" src="" class="w-full h-full border-0" allowfullscreen="" loading="lazy"></iframe>
         </div>
       </div>
 
@@ -686,27 +695,7 @@
       </div>
 
       <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
-        <p>At <strong>The Butter Smith Deli</strong>, we respect your privacy and are committed to protecting your personal information in full compliance with the <strong>Protection of Personal Information Act (Act 4 of 2013) ("POPIA")</strong> of South Africa.</p>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h4 class="font-bold text-primary flex items-center"><i class="fa-solid fa-shield-halved mr-2"></i> 1. Information We Collect</h4>
-          <p>When you register an account, update your shipping details, or place an order, we process necessary personal information including your full name, email address, contact phone number, and physical delivery address.</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h4 class="font-bold text-primary flex items-center"><i class="fa-solid fa-bullseye mr-2"></i> 2. Purpose of Collection & Usage</h4>
-          <p>Your information is collected strictly for fulfilling artisanal orders, arranging local insulated delivery in Centurion and Gauteng, maintaining customer accounts, and communicating essential order updates.</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h4 class="font-bold text-primary flex items-center"><i class="fa-solid fa-lock mr-2"></i> 3. Data Protection & Security</h4>
-          <p>We implement secure encrypted cloud data storage (via Google Firebase) and standard safeguards to protect your personal information against unauthorized access, loss, or misuse.</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h4 class="font-bold text-primary flex items-center"><i class="fa-solid fa-user-shield mr-2"></i> 4. Your Rights Under POPIA</h4>
-          <p>You have the right to request access to the personal information we hold about you, request corrections, or ask for deletion of your stored details at any time by contacting us at <strong>happiekos@gmail.com</strong>.</p>
-        </div>
+        <p>At <strong>The Butter Smith Deli</strong>, we respect your privacy and are committed to protecting your personal information in full compliance with POPIA.</p>
       </div>
 
       <div class="pt-3 border-t border-amber-200 flex justify-end">
@@ -725,8 +714,23 @@
         <h3 class="text-base sm:text-lg font-bold text-amber-950">Your Shopping Cart</h3>
         <button onclick="toggleCartDrawer()" class="text-amber-500 hover:text-amber-800"><i class="fa-solid fa-xmark text-xl"></i></button>
       </div>
+      
       <div id="cart-items-container" class="flex-grow overflow-y-auto py-4 space-y-3"></div>
+      
       <div class="border-t border-amber-200 pt-4 space-y-3">
+        <!-- Fulfillment Mode Toggle (Delivery vs Collection) -->
+        <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-2">
+          <span class="text-xs font-bold text-amber-900 block">Select Fulfillment Option:</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="setFulfillmentMode('delivery')" id="fulfillment-btn-delivery" class="py-2 px-3 text-xs font-bold rounded-lg border transition bg-primary text-white border-primary shadow-xs">
+              <i class="fa-solid fa-truck mr-1"></i> Delivery
+            </button>
+            <button type="button" onclick="setFulfillmentMode('collection')" id="fulfillment-btn-collection" class="py-2 px-3 text-xs font-bold rounded-lg border transition bg-white text-amber-900 border-amber-300">
+              <i class="fa-solid fa-store mr-1"></i> Free Collection
+            </button>
+          </div>
+        </div>
+
         <div class="flex justify-between text-xs sm:text-sm text-amber-800">
           <span>Subtotal:</span>
           <span id="cart-subtotal-price">R0.00</span>
@@ -736,7 +740,7 @@
           <span id="cart-discount-price">-R0.00</span>
         </div>
         <div class="flex justify-between text-xs sm:text-sm text-amber-800">
-          <span>Estimated Delivery:</span>
+          <span id="cart-delivery-label">Delivery Fee:</span>
           <span id="cart-delivery-display">Calculated at checkout</span>
         </div>
         <div class="flex justify-between font-bold text-base sm:text-lg text-amber-950 border-t border-amber-100 pt-2">
@@ -758,7 +762,6 @@
         <button onclick="closeAuthModal()" class="text-amber-400 hover:text-amber-800"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <!-- Google Sign In Button -->
       <button onclick="loginWithGoogle()" type="button" class="w-full flex items-center justify-center gap-2 bg-white border border-amber-300 p-2.5 rounded-xl font-semibold text-xs sm:text-sm text-amber-950 hover:bg-amber-50 shadow-xs transition">
         <i class="fa-brands fa-google text-red-500"></i> Continue with Google
       </button>
@@ -785,10 +788,7 @@
   <!-- Footer -->
   <footer class="site-footer py-8 border-t border-amber-900 mt-auto">
     <div class="max-w-7xl mx-auto px-4 text-center space-y-3 text-xs">
-      
-      <!-- Dynamic Social Icons Footer Bar -->
       <div id="footer-social-links-bar" class="flex flex-wrap justify-center items-center gap-2.5 py-1"></div>
-
       <p>&copy; <span id="footer-year">2026</span> <span id="footer-brand">The Butter Smith Deli</span>. <span id="footer-copyright-text">All rights reserved.</span></p>
       <p>For Orders & Inquiries please contact us <button onclick="openContactModal()" class="font-bold underline uppercase tracking-wider hover:opacity-80 transition cursor-pointer">HERE</button></p>
       <div class="pt-1">
@@ -800,7 +800,6 @@
   </footer>
 
   <script>
-    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyDSO44vPx7knub_w6S7W6kbNJ9X5oYtjVc",
       authDomain: "the-butter-smith.firebaseapp.com",
@@ -820,18 +819,16 @@
     const sanitizeKey = (email) => email ? email.replace(/[^a-zA-Z0-9]/g, '_') : 'guest';
 
     const defaultProducts = [
-      { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, visible: true, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
-      { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, visible: true, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Smoked Paprika, Cayenne Chilli, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
-      { id: '3', title: 'Sweet Honey & Cinnamon Butter', category: 'Compound Butter', price: 60, visible: true, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Raw honey and cinnamon whipped for hot pancakes and fresh breads.', variants: '100g Tub:+0, 250g Tub:+30, 500g Tub:+70', ingredients: 'Pure Cultured Butter, Raw Local Honey, Ground Cinnamon. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' },
-      { id: '4', title: 'Dried Fruit Relish', category: 'Relish', price: 55, visible: true, img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80', desc: 'Slow-cooked artisanal dried fruit chutney, pairs perfectly with cheeses.', variants: '250g Jar:+0, 500g Jar:+40', ingredients: 'Dried Apricots, Peaches, Raisins, Apple Cider Vinegar, Brown Sugar, Spices.', storage: 'Store in a cool, dry place. Refrigerate after opening and consume within 60 days.', deliveryInfo: 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.' }
+      { id: '1', title: 'Garlic & Herb Compound Butter', category: 'Compound Butter', price: 65, visible: true, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Fresh garlic, parsley, and sea salt blended into cultured butter.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Fresh Garlic, Fine Parsley, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.', deliveryInfo: 'Fresh insulated delivery or free market collection in Centurion.' },
+      { id: '2', title: 'Smoked Chilli & Paprika Butter', category: 'Compound Butter', price: 65, visible: true, img: 'https://images.unsplash.com/photo-1626958390898-162d3577f293?auto=format&fit=crop&w=600&q=80', desc: 'Smoked paprika and crushed cayenne for a gentle spicy kick on meats.', variants: '100g Tub:+0, 250g Tub:+35, 500g Tub:+80', ingredients: 'Pure Cultured Butter, Smoked Paprika, Cayenne Chilli, Sea Salt. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C.', deliveryInfo: 'Fresh insulated delivery or free market collection in Centurion.' },
+      { id: '3', title: 'Sweet Honey & Cinnamon Butter', category: 'Compound Butter', price: 60, visible: true, img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80', desc: 'Raw honey and cinnamon whipped for hot pancakes and fresh breads.', variants: '100g Tub:+0, 250g Tub:+30, 500g Tub:+70', ingredients: 'Pure Cultured Butter, Raw Local Honey, Ground Cinnamon. Contains Milk.', storage: 'Keep refrigerated between 2°C and 5°C.', deliveryInfo: 'Fresh insulated delivery or free market collection in Centurion.' },
+      { id: '4', title: 'Dried Fruit Relish', category: 'Relish', price: 55, visible: true, img: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80', desc: 'Slow-cooked artisanal dried fruit chutney, pairs perfectly with cheeses.', variants: '250g Jar:+0, 500g Jar:+40', ingredients: 'Dried Apricots, Peaches, Raisins, Apple Cider Vinegar, Brown Sugar, Spices.', storage: 'Store in a cool, dry place. Refrigerate after opening.', deliveryInfo: 'Fresh delivery or free market collection in Centurion.' }
     ];
 
     const defaultSocials = [
       { id: 'soc1', name: 'Facebook - The Butter Smith', platform: 'facebook', url: 'https://facebook.com', enabled: true },
-      { id: 'soc2', name: 'Facebook - The Brownie Bar', platform: 'facebook', url: 'https://facebook.com', enabled: true },
-      { id: 'soc3', name: 'Instagram - The Butter Smith', platform: 'instagram', url: 'https://instagram.com', enabled: true },
-      { id: 'soc4', name: 'Instagram - The Brownie Bar', platform: 'instagram', url: 'https://instagram.com', enabled: true },
-      { id: 'soc5', name: 'WhatsApp Us', platform: 'whatsapp', url: 'https://wa.me/27820000000', enabled: true }
+      { id: 'soc2', name: 'Instagram - The Butter Smith', platform: 'instagram', url: 'https://instagram.com', enabled: true },
+      { id: 'soc3', name: 'WhatsApp Us', platform: 'whatsapp', url: 'https://wa.me/27820000000', enabled: true }
     ];
 
     const defaultHeroImages = [
@@ -847,7 +844,7 @@
       heroSub: 'Elevate your meals and snack moments with our handcrafted compound butters, barks, relishes, and small-batch bakes.',
       heroImages: defaultHeroImages,
       logoUrl: 'https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png',
-      announcement: 'Free Centurion Delivery over R400 | Free National Delivery over R800',
+      announcement: 'Free Centurion Delivery over R400 | Free National Delivery over R800 | Free Store Collection',
       primaryColor: '#556B2F',
       accentColor: '#6B8E23',
       footerBgColor: '#3b4e1e',
@@ -855,7 +852,7 @@
       footerCopyright: 'All rights reserved.',
       contactEmail: 'happiekos@gmail.com',
       contactPhone: '+27 82 000 0000',
-      contactAddress: 'Centurion, Gauteng, South Africa',
+      contactAddress: 'Centurion, Gauteng, South Africa (Bus Stop 7 Market & Collection)',
       mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d57270.28185011707!2d28.140228050000003!3d-25.85694295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e95655d8f615e45%3A0x6b4fb6c3a19eb189!2sCenturion!5e0!3m2!1sen!2sza!4v1710000000000!5m2!1sen!2sza',
       headingFont: "'Playfair Display', serif",
       bodyFont: "'Inter', sans-serif",
@@ -866,13 +863,15 @@
     let settings = JSON.parse(localStorage.getItem('bs_settings')) || defaultSettings;
     let cart = JSON.parse(localStorage.getItem('bs_cart')) || [];
     let orders = [];
+    let visitorLogs = [];
+    let productViews = {};
     let currentUser = null;
-    let customerAccounts = {};
     let customerProfiles = {};
     let selectedCategory = 'All';
     let activeModalProduct = null;
     let modalQty = 1;
     let isRegisterMode = false;
+    let currentFulfillmentMode = 'delivery'; // 'delivery' or 'collection'
     let currentHeroSlideIndex = 0;
     let heroCarouselInterval = null;
 
@@ -892,8 +891,8 @@
       updateCartUI();
       initGoogleAutocomplete();
       startHeroCarousel();
+      logSiteVisit();
 
-      // Check if first-time visitor to show 5% Welcome Modal
       if (!localStorage.getItem('bs_welcome_shown')) {
         setTimeout(() => {
           document.getElementById('welcome-discount-modal').classList.remove('hidden');
@@ -918,9 +917,7 @@
           localStorage.setItem('bs_products', JSON.stringify(products));
           renderProducts(); 
           renderCategories(); 
-          if (currentUser && currentUser.email === 'happiekos@gmail.com') {
-            renderAdminProducts();
-          }
+          if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminProducts();
         }
       });
 
@@ -936,10 +933,21 @@
       db.ref('profiles').on('value', (snap) => {
         if (snap.exists()) {
           customerProfiles = snap.val();
-          if (currentUser && currentUser.email === 'happiekos@gmail.com') {
-            renderAdminCustomers();
-          }
+          if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminCustomers();
         }
+      });
+
+      db.ref('analytics/productViews').on('value', (snap) => {
+        if (snap.exists()) productViews = snap.val();
+        if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminAnalytics();
+      });
+
+      db.ref('analytics/visitors').on('value', (snap) => {
+        if (snap.exists()) {
+          const raw = snap.val();
+          visitorLogs = Object.keys(raw).map(k => raw[k]).reverse();
+        }
+        if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminAnalytics();
       });
 
       db.ref('orders').on('value', (snap) => {
@@ -949,11 +957,28 @@
         } else {
           orders = [];
         }
-        if (currentUser && currentUser.email === 'happiekos@gmail.com') {
-          renderAdminOrders();
-        }
+        if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminOrders();
       });
     });
+
+    function logSiteVisit() {
+      const visitId = 'VIS-' + Date.now();
+      const visitData = {
+        id: visitId,
+        time: new Date().toLocaleString(),
+        userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile User' : 'Desktop User',
+        userEmail: currentUser ? currentUser.email : 'Guest Visitor'
+      };
+      db.ref('analytics/visitors/' + visitId).set(visitData);
+      db.ref('analytics/totalVisits').transaction((current) => (current || 0) + 1);
+    }
+
+    function logProductView(productId, productTitle) {
+      db.ref('analytics/productViews/' + productId).transaction((curr) => {
+        if (!curr) return { title: productTitle, count: 1 };
+        return { title: productTitle, count: (curr.count || 0) + 1 };
+      });
+    }
 
     function closeWelcomeModal() {
       document.getElementById('welcome-discount-modal').classList.add('hidden');
@@ -961,28 +986,23 @@
 
     function initGoogleAutocomplete() {
       if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.places === 'undefined') return;
-      
       const setupField = document.getElementById('setup-address');
       const custField = document.getElementById('cust-address');
 
       if (setupField && !setupField.dataset.autocompleteInitialized) {
-        const autocomplete1 = new google.maps.places.Autocomplete(setupField, { componentRestrictions: { country: 'za' } });
-        autocomplete1.addListener('place_changed', () => {
-          const place = autocomplete1.getPlace();
-          if (place && place.formatted_address) {
-            setupField.value = place.formatted_address;
-          }
+        const ac1 = new google.maps.places.Autocomplete(setupField, { componentRestrictions: { country: 'za' } });
+        ac1.addListener('place_changed', () => {
+          const place = ac1.getPlace();
+          if (place && place.formatted_address) setupField.value = place.formatted_address;
         });
         setupField.dataset.autocompleteInitialized = 'true';
       }
 
       if (custField && !custField.dataset.autocompleteInitialized) {
-        const autocomplete2 = new google.maps.places.Autocomplete(custField, { componentRestrictions: { country: 'za' } });
-        autocomplete2.addListener('place_changed', () => {
-          const place = autocomplete2.getPlace();
-          if (place && place.formatted_address) {
-            custField.value = place.formatted_address;
-          }
+        const ac2 = new google.maps.places.Autocomplete(custField, { componentRestrictions: { country: 'za' } });
+        ac2.addListener('place_changed', () => {
+          const place = ac2.getPlace();
+          if (place && place.formatted_address) custField.value = place.formatted_address;
         });
         custField.dataset.autocompleteInitialized = 'true';
       }
@@ -991,16 +1011,13 @@
     function startHeroCarousel() {
       if (heroCarouselInterval) clearInterval(heroCarouselInterval);
       renderHeroCarousel();
-      heroCarouselInterval = setInterval(() => {
-        nextHeroSlide();
-      }, 4000);
+      heroCarouselInterval = setInterval(() => { nextHeroSlide(); }, 4000);
     }
 
     function renderHeroCarousel() {
       const slidesContainer = document.getElementById('hero-carousel-slides');
       const dotsContainer = document.getElementById('hero-carousel-dots');
       const images = settings.heroImages || defaultHeroImages;
-
       if (!slidesContainer || !dotsContainer) return;
 
       if (images.length === 0) {
@@ -1008,12 +1025,11 @@
         dotsContainer.innerHTML = '';
         return;
       }
-
       if (currentHeroSlideIndex >= images.length) currentHeroSlideIndex = 0;
 
       slidesContainer.innerHTML = images.map((imgUrl, idx) => `
-        <div class="absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === currentHeroSlideIndex ? 'opacity-150 z-10' : 'opacity-0 z-0'}">
-          <img src="${imgUrl}" alt="Hero Slide ${idx + 1}" class="w-full h-full object-cover">
+        <div class="absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === currentHeroSlideIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}">
+          <img src="${imgUrl}" alt="Slide ${idx + 1}" class="w-full h-full object-cover">
         </div>
       `).join('');
 
@@ -1046,15 +1062,11 @@
         closeProfileSetupModal();
         return;
       }
-
       const userKey = sanitizeKey(currentUser.email);
       db.ref('profiles/' + userKey).once('value', (snap) => {
         const prof = snap.val();
-        if (!prof || !prof.name || !prof.phone || !prof.address) {
-          openProfileSetupModal();
-        } else {
-          closeProfileSetupModal();
-        }
+        if (!prof || !prof.name || !prof.phone || !prof.address) openProfileSetupModal();
+        else closeProfileSetupModal();
       });
     }
 
@@ -1062,39 +1074,29 @@
       document.getElementById('profile-setup-modal').classList.remove('hidden');
       setTimeout(initGoogleAutocomplete, 300);
     }
-
-    function closeProfileSetupModal() {
-      document.getElementById('profile-setup-modal').classList.add('hidden');
-    }
+    function closeProfileSetupModal() { document.getElementById('profile-setup-modal').classList.add('hidden'); }
 
     function saveMandatoryProfile(e) {
       e.preventDefault();
       if (!currentUser) return;
-
       const userKey = sanitizeKey(currentUser.email);
-      const name = document.getElementById('setup-name').value.trim();
-      const phone = document.getElementById('setup-phone').value.trim();
-      const address = document.getElementById('setup-address').value.trim();
-
-      const profile = { email: currentUser.email, name, phone, address };
-
-      db.ref('profiles/' + userKey).set(profile)
-        .then(() => {
-          closeProfileSetupModal();
-          alert('Profile completed! You can now browse products and place orders.');
-          navigateTo('store');
-          updateCartUI();
-        })
-        .catch((err) => alert('Error saving details: ' + err.message));
+      const profile = {
+        email: currentUser.email,
+        name: document.getElementById('setup-name').value.trim(),
+        phone: document.getElementById('setup-phone').value.trim(),
+        address: document.getElementById('setup-address').value.trim()
+      };
+      db.ref('profiles/' + userKey).set(profile).then(() => {
+        closeProfileSetupModal();
+        alert('Profile saved successfully!');
+        navigateTo('store');
+        updateCartUI();
+      }).catch((err) => alert('Error: ' + err.message));
     }
 
-    function toggleMobileMenu() {
-      document.getElementById('mobile-menu').classList.toggle('hidden');
-    }
-
+    function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
     function openPrivacyModal() { document.getElementById('privacy-policy-modal').classList.remove('hidden'); }
     function closePrivacyModal() { document.getElementById('privacy-policy-modal').classList.add('hidden'); }
-
     function openContactModal() { document.getElementById('contact-modal').classList.remove('hidden'); }
     function closeContactModal() { document.getElementById('contact-modal').classList.add('hidden'); }
 
@@ -1151,7 +1153,6 @@
       document.getElementById('cust-accent-color').value = settings.accentColor || '#6B8E23';
       document.getElementById('cust-footer-bg').value = settings.footerBgColor || '#3b4e1e';
       document.getElementById('cust-footer-text').value = settings.footerTextColor || '#fcd34d';
-      
       document.getElementById('primary-hex-display').textContent = settings.primaryColor || '#556B2F';
       document.getElementById('accent-hex-display').textContent = settings.accentColor || '#6B8E23';
       document.getElementById('footer-bg-hex-display').textContent = settings.footerBgColor || '#3b4e1e';
@@ -1166,7 +1167,6 @@
       document.getElementById('cust-hero-sub').value = settings.heroSub || defaultSettings.heroSub;
       document.getElementById('cust-announcement').value = settings.announcement || defaultSettings.announcement;
       document.getElementById('cust-footer-copyright').value = settings.footerCopyright || defaultSettings.footerCopyright;
-
       document.getElementById('cust-contact-email').value = eMail;
       document.getElementById('cust-contact-phone').value = pPhone;
       document.getElementById('cust-contact-address').value = aAddress;
@@ -1176,14 +1176,12 @@
     function renderAdminHeroCarouselList() {
       const container = document.getElementById('hero-carousel-admin-list');
       const images = settings.heroImages || defaultHeroImages;
-
       if (!container) return;
-
       container.innerHTML = images.map((url, index) => `
         <div class="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-amber-200">
           <img src="${url}" class="w-10 h-10 object-cover rounded-lg border border-amber-300 shrink-0">
           <input type="text" value="${url}" onchange="updateHeroCarouselUrl(${index}, this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg font-mono">
-          <button type="button" onclick="deleteHeroCarouselImage(${index})" class="text-xs text-red-600 hover:text-red-800 font-bold px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 shrink-0">Delete</button>
+          <button type="button" onclick="deleteHeroCarouselImage(${index})" class="text-xs text-red-600 hover:text-red-800 font-bold px-3 py-1.5 rounded-lg bg-red-50 shrink-0">Delete</button>
         </div>
       `).join('');
     }
@@ -1193,14 +1191,8 @@
       settings.heroImages.push('https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80');
       renderAdminHeroCarouselList();
     }
-
-    function updateHeroCarouselUrl(index, val) {
-      if (!settings.heroImages) settings.heroImages = defaultHeroImages;
-      settings.heroImages[index] = val;
-    }
-
+    function updateHeroCarouselUrl(index, val) { settings.heroImages[index] = val; }
     function deleteHeroCarouselImage(index) {
-      if (!settings.heroImages) return;
       settings.heroImages.splice(index, 1);
       renderAdminHeroCarouselList();
     }
@@ -1209,12 +1201,7 @@
       const container = document.getElementById('footer-social-links-bar');
       const list = settings.socialLinks || defaultSocials;
       const activeLinks = list.filter(s => s.enabled);
-
-      if (activeLinks.length === 0) {
-        container.innerHTML = '';
-        return;
-      }
-
+      if (activeLinks.length === 0) { container.innerHTML = ''; return; }
       container.innerHTML = activeLinks.map(s => {
         const iconClass = socialIconMap[s.platform] || 'fa-solid fa-link';
         return `
@@ -1229,25 +1216,21 @@
     function renderAdminSocialLinksList() {
       const container = document.getElementById('social-links-admin-list');
       const list = settings.socialLinks || defaultSocials;
-
       container.innerHTML = list.map((s, index) => {
         const currentIconClass = socialIconMap[s.platform] || 'fa-solid fa-link';
         return `
           <div class="p-3.5 bg-white rounded-xl border border-amber-200 space-y-3">
             <div class="flex items-center justify-between gap-2">
               <span class="font-bold text-xs text-amber-900 flex items-center gap-1.5">
-                <i class="${currentIconClass} text-base text-primary"></i>
-                Social Link #${index + 1}
+                <i class="${currentIconClass} text-base text-primary"></i> Social Link #${index + 1}
               </span>
               <div class="flex items-center gap-2">
                 <label class="text-[11px] font-semibold text-amber-800 flex items-center gap-1 cursor-pointer">
-                  <input type="checkbox" onchange="toggleSocialLinkActive('${s.id}', this.checked)" ${s.enabled ? 'checked' : ''} class="rounded text-primary focus:ring-amber-500">
-                  Visible
+                  <input type="checkbox" onchange="toggleSocialLinkActive('${s.id}', this.checked)" ${s.enabled ? 'checked' : ''} class="rounded text-primary focus:ring-amber-500"> Visible
                 </label>
-                <button type="button" onclick="deleteSocialLink('${s.id}')" class="text-xs text-red-600 hover:text-red-800 font-bold px-2 py-1 rounded bg-red-50 hover:bg-red-100">Delete</button>
+                <button type="button" onclick="deleteSocialLink('${s.id}')" class="text-xs text-red-600 hover:text-red-800 font-bold px-2 py-1 rounded bg-red-50">Delete</button>
               </div>
             </div>
-
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label class="block text-[10px] font-bold text-amber-800 mb-0.5">Platform Icon</label>
@@ -1276,37 +1259,23 @@
 
     function addNewSocialLinkItem() {
       if (!settings.socialLinks) settings.socialLinks = [];
-      const newId = 'soc-' + Date.now();
-      settings.socialLinks.push({
-        id: newId,
-        name: 'Facebook Page',
-        platform: 'facebook',
-        url: 'https://facebook.com',
-        enabled: true
-      });
+      settings.socialLinks.push({ id: 'soc-' + Date.now(), name: 'Facebook Page', platform: 'facebook', url: 'https://facebook.com', enabled: true });
       renderAdminSocialLinksList();
     }
-
     function updateSocialLinkPlatform(id, val) {
       const item = settings.socialLinks.find(s => s.id === id);
-      if (item) {
-        item.platform = val;
-        renderAdminSocialLinksList();
-      }
+      if (item) { item.platform = val; renderAdminSocialLinksList(); }
     }
-
     function updateSocialLinkField(id, key, val) {
       const item = settings.socialLinks.find(s => s.id === id);
       if (item) item[key] = val;
     }
-
     function toggleSocialLinkActive(id, isChecked) {
       const item = settings.socialLinks.find(s => s.id === id);
       if (item) item.enabled = isChecked;
     }
-
     function deleteSocialLink(id) {
-      if (!confirm('Are you sure you want to delete this social link?')) return;
+      if (!confirm('Delete this social link?')) return;
       settings.socialLinks = settings.socialLinks.filter(s => s.id !== id);
       renderAdminSocialLinksList();
     }
@@ -1334,18 +1303,16 @@
         bodyFont: document.getElementById('cust-body-font').value,
         socialLinks: settings.socialLinks || defaultSocials
       };
-
       db.ref('settings').set(settings);
       localStorage.setItem('bs_settings', JSON.stringify(settings));
       applyStylesAndSettings();
       startHeroCarousel();
-      alert('Settings, hero carousel pictures, contact details, map, and colors updated successfully!');
+      alert('Settings updated successfully!');
     }
 
     function renderProducts() {
       const query = document.getElementById('search-input').value.toLowerCase();
       const grid = document.getElementById('product-grid');
-
       const filtered = products.filter(p => {
         if (p.visible === false) return false;
         const matchesCat = selectedCategory === 'All' || p.category === selectedCategory;
@@ -1354,7 +1321,7 @@
       });
 
       if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-12 text-amber-700">No products currently available.</div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-amber-700">No products available.</div>`;
         return;
       }
 
@@ -1387,20 +1354,20 @@
       activeModalProduct = p;
       modalQty = 1;
 
+      // Log product view analytics
+      logProductView(p.id, p.title);
+
       document.getElementById('modal-prod-img').src = p.img;
       document.getElementById('modal-prod-title').textContent = p.title;
       document.getElementById('modal-prod-cat').textContent = p.category;
       document.getElementById('modal-prod-desc').textContent = p.desc;
-      
       document.getElementById('modal-ingredients-text').textContent = p.ingredients || 'Pure Cultured Butter, Natural Spices & Fresh Herbs. Contains Milk.';
       document.getElementById('modal-storage-text').textContent = p.storage || 'Keep refrigerated between 2°C and 5°C. Suitable for freezing for up to 6 months.';
-      document.getElementById('modal-delivery-text').textContent = p.deliveryInfo || 'Fresh insulated delivery available across Centurion and Gauteng. Orders placed before 12:00 PM are dispatched next business day.';
-      
+      document.getElementById('modal-delivery-text').textContent = p.deliveryInfo || 'Fresh insulated delivery or free market collection in Centurion.';
       document.getElementById('modal-qty-display').textContent = modalQty;
 
       const variantSelect = document.getElementById('modal-variant-select');
       variantSelect.innerHTML = '';
-
       const varList = (p.variants || 'Standard:+0').split(',');
       varList.forEach((vStr) => {
         const parts = vStr.trim().split(':+');
@@ -1445,17 +1412,10 @@
 
       const itemCartId = `${activeModalProduct.id}-${variantName}`;
       const existing = cart.find(item => item.cartId === itemCartId);
-
       if (existing) {
         existing.qty += modalQty;
       } else {
-        cart.push({
-          cartId: itemCartId,
-          id: activeModalProduct.id,
-          title: `${activeModalProduct.title} (${variantName})`,
-          price: finalUnitPrice,
-          qty: modalQty
-        });
+        cart.push({ cartId: itemCartId, id: activeModalProduct.id, title: `${activeModalProduct.title} (${variantName})`, price: finalUnitPrice, qty: modalQty });
       }
 
       saveCart();
@@ -1475,6 +1435,21 @@
       }
     }
 
+    function setFulfillmentMode(mode) {
+      currentFulfillmentMode = mode;
+      const btnDeliv = document.getElementById('fulfillment-btn-delivery');
+      const btnColl = document.getElementById('fulfillment-btn-collection');
+      
+      if (mode === 'delivery') {
+        btnDeliv.className = 'py-2 px-3 text-xs font-bold rounded-lg border transition bg-primary text-white border-primary shadow-xs';
+        btnColl.className = 'py-2 px-3 text-xs font-bold rounded-lg border transition bg-white text-amber-900 border-amber-300';
+      } else {
+        btnColl.className = 'py-2 px-3 text-xs font-bold rounded-lg border transition bg-primary text-white border-primary shadow-xs';
+        btnDeliv.className = 'py-2 px-3 text-xs font-bold rounded-lg border transition bg-white text-amber-900 border-amber-300';
+      }
+      updateCartUI();
+    }
+
     function renderAdminProducts() {
       const tbody = document.getElementById('admin-product-table-body');
       tbody.innerHTML = products.map(p => {
@@ -1488,8 +1463,8 @@
             <td class="p-3 text-amber-700">${p.category}</td>
             <td class="p-3 font-bold">R${p.price.toFixed(2)}</td>
             <td class="p-3">
-              <span class="text-xs px-2.5 py-1 rounded-full font-bold ${isVisible ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-red-100 text-red-700 border border-red-300'}">
-                ${isVisible ? 'In Stock (Visible)' : 'Out of Stock (Hidden)'}
+              <span class="text-xs px-2.5 py-1 rounded-full font-bold ${isVisible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-700'}">
+                ${isVisible ? 'In Stock' : 'Hidden'}
               </span>
             </td>
             <td class="p-3 text-right space-x-2">
@@ -1501,11 +1476,49 @@
       }).join('');
     }
 
+    function renderAdminAnalytics() {
+      document.getElementById('stat-total-visits').textContent = visitorLogs.length;
+      document.getElementById('stat-total-customers').textContent = Object.keys(customerProfiles).length;
+
+      let totalViewsSum = 0;
+      const analyticsTableBody = document.getElementById('admin-analytics-table-body');
+      
+      const pKeys = Object.keys(productViews);
+      if (pKeys.length === 0) {
+        analyticsTableBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-amber-600 italic">No product views recorded yet.</td></tr>`;
+        document.getElementById('stat-total-views').textContent = 0;
+      } else {
+        // Sort by view count descending
+        const sortedViews = pKeys.map(k => ({ id: k, ...productViews[k] })).sort((a, b) => b.count - a.count);
+        totalViewsSum = sortedViews.reduce((sum, item) => sum + item.count, 0);
+        document.getElementById('stat-total-views').textContent = totalViewsSum;
+
+        analyticsTableBody.innerHTML = sortedViews.map(item => `
+          <tr class="border-b border-amber-100 hover:bg-amber-50/50">
+            <td class="p-3 font-semibold text-amber-950">${item.title}</td>
+            <td class="p-3 text-amber-700">Artisanal Product</td>
+            <td class="p-3 text-right font-bold text-primary">${item.count} views</td>
+          </tr>
+        `).join('');
+      }
+
+      const visitorLogContainer = document.getElementById('admin-visitor-log-list');
+      if (visitorLogs.length === 0) {
+        visitorLogContainer.innerHTML = `<p class="italic text-amber-600 text-center py-2">No visits logged yet.</p>`;
+      } else {
+        visitorLogContainer.innerHTML = visitorLogs.slice(0, 25).map(v => `
+          <div class="flex justify-between items-center bg-amber-50/50 p-2.5 rounded-xl border border-amber-200">
+            <span><i class="fa-solid fa-user-clock text-primary mr-1.5"></i> ${v.userEmail} (${v.userAgent})</span>
+            <span class="font-mono text-amber-600">${v.time}</span>
+          </div>
+        `).join('');
+      }
+    }
+
     function renderAdminCustomers() {
       const container = document.getElementById('admin-customers-list');
       const badge = document.getElementById('customer-count-badge');
       const userKeys = Object.keys(customerProfiles);
-
       badge.textContent = `${userKeys.length} Registered`;
 
       if (userKeys.length === 0) {
@@ -1547,11 +1560,8 @@
       const deliveryInfo = document.getElementById('prod-delivery-info').value || '';
 
       const idx = products.findIndex(p => p.id === id);
-      if (idx > -1) {
-        products[idx] = { id, title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo };
-      } else {
-        products.push({ id, title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo });
-      }
+      if (idx > -1) products[idx] = { id, title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo };
+      else products.push({ id, title, price, category, img, visible, desc, variants, ingredients, storage, deliveryInfo });
 
       db.ref('products').set(products);
       localStorage.setItem('bs_products', JSON.stringify(products));
@@ -1611,44 +1621,22 @@
     function calculateDeliveryDetails(address = '') {
       const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       const lowerAddr = address.toLowerCase();
-      
-      const isCenturion = lowerAddr.includes('centurion') || 
-                          lowerAddr.includes('lyttelton') || 
-                          lowerAddr.includes('pierre van ryneveld') || 
-                          lowerAddr.includes('irene') || 
-                          lowerAddr.includes('highveld') || 
-                          lowerAddr.includes('rooihuiskraal') || 
-                          lowerAddr.includes('amberfield') || 
-                          lowerAddr.includes('doringkloof');
+      const isCenturion = lowerAddr.includes('centurion') || lowerAddr.includes('lyttelton') || lowerAddr.includes('pierre van ryneveld') || lowerAddr.includes('irene') || lowerAddr.includes('highveld') || lowerAddr.includes('rooihuiskraal') || lowerAddr.includes('amberfield') || lowerAddr.includes('doringkloof');
 
       if (isCenturion) {
-        if (subtotal >= 400) {
-          return { type: 'centurion', fee: 0, isFree: true, threshold: 400, short: 0 };
-        } else {
-          return { type: 'centurion', fee: 20, isFree: false, threshold: 400, short: 400 - subtotal };
-        }
+        if (subtotal >= 400) return { type: 'centurion', fee: 0, isFree: true, threshold: 400, short: 0 };
+        else return { type: 'centurion', fee: 20, isFree: false, threshold: 400, short: 400 - subtotal };
       } else {
-        if (subtotal >= 800) {
-          return { type: 'national', fee: 0, isFree: true, threshold: 800, short: 0 };
-        } else {
-          return { type: 'national', fee: 69, isFree: false, threshold: 800, short: 800 - subtotal };
-        }
+        if (subtotal >= 800) return { type: 'national', fee: 0, isFree: true, threshold: 800, short: 0 };
+        else return { type: 'national', fee: 69, isFree: false, threshold: 800, short: 800 - subtotal };
       }
     }
 
     function isFirstTimeBuyerUser(callback) {
-      if (!currentUser || currentUser.email === 'happiekos@gmail.com') {
-        callback(false);
-        return;
-      }
-      
-      // Check if user has any previous orders in database
+      if (!currentUser || currentUser.email === 'happiekos@gmail.com') { callback(false); return; }
       db.ref('orders').orderByChild('user').equalTo(currentUser.email).once('value', (snap) => {
-        if (snap.exists()) {
-          callback(false); // Has previous orders
-        } else {
-          callback(true);  // First-time buyer!
-        }
+        if (snap.exists()) callback(false);
+        else callback(true);
       });
     }
 
@@ -1662,7 +1650,6 @@
       isFirstTimeBuyerUser((isFirstTime) => {
         const discountRow = document.getElementById('discount-row');
         let discountVal = 0;
-
         if (isFirstTime && subtotal > 0) {
           discountVal = subtotal * 0.05;
           discountRow.classList.remove('hidden');
@@ -1673,23 +1660,28 @@
 
         const discountedSubtotal = subtotal - discountVal;
 
-        if (currentUser && currentUser.email === 'happiekos@gmail.com') {
-          document.getElementById('cart-delivery-display').textContent = 'Admin Free Delivery';
+        if (currentFulfillmentMode === 'collection') {
+          document.getElementById('cart-delivery-label').textContent = 'Collection:';
+          document.getElementById('cart-delivery-display').textContent = 'Free Store / Market Collection';
           document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
-        } else if (currentUser) {
-          const userKey = sanitizeKey(currentUser.email);
-          db.ref('profiles/' + userKey).once('value', (snap) => {
-            const prof = snap.val() || {};
-            const addr = prof.address || '';
-            const delivery = calculateDeliveryDetails(addr);
-            
-            let deliveryText = delivery.fee === 0 ? 'Free Delivery' : `R${delivery.fee}.00 (${delivery.type === 'centurion' ? 'Centurion' : 'National'})`;
-            document.getElementById('cart-delivery-display').textContent = deliveryText;
-            document.getElementById('cart-total-price').textContent = `R${(discountedSubtotal + delivery.fee).toFixed(2)}`;
-          });
         } else {
-          document.getElementById('cart-delivery-display').textContent = 'Log in / set address at checkout';
-          document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
+          document.getElementById('cart-delivery-label').textContent = 'Delivery Fee:';
+          if (currentUser && currentUser.email === 'happiekos@gmail.com') {
+            document.getElementById('cart-delivery-display').textContent = 'Admin Free Delivery';
+            document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
+          } else if (currentUser) {
+            const userKey = sanitizeKey(currentUser.email);
+            db.ref('profiles/' + userKey).once('value', (snap) => {
+              const prof = snap.val() || {};
+              const delivery = calculateDeliveryDetails(prof.address || '');
+              const deliveryText = delivery.fee === 0 ? 'Free Delivery' : `R${delivery.fee}.00 (${delivery.type === 'centurion' ? 'Centurion' : 'National'})`;
+              document.getElementById('cart-delivery-display').textContent = deliveryText;
+              document.getElementById('cart-total-price').textContent = `R${(discountedSubtotal + delivery.fee).toFixed(2)}`;
+            });
+          } else {
+            document.getElementById('cart-delivery-display').textContent = 'Log in / set address';
+            document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
+          }
         }
       });
 
@@ -1726,7 +1718,6 @@
     function toggleCartDrawer(forceOpen = false) {
       const drawer = document.getElementById('cart-drawer');
       const panel = document.getElementById('cart-drawer-panel');
-
       if (forceOpen || drawer.classList.contains('pointer-events-none')) {
         drawer.classList.remove('pointer-events-none', 'opacity-0');
         panel.classList.remove('translate-x-full');
@@ -1738,7 +1729,6 @@
 
     function initiateCheckout() {
       if (cart.length === 0) return alert('Cart is empty.');
-
       if (!currentUser) {
         alert('Please log in or create an account to place your order.');
         toggleCartDrawer();
@@ -1751,7 +1741,6 @@
 
       db.ref('profiles/' + userKey).once('value', (snap) => {
         const prof = snap.val() || {};
-
         if (currentUser.email !== 'happiekos@gmail.com') {
           if (!prof.name || !prof.phone || !prof.address) {
             alert('Please complete your profile details before submitting an order.');
@@ -1766,75 +1755,13 @@
           const discount = isFirstTime ? subtotal * 0.05 : 0;
           const discountedSubtotal = subtotal - discount;
 
-          const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0, isFree: true, type: 'admin', short: 0 } : calculateDeliveryDetails(prof.address || '');
-
-          if (!delivery.isFree) {
-            openDeliveryNoticeModal(delivery);
-          } else {
-            executeOrderSubmission(discountedSubtotal, discount, delivery.fee);
+          let deliveryFee = 0;
+          if (currentFulfillmentMode === 'delivery') {
+            const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0, isFree: true } : calculateDeliveryDetails(prof.address || '');
+            deliveryFee = delivery.fee;
           }
-        });
-      });
-    }
 
-    function openDeliveryNoticeModal(delivery) {
-      let modal = document.getElementById('delivery-notice-modal');
-      if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'delivery-notice-modal';
-        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4';
-        modal.innerHTML = `
-          <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 border border-amber-200 shadow-2xl relative text-amber-950 text-center">
-            <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-xl font-bold border border-amber-300">
-              <i class="fa-solid fa-truck"></i>
-            </div>
-            <div class="space-y-1">
-              <h3 class="brand-font text-xl font-bold text-amber-950">Delivery Fee Applies</h3>
-              <p class="text-xs text-amber-800" id="delivery-notice-msg">You do not qualify for free delivery for this order.</p>
-            </div>
-            
-            <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-1 text-left">
-              <p>• <strong>Fee:</strong> <span id="notice-fee-val">R20.00</span></p>
-              <p>• <strong>Add R<span id="notice-short-val">0</span> more</strong> to your cart to unlock Free Delivery!</p>
-            </div>
-
-            <div class="space-y-2 pt-2">
-              <button onclick="closeDeliveryNoticeModal(); toggleCartDrawer();" class="w-full bg-amber-100 text-amber-900 font-bold py-3 rounded-xl hover:bg-amber-200 transition text-xs sm:text-sm flex items-center justify-center gap-2">
-                <i class="fa-solid fa-arrow-left"></i> Go Back & Add More Items
-              </button>
-              <button onclick="closeDeliveryNoticeModal(); executeOrderSubmissionWithCurrentFee();" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-95 transition text-xs sm:text-sm shadow-md">
-                Continue to Checkout With Fee
-              </button>
-            </div>
-          </div>
-        `;
-        document.body.appendChild(modal);
-      }
-
-      document.getElementById('delivery-notice-msg').textContent = delivery.type === 'centurion' 
-        ? `Centurion orders under R400 carry a R20 delivery fee.`
-        : `National orders under R800 carry a R69 delivery fee.`;
-      
-      document.getElementById('notice-fee-val').textContent = `R${delivery.fee}.00`;
-      document.getElementById('notice-short-val').textContent = delivery.short.toFixed(2);
-      modal.classList.remove('hidden');
-    }
-
-    function closeDeliveryNoticeModal() {
-      const modal = document.getElementById('delivery-notice-modal');
-      if (modal) modal.classList.add('hidden');
-    }
-
-    function executeOrderSubmissionWithCurrentFee() {
-      const userKey = sanitizeKey(currentUser.email);
-      db.ref('profiles/' + userKey).once('value', (snap) => {
-        const prof = snap.val() || {};
-        isFirstTimeBuyerUser((isFirstTime) => {
-          const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-          const discount = isFirstTime ? subtotal * 0.05 : 0;
-          const discountedSubtotal = subtotal - discount;
-          const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0 } : calculateDeliveryDetails(prof.address || '');
-          executeOrderSubmission(discountedSubtotal, discount, delivery.fee);
+          executeOrderSubmission(discountedSubtotal, discount, deliveryFee);
         });
       });
     }
@@ -1847,12 +1774,14 @@
         const prof = snap.val() || {};
         const orderId = 'ORD-' + Date.now().toString().slice(-6);
         const orderTotal = discountedSubtotal + deliveryFee;
+        const fulfillmentLabel = currentFulfillmentMode === 'collection' ? 'Free Store Collection' : (deliveryFee === 0 ? 'Free Delivery' : `Delivery Fee: R${deliveryFee}.00`);
         
         const order = {
           id: orderId,
           date: new Date().toLocaleString(),
           user: activeUserEmail,
           customerDetails: prof,
+          fulfillment: currentFulfillmentMode === 'collection' ? 'Collection' : 'Delivery',
           status: 'Pending',
           items: [...cart],
           subtotal: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
@@ -1869,7 +1798,7 @@
           customer_name: prof.name || 'N/A',
           customer_phone: prof.phone || 'N/A',
           customer_address: prof.address || 'N/A',
-          order_total: `R${orderTotal.toFixed(2)} (Discount: -R${discountAmount.toFixed(2)} | Delivery: R${deliveryFee}.00)`,
+          order_total: `R${orderTotal.toFixed(2)} (${fulfillmentLabel} | Discount: -R${discountAmount.toFixed(2)})`,
           order_items: cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
         };
 
@@ -1882,12 +1811,11 @@
         cart = [];
         saveCart();
         toggleCartDrawer();
-        
-        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof, deliveryFee, discountAmount);
+        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof, deliveryFee, discountAmount, currentFulfillmentMode);
       });
     }
 
-    function openYocoPaymentModal(orderId, total, link, prof, deliveryFee, discountAmount) {
+    function openYocoPaymentModal(orderId, total, link, prof, deliveryFee, discountAmount, mode) {
       let modal = document.getElementById('yoco-success-modal');
       if (!modal) {
         modal = document.createElement('div');
@@ -1904,11 +1832,12 @@
             </div>
             
             <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-left text-xs space-y-1">
-              <p class="font-bold text-primary border-b border-amber-200 pb-1 mb-1"><i class="fa-solid fa-user mr-1"></i> Shipping Details</p>
+              <p class="font-bold text-primary border-b border-amber-200 pb-1 mb-1"><i class="fa-solid fa-user mr-1"></i> Customer Details</p>
               <p><strong>Name:</strong> <span id="yoco-modal-name"></span></p>
               <p><strong>Phone:</strong> <span id="yoco-modal-phone"></span></p>
+              <p><strong>Fulfillment:</strong> <span id="yoco-modal-mode" class="font-bold text-primary"></span></p>
               <p><strong>Address:</strong> <span id="yoco-modal-address"></span></p>
-              <p><strong>First-Order Discount:</strong> <span id="yoco-modal-discount"></span></p>
+              <p><strong>Discount:</strong> <span id="yoco-modal-discount"></span></p>
               <p><strong>Delivery Fee:</strong> <span id="yoco-modal-delivery"></span></p>
             </div>
 
@@ -1923,17 +1852,9 @@
                   <i class="fa-solid fa-copy text-primary"></i> Copy Payment Reference Number
                 </button>
               </div>
-              
               <div class="text-[11px] text-amber-800 bg-white p-2 rounded-lg border border-amber-200 text-center">
                 Reference Code: <strong id="yoco-ref-code"></strong>
               </div>
-            </div>
-
-            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs text-amber-900 text-left space-y-1.5">
-              <p class="font-bold text-primary"><i class="fa-solid fa-circle-info mr-1"></i> Payment Instructions:</p>
-              <p>1. Copy Payment Reference number before opening Yoco.</p>
-              <p>2. Enter total amount on Yoco Payment Page.</p>
-              <p>3. Paste reference number into the Reference Block.</p>
             </div>
 
             <div class="space-y-2">
@@ -1954,9 +1875,10 @@
       document.getElementById('yoco-ref-code').textContent = orderId;
       document.getElementById('yoco-modal-name').textContent = prof.name || 'N/A';
       document.getElementById('yoco-modal-phone').textContent = prof.phone || 'N/A';
+      document.getElementById('yoco-modal-mode').textContent = mode === 'collection' ? '🏪 Free Store / Market Collection' : '🚚 Insured Delivery';
       document.getElementById('yoco-modal-address').textContent = prof.address || 'N/A';
-      document.getElementById('yoco-modal-discount').textContent = discountAmount > 0 ? `-R${discountAmount.toFixed(2)} (Applied)` : 'None';
-      document.getElementById('yoco-modal-delivery').textContent = deliveryFee === 0 ? 'Free Delivery' : `R${deliveryFee}.00`;
+      document.getElementById('yoco-modal-discount').textContent = discountAmount > 0 ? `-R${discountAmount.toFixed(2)}` : 'None';
+      document.getElementById('yoco-modal-delivery').textContent = deliveryFee === 0 ? 'Free' : `R${deliveryFee}.00`;
       document.getElementById('yoco-pay-btn').href = link;
       modal.classList.remove('hidden');
     }
@@ -1964,23 +1886,16 @@
     function copySpecificValue(type) {
       if (type === 'reference') {
         const refText = document.getElementById('yoco-ref-code').textContent.trim();
-        navigator.clipboard.writeText(refText).then(() => {
-          alert('Reference Code copied to clipboard!');
-        });
+        navigator.clipboard.writeText(refText).then(() => alert('Reference Code copied!'));
       }
     }
 
     function handleYocoPayClick(e) {
       const refCode = document.getElementById('yoco-ref-code').textContent.trim();
-      navigator.clipboard.writeText(refCode).catch(err => {
-        console.log('Clipboard copy failed:', err);
-      });
+      navigator.clipboard.writeText(refCode).catch(err => console.log(err));
     }
 
-    function closeYocoPaymentModal() {
-      const modal = document.getElementById('yoco-success-modal');
-      if (modal) modal.classList.add('hidden');
-    }
+    function closeYocoPaymentModal() { document.getElementById('yoco-success-modal').classList.add('hidden'); }
 
     function renderCategories() {
       const cats = ['All', ...new Set(products.filter(p => p.visible !== false).map(p => p.category))];
@@ -2005,13 +1920,14 @@
 
       if (viewName === 'admin') {
         if (!currentUser || currentUser.email !== 'happiekos@gmail.com') {
-          alert('Access Restricted. Log in as Admin (happiekos@gmail.com) to access this panel.');
+          alert('Access Restricted to Admin.');
           openAuthModal();
           document.getElementById('view-store').classList.remove('hidden');
           return;
         }
         document.getElementById('view-admin').classList.remove('hidden');
         renderAdminProducts();
+        renderAdminAnalytics();
         renderAdminCustomers();
         renderAdminOrders();
       } else if (viewName === 'account') {
@@ -2039,32 +1955,25 @@
       const pass = document.getElementById('auth-pass').value;
 
       if (isRegisterMode) {
-        auth.createUserWithEmailAndPassword(email, pass)
-          .then((userCredential) => {
-            closeAuthModal();
-            checkMandatoryProfileSetup();
-          })
-          .catch((error) => alert('Registration Error: ' + error.message));
+        auth.createUserWithEmailAndPassword(email, pass).then(() => {
+          closeAuthModal();
+          checkMandatoryProfileSetup();
+        }).catch((error) => alert('Registration Error: ' + error.message));
       } else {
-        auth.signInWithEmailAndPassword(email, pass)
-          .then((userCredential) => {
-            closeAuthModal();
-            if (email === 'happiekos@gmail.com') navigateTo('admin');
-            else checkMandatoryProfileSetup();
-          })
-          .catch((error) => alert('Login Failed: ' + error.message));
+        auth.signInWithEmailAndPassword(email, pass).then(() => {
+          closeAuthModal();
+          if (email === 'happiekos@gmail.com') navigateTo('admin');
+          else checkMandatoryProfileSetup();
+        }).catch((error) => alert('Login Failed: ' + error.message));
       }
     }
 
     function loginWithGoogle() {
-      auth.signInWithPopup(googleProvider)
-        .then((result) => {
-          closeAuthModal();
-          const user = result.user;
-          if (user.email === 'happiekos@gmail.com') navigateTo('admin');
-          else checkMandatoryProfileSetup();
-        })
-        .catch((error) => alert('Google Sign-In Error: ' + error.message));
+      auth.signInWithPopup(googleProvider).then((result) => {
+        closeAuthModal();
+        if (result.user.email === 'happiekos@gmail.com') navigateTo('admin');
+        else checkMandatoryProfileSetup();
+      }).catch((error) => alert('Google Sign-In Error: ' + error.message));
     }
 
     function logout() {
@@ -2080,11 +1989,9 @@
       const desktopLoginBtn = document.getElementById('desktop-login-btn');
       const desktopUserPill = document.getElementById('desktop-user-pill');
       const desktopEmail = document.getElementById('desktop-user-email-display');
-      
       const mobileLoginBtn = document.getElementById('mobile-login-btn');
       const mobileUserPill = document.getElementById('mobile-user-pill');
       const mobileEmail = document.getElementById('mobile-user-email-display');
-
       const navAdminBtn = document.getElementById('nav-admin-btn');
       const mobileNavAdminBtn = document.getElementById('mobile-nav-admin-btn');
 
@@ -2092,7 +1999,6 @@
         if (desktopLoginBtn) desktopLoginBtn.classList.add('hidden');
         if (desktopUserPill) desktopUserPill.classList.remove('hidden');
         if (desktopEmail) desktopEmail.textContent = currentUser.email;
-
         if (mobileLoginBtn) mobileLoginBtn.classList.add('hidden');
         if (mobileUserPill) mobileUserPill.classList.remove('hidden');
         if (mobileEmail) mobileEmail.textContent = currentUser.email;
@@ -2107,10 +2013,8 @@
       } else {
         if (desktopLoginBtn) desktopLoginBtn.classList.remove('hidden');
         if (desktopUserPill) desktopUserPill.classList.add('hidden');
-
         if (mobileLoginBtn) mobileLoginBtn.classList.remove('hidden');
         if (mobileUserPill) mobileUserPill.classList.add('hidden');
-
         if (navAdminBtn) navAdminBtn.classList.add('hidden');
         if (mobileNavAdminBtn) mobileNavAdminBtn.classList.add('hidden');
       }
@@ -2119,7 +2023,6 @@
     function saveCustomerAddress(e) {
       e.preventDefault();
       if (!currentUser) { alert('Please log in first.'); return; }
-
       const userKey = sanitizeKey(currentUser.email);
       const profile = {
         email: currentUser.email,
@@ -2127,13 +2030,10 @@
         phone: document.getElementById('cust-phone').value.trim(),
         address: document.getElementById('cust-address').value.trim()
       };
-
-      db.ref('profiles/' + userKey).set(profile)
-        .then(() => {
-          alert('Delivery address and contact details saved to cloud successfully!');
-          updateCartUI();
-        })
-        .catch((err) => alert('Error saving address: ' + err.message));
+      db.ref('profiles/' + userKey).set(profile).then(() => {
+        alert('Address saved successfully!');
+        updateCartUI();
+      }).catch((err) => alert('Error: ' + err.message));
     }
 
     function loadCustomerProfile() {
@@ -2151,15 +2051,24 @@
     }
 
     function switchAdminTab(tab) {
-      ['products', 'customers', 'customize', 'orders'].forEach(t => {
-        document.getElementById(`admin-tab-${t}`).classList.add('hidden');
-        document.getElementById(`tab-btn-${t}`).classList.replace('text-primary', 'text-amber-600');
-        document.getElementById(`tab-btn-${t}`).classList.replace('border-primary', 'border-transparent');
+      ['products', 'analytics', 'customers', 'customize', 'orders'].forEach(t => {
+        const el = document.getElementById(`admin-tab-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (el) el.classList.add('hidden');
+        if (btn) {
+          btn.classList.replace('text-primary', 'text-amber-600');
+          btn.classList.replace('border-primary', 'border-transparent');
+        }
       });
-      document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
-      document.getElementById(`tab-btn-${tab}`).classList.replace('text-amber-600', 'text-primary');
-      document.getElementById(`tab-btn-${tab}`).classList.replace('border-transparent', 'border-primary');
+      const activeTab = document.getElementById(`admin-tab-${tab}`);
+      const activeBtn = document.getElementById(`tab-btn-${tab}`);
+      if (activeTab) activeTab.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.replace('text-amber-600', 'text-primary');
+        activeBtn.classList.replace('border-transparent', 'border-primary');
+      }
 
+      if (tab === 'analytics') renderAdminAnalytics();
       if (tab === 'customers') renderAdminCustomers();
       if (tab === 'orders') renderAdminOrders();
     }
@@ -2174,38 +2083,36 @@
       container.innerHTML = orders.map(o => {
         const isDone = o.status === 'Completed';
         const cd = o.customerDetails || {};
-        const deliveryFeeDisplay = o.deliveryFee !== undefined ? `R${o.deliveryFee}.00` : 'Free / Included';
+        const fulfillmentDisplay = o.fulfillment || 'Delivery';
         const discountDisplay = o.discount !== undefined && o.discount > 0 ? `-R${o.discount.toFixed(2)}` : 'None';
         return `
           <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3">
             <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950">
               <div class="flex items-center gap-2">
                 <span>Order #${o.id}</span>
-                <span class="text-xs px-2.5 py-0.5 rounded-full font-bold ${isDone ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-amber-100 text-amber-800 border border-amber-300'}">
+                <span class="text-xs px-2.5 py-0.5 rounded-full font-bold ${isDone ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">
                   ${o.status || 'Pending'}
                 </span>
+                <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-bold">${fulfillmentDisplay}</span>
               </div>
               <span class="text-base text-primary">R${o.total.toFixed(2)}</span>
             </div>
             <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
               <p><strong>Customer Email:</strong> ${o.user}</p>
-              <p><strong>Full Name:</strong> ${cd.name || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
-              <p><strong>Cell Phone:</strong> ${cd.phone || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
-              <p><strong>Delivery Address:</strong> ${cd.address || '<span class="text-red-500 italic">&lt;No saved address&gt;</span>'}</p>
-              <p><strong>Discount Applied:</strong> ${discountDisplay}</p>
-              <p><strong>Delivery Fee Charged:</strong> ${deliveryFeeDisplay}</p>
+              <p><strong>Full Name:</strong> ${cd.name || 'N/A'}</p>
+              <p><strong>Cell Phone:</strong> ${cd.phone || 'N/A'}</p>
+              <p><strong>Address:</strong> ${cd.address || 'N/A'}</p>
+              <p><strong>Discount:</strong> ${discountDisplay}</p>
               <p class="text-[10px] text-amber-600 pt-1">Date: ${o.date}</p>
             </div>
             <ul class="text-xs space-y-1 list-disc pl-4 text-amber-900 bg-white p-3 rounded-xl border border-amber-100">
               ${o.items.map(i => `<li>${i.title} x ${i.qty} (R${(i.price * i.qty).toFixed(2)})</li>`).join('')}
             </ul>
             <div class="flex justify-end items-center gap-2 pt-1">
-              <button onclick="toggleOrderStatus('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl transition ${isDone ? 'bg-amber-100 text-amber-900 hover:bg-amber-200' : 'bg-green-700 text-white hover:bg-green-800'}">
-                <i class="fa-solid ${isDone ? 'fa-rotate-left' : 'fa-check'} mr-1"></i> ${isDone ? 'Mark Pending' : 'Mark Completed'}
+              <button onclick="toggleOrderStatus('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl transition ${isDone ? 'bg-amber-100 text-amber-900' : 'bg-green-700 text-white'}">
+                ${isDone ? 'Mark Pending' : 'Mark Completed'}
               </button>
-              <button onclick="deleteOrder('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-100 text-red-700 hover:bg-red-200 transition">
-                <i class="fa-solid fa-trash mr-1"></i> Delete Order
-              </button>
+              <button onclick="deleteOrder('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-100 text-red-700">Delete</button>
             </div>
           </div>
         `;
@@ -2221,12 +2128,10 @@
     }
 
     function deleteOrder(orderId) {
-      if (!confirm(`Are you sure you want to delete order #${orderId}?`)) return;
+      if (!confirm(`Delete order #${orderId}?`)) return;
       db.ref('orders/' + orderId).remove().then(() => {
         orders = orders.filter(o => o.id !== orderId);
         renderAdminOrders();
-      }).catch(err => {
-        alert('Error deleting order: ' + err.message);
       });
     }
   </script>
