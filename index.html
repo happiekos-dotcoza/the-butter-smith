@@ -467,6 +467,36 @@
 
   </main>
 
+  <!-- FIRST-TIME VISITOR WELCOME 5% OFF MODAL -->
+  <div id="welcome-discount-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 border border-amber-200 shadow-2xl relative text-center">
+      <button onclick="closeWelcomeModal()" class="absolute top-4 right-4 text-amber-600 hover:text-amber-950 bg-amber-100 w-8 h-8 rounded-full flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-14 h-14 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-2xl font-bold border border-amber-300">
+        <i class="fa-solid fa-percent"></i>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-xs font-bold text-accent uppercase tracking-wider">Welcome Offer</span>
+        <h3 class="brand-font text-2xl font-extrabold text-amber-950">Get 5% Off Your First Order!</h3>
+        <p class="text-xs sm:text-sm text-amber-800 leading-relaxed">
+          Sign up or log in today and enjoy an automatic **5% discount** applied instantly to your very first handcrafted order.
+        </p>
+      </div>
+
+      <div class="space-y-3 pt-2">
+        <button onclick="closeWelcomeModal(); openAuthModal();" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
+          <i class="fa-solid fa-user-plus"></i> Claim 5% Off Now
+        </button>
+        <button onclick="closeWelcomeModal()" class="w-full bg-amber-100 text-amber-900 font-bold py-2.5 rounded-xl hover:bg-amber-200 transition text-xs">
+          No Thanks, Just Browse
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- UNCLOSABLE FIRST-TIME PROFILE SETUP MODAL -->
   <div id="profile-setup-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-amber-200 shadow-2xl relative">
@@ -701,6 +731,10 @@
           <span>Subtotal:</span>
           <span id="cart-subtotal-price">R0.00</span>
         </div>
+        <div id="discount-row" class="hidden flex justify-between text-xs sm:text-sm text-green-700 font-semibold">
+          <span>First-Order Discount (5%):</span>
+          <span id="cart-discount-price">-R0.00</span>
+        </div>
         <div class="flex justify-between text-xs sm:text-sm text-amber-800">
           <span>Estimated Delivery:</span>
           <span id="cart-delivery-display">Calculated at checkout</span>
@@ -859,6 +893,14 @@
       initGoogleAutocomplete();
       startHeroCarousel();
 
+      // Check if first-time visitor to show 5% Welcome Modal
+      if (!localStorage.getItem('bs_welcome_shown')) {
+        setTimeout(() => {
+          document.getElementById('welcome-discount-modal').classList.remove('hidden');
+          localStorage.setItem('bs_welcome_shown', 'true');
+        }, 1200);
+      }
+
       auth.onAuthStateChanged((user) => {
         currentUser = user;
         updateAuthUI();
@@ -912,6 +954,10 @@
         }
       });
     });
+
+    function closeWelcomeModal() {
+      document.getElementById('welcome-discount-modal').classList.add('hidden');
+    }
 
     function initGoogleAutocomplete() {
       if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.places === 'undefined') return;
@@ -1590,6 +1636,22 @@
       }
     }
 
+    function isFirstTimeBuyerUser(callback) {
+      if (!currentUser || currentUser.email === 'happiekos@gmail.com') {
+        callback(false);
+        return;
+      }
+      
+      // Check if user has any previous orders in database
+      db.ref('orders').orderByChild('user').equalTo(currentUser.email).once('value', (snap) => {
+        if (snap.exists()) {
+          callback(false); // Has previous orders
+        } else {
+          callback(true);  // First-time buyer!
+        }
+      });
+    }
+
     function updateCartUI() {
       const count = cart.reduce((sum, item) => sum + item.qty, 0);
       const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
@@ -1597,24 +1659,39 @@
       document.getElementById('cart-count').textContent = count;
       document.getElementById('cart-subtotal-price').textContent = `R${subtotal.toFixed(2)}`;
 
-      if (currentUser && currentUser.email === 'happiekos@gmail.com') {
-        document.getElementById('cart-delivery-display').textContent = 'Admin Free Delivery';
-        document.getElementById('cart-total-price').textContent = `R${subtotal.toFixed(2)}`;
-      } else if (currentUser) {
-        const userKey = sanitizeKey(currentUser.email);
-        db.ref('profiles/' + userKey).once('value', (snap) => {
-          const prof = snap.val() || {};
-          const addr = prof.address || '';
-          const delivery = calculateDeliveryDetails(addr);
-          
-          let deliveryText = delivery.fee === 0 ? 'Free Delivery' : `R${delivery.fee}.00 (${delivery.type === 'centurion' ? 'Centurion' : 'National'})`;
-          document.getElementById('cart-delivery-display').textContent = deliveryText;
-          document.getElementById('cart-total-price').textContent = `R${(subtotal + delivery.fee).toFixed(2)}`;
-        });
-      } else {
-        document.getElementById('cart-delivery-display').textContent = 'Log in / set address at checkout';
-        document.getElementById('cart-total-price').textContent = `R${subtotal.toFixed(2)}`;
-      }
+      isFirstTimeBuyerUser((isFirstTime) => {
+        const discountRow = document.getElementById('discount-row');
+        let discountVal = 0;
+
+        if (isFirstTime && subtotal > 0) {
+          discountVal = subtotal * 0.05;
+          discountRow.classList.remove('hidden');
+          document.getElementById('cart-discount-price').textContent = `-R${discountVal.toFixed(2)}`;
+        } else {
+          discountRow.classList.add('hidden');
+        }
+
+        const discountedSubtotal = subtotal - discountVal;
+
+        if (currentUser && currentUser.email === 'happiekos@gmail.com') {
+          document.getElementById('cart-delivery-display').textContent = 'Admin Free Delivery';
+          document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
+        } else if (currentUser) {
+          const userKey = sanitizeKey(currentUser.email);
+          db.ref('profiles/' + userKey).once('value', (snap) => {
+            const prof = snap.val() || {};
+            const addr = prof.address || '';
+            const delivery = calculateDeliveryDetails(addr);
+            
+            let deliveryText = delivery.fee === 0 ? 'Free Delivery' : `R${delivery.fee}.00 (${delivery.type === 'centurion' ? 'Centurion' : 'National'})`;
+            document.getElementById('cart-delivery-display').textContent = deliveryText;
+            document.getElementById('cart-total-price').textContent = `R${(discountedSubtotal + delivery.fee).toFixed(2)}`;
+          });
+        } else {
+          document.getElementById('cart-delivery-display').textContent = 'Log in / set address at checkout';
+          document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
+        }
+      });
 
       const container = document.getElementById('cart-items-container');
       if (cart.length === 0) {
@@ -1684,13 +1761,19 @@
           }
         }
 
-        const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0, isFree: true, type: 'admin', short: 0 } : calculateDeliveryDetails(prof.address || '');
+        isFirstTimeBuyerUser((isFirstTime) => {
+          const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+          const discount = isFirstTime ? subtotal * 0.05 : 0;
+          const discountedSubtotal = subtotal - discount;
 
-        if (!delivery.isFree) {
-          openDeliveryNoticeModal(delivery);
-        } else {
-          executeOrderSubmission(delivery.fee);
-        }
+          const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0, isFree: true, type: 'admin', short: 0 } : calculateDeliveryDetails(prof.address || '');
+
+          if (!delivery.isFree) {
+            openDeliveryNoticeModal(delivery);
+          } else {
+            executeOrderSubmission(discountedSubtotal, discount, delivery.fee);
+          }
+        });
       });
     }
 
@@ -1746,20 +1829,24 @@
       const userKey = sanitizeKey(currentUser.email);
       db.ref('profiles/' + userKey).once('value', (snap) => {
         const prof = snap.val() || {};
-        const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0 } : calculateDeliveryDetails(prof.address || '');
-        executeOrderSubmission(delivery.fee);
+        isFirstTimeBuyerUser((isFirstTime) => {
+          const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+          const discount = isFirstTime ? subtotal * 0.05 : 0;
+          const discountedSubtotal = subtotal - discount;
+          const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0 } : calculateDeliveryDetails(prof.address || '');
+          executeOrderSubmission(discountedSubtotal, discount, delivery.fee);
+        });
       });
     }
 
-    function executeOrderSubmission(deliveryFee) {
+    function executeOrderSubmission(discountedSubtotal, discountAmount, deliveryFee) {
       const activeUserEmail = currentUser.email;
       const userKey = sanitizeKey(activeUserEmail);
 
       db.ref('profiles/' + userKey).once('value', (snap) => {
         const prof = snap.val() || {};
         const orderId = 'ORD-' + Date.now().toString().slice(-6);
-        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-        const orderTotal = subtotal + deliveryFee;
+        const orderTotal = discountedSubtotal + deliveryFee;
         
         const order = {
           id: orderId,
@@ -1768,7 +1855,8 @@
           customerDetails: prof,
           status: 'Pending',
           items: [...cart],
-          subtotal: subtotal,
+          subtotal: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
+          discount: discountAmount,
           deliveryFee: deliveryFee,
           total: orderTotal
         };
@@ -1781,7 +1869,7 @@
           customer_name: prof.name || 'N/A',
           customer_phone: prof.phone || 'N/A',
           customer_address: prof.address || 'N/A',
-          order_total: `R${orderTotal.toFixed(2)} (Delivery: R${deliveryFee}.00)`,
+          order_total: `R${orderTotal.toFixed(2)} (Discount: -R${discountAmount.toFixed(2)} | Delivery: R${deliveryFee}.00)`,
           order_items: cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
         };
 
@@ -1795,11 +1883,11 @@
         saveCart();
         toggleCartDrawer();
         
-        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof, deliveryFee);
+        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof, deliveryFee, discountAmount);
       });
     }
 
-    function openYocoPaymentModal(orderId, total, link, prof, deliveryFee) {
+    function openYocoPaymentModal(orderId, total, link, prof, deliveryFee, discountAmount) {
       let modal = document.getElementById('yoco-success-modal');
       if (!modal) {
         modal = document.createElement('div');
@@ -1820,6 +1908,7 @@
               <p><strong>Name:</strong> <span id="yoco-modal-name"></span></p>
               <p><strong>Phone:</strong> <span id="yoco-modal-phone"></span></p>
               <p><strong>Address:</strong> <span id="yoco-modal-address"></span></p>
+              <p><strong>First-Order Discount:</strong> <span id="yoco-modal-discount"></span></p>
               <p><strong>Delivery Fee:</strong> <span id="yoco-modal-delivery"></span></p>
             </div>
 
@@ -1866,6 +1955,7 @@
       document.getElementById('yoco-modal-name').textContent = prof.name || 'N/A';
       document.getElementById('yoco-modal-phone').textContent = prof.phone || 'N/A';
       document.getElementById('yoco-modal-address').textContent = prof.address || 'N/A';
+      document.getElementById('yoco-modal-discount').textContent = discountAmount > 0 ? `-R${discountAmount.toFixed(2)} (Applied)` : 'None';
       document.getElementById('yoco-modal-delivery').textContent = deliveryFee === 0 ? 'Free Delivery' : `R${deliveryFee}.00`;
       document.getElementById('yoco-pay-btn').href = link;
       modal.classList.remove('hidden');
@@ -2085,6 +2175,7 @@
         const isDone = o.status === 'Completed';
         const cd = o.customerDetails || {};
         const deliveryFeeDisplay = o.deliveryFee !== undefined ? `R${o.deliveryFee}.00` : 'Free / Included';
+        const discountDisplay = o.discount !== undefined && o.discount > 0 ? `-R${o.discount.toFixed(2)}` : 'None';
         return `
           <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3">
             <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950">
@@ -2101,6 +2192,7 @@
               <p><strong>Full Name:</strong> ${cd.name || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
               <p><strong>Cell Phone:</strong> ${cd.phone || '<span class="text-red-500 italic">&lt;Not specified&gt;</span>'}</p>
               <p><strong>Delivery Address:</strong> ${cd.address || '<span class="text-red-500 italic">&lt;No saved address&gt;</span>'}</p>
+              <p><strong>Discount Applied:</strong> ${discountDisplay}</p>
               <p><strong>Delivery Fee Charged:</strong> ${deliveryFeeDisplay}</p>
               <p class="text-[10px] text-amber-600 pt-1">Date: ${o.date}</p>
             </div>
