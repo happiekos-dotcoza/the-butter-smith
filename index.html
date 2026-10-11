@@ -14,7 +14,7 @@
   <link id="font-imports" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&family=Poppins:wght@500;700&family=Roboto:wght@400;700&display=swap">
   
   <!-- Google Maps Places API for Address Verification -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSO44vPx7knub_w6S7W6kbNJ9X5oYtjVc&libraries=places"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSO44vPx7knub_w6S7W6kbNJ9X5oYtjVc&libraries=places" async defer></script>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -256,10 +256,7 @@
         <form id="address-form" onsubmit="saveCustomerAddress(event)" class="space-y-3">
           <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
           <input type="text" id="cust-phone" placeholder="Cell Phone Number (e.g. 082 123 4567)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          
-          <!-- FIXED: Changed textarea to input type="text" for Google Places API compatibility -->
           <input type="text" id="cust-address" placeholder="Start typing delivery address, suburb & city..." class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
-          
           <button type="submit" class="w-full sm:w-auto bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Delivery Address</button>
         </form>
       </div>
@@ -624,8 +621,7 @@
           <input type="text" id="setup-phone" placeholder="082 123 4567" class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
         </div>
         <div>
-          <label class="block text-xs font-bold text-amber-900 mb-1">Delivery Address (Google verified)</label>
-          <!-- FIXED: Changed textarea to input type="text" for Google Places API compatibility -->
+          <label class="block text-xs font-bold text-amber-900 mb-1">Delivery Address</label>
           <input type="text" id="setup-address" placeholder="Start typing address, suburb & city..." class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
         </div>
 
@@ -786,8 +782,8 @@
           <p>We collect personal information necessary to process orders, fulfill courier deliveries, and provide customer support. This includes:</p>
           <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
             <li><strong>Personal Identifier:</strong> Full Name, Email Address, and Contact Cell Phone Number.</li>
-            <li><strong>Delivery Details:</strong> Physical Delivery Address (verified via Google Maps Places API).</li>
-            <li><strong>Transaction & Activity Data:</strong> Order history, cart selections, and live site interaction analytics (such as approximate IP-based location and browser device information for security and site usage analysis).</li>
+            <li><strong>Delivery Details:</strong> Physical Delivery Address.</li>
+            <li><strong>Transaction & Activity Data:</strong> Order history, cart selections, and live site interaction analytics.</li>
           </ul>
         </div>
 
@@ -796,40 +792,24 @@
           <p>Your personal information is collected and processed exclusively for the following lawful business operations:</p>
           <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
             <li>Processing, fulfilling, and dispatching your purchases.</li>
-            <li>Communicating order confirmations, invoice summaries, and delivery tracking updates via automated system email notifications (EmailJS).</li>
-            <li>Facilitating secure online payments via authorized third-party payment providers (Yoco).</li>
-            <li>Improving store navigation, inventory planning, and user experience through anonymized website presence analytics.</li>
+            <li>Communicating order confirmations and delivery updates.</li>
+            <li>Facilitating secure online payments via authorized payment providers (Yoco).</li>
           </ul>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h3 class="font-bold text-primary text-sm sm:text-base">3. THIRD-PARTY DATA SHARING</h3>
-          <p>We do not sell, rent, or trade your personal information to third parties. Data is shared strictly with trusted service infrastructure required to operate our business:</p>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li><strong>Courier Partners:</strong> Name, delivery address, and phone number provided to shipping couriers (e.g., PUDO, The Courier Guy) solely to complete door-to-door transit.</li>
-            <li><strong>Payment Gateways:</strong> Payment transactions are handled directly through Yoco's secure platform. We do not store or process complete credit card details on our servers.</li>
-            <li><strong>Cloud Databases & Notification Tools:</strong> Encrypted store database hosting provided by Google Firebase and transactional email dispatch handled via EmailJS.</li>
-          </ul>
+          <p>We do not sell, rent, or trade your personal information to third parties.</p>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h3 class="font-bold text-primary text-sm sm:text-base">4. DATA SECURITY & PROTECTION</h3>
-          <p>We enforce technical and operational measures to protect your personal data against loss, unauthorized access, or disclosure. Account details are secured via standard authentication protocols provided by Google Firebase Cloud Infrastructure.</p>
+          <p>We enforce technical and operational measures to protect your personal data against loss or unauthorized access.</p>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h3 class="font-bold text-primary text-sm sm:text-base">5. YOUR POPIA RIGHTS</h3>
-          <p>Under the POPIA framework, you retain the following rights regarding your personal information:</p>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li><strong>Access & Review:</strong> View your saved contact and shipping address anytime under the "My Account" section.</li>
-            <li><strong>Correction:</strong> Update or modify your profile and address details directly through your account dashboard.</li>
-            <li><strong>Deletion & Erasure:</strong> Request the deletion or removal of your registered profile and personal data from our active databases by contacting our support team.</li>
-          </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-1">
-          <h3 class="font-bold text-primary text-sm sm:text-base">6. PRIVACY CONTACT & ENQUIRIES</h3>
-          <p>For any POPIA-related questions, access requests, or privacy concerns, please contact our Information Officer at <a href="mailto:happiekos@gmail.com" class="underline font-bold text-primary">happiekos@gmail.com</a>.</p>
+          <p>You retain full rights to view, update, or request the deletion of your registered profile at any time.</p>
         </div>
       </div>
 
@@ -858,30 +838,12 @@
 
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h3 class="font-bold text-primary text-sm sm:text-base">1. NO REFUNDS OR CANCELLATIONS</h3>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li><strong>All Sales Are Final:</strong> Due to food safety, hygiene, and the perishable nature of freshly baked goods, we do not offer refunds, exchanges, or returns for any reason (including change of mind, courier delays, personal taste preferences, or incorrect address details).</li>
-            <li><strong>Cancellations:</strong> Orders cannot be cancelled once placed. Exceptional cancellation requests are considered solely at our discretion before preparation begins and will incur a cancellation fee.</li>
-          </ul>
+          <p>Due to food safety and the perishable nature of freshly baked goods, all sales are final.</p>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h3 class="font-bold text-primary text-sm sm:text-base">2. SHIPPING & DELIVERY</h3>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li><strong>Door-to-Door Courier:</strong> All orders are shipped via third-party couriers (e.g., The Courier Guy). Delivery timelines are estimates. Once handed over to the courier, The Butter Smith Deli is not responsible for transit delays, handling, or damage. You are welcome to come and collect from our premises in Centurion if you live in the area.</li>
-            <li><strong>Customer Responsibility:</strong> Ensure your delivery details are accurate at checkout. You accept all risks associated with courier delivery, transit damage, unattended parcels, or improper product storage after delivery.</li>
-          </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">3. DEFECTIVE OR INCORRECT ORDERS</h3>
-          <p>If an item is missing or incorrect, submit a query to <a href="mailto:happiekos@gmail.com" class="underline font-bold text-primary">happiekos@gmail.com</a> within 24 hours of delivery.</p>
-          <p class="font-semibold pt-1">Your email must include:</p>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li><strong>Order Details:</strong> Order number, date, and best before dates.</li>
-            <li><strong>Explanation:</strong> A clear description of the issue.</li>
-            <li><strong>Photographic Proof:</strong> Clear photos of the product, packaging (inside & outside), packing slip, and courier waybill sticker.</li>
-          </ul>
-          <p class="text-xs text-amber-800 italic pt-1">Incomplete or late submissions will not be reviewed. Investigation does not guarantee a refund, replacement, or store credit.</p>
+          <p>All orders are shipped via third-party couriers or available for local market collection.</p>
         </div>
       </div>
 
@@ -906,48 +868,9 @@
       </div>
 
       <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
-        <p class="italic font-medium">By placing an order on our website, you acknowledge and agree to our shipping guidelines below.</p>
-
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h3 class="font-bold text-primary text-sm sm:text-base">1. PROCESSING & SCHEDULE</h3>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li><strong>Freshly Baked:</strong> All orders are prepared fresh specifically for each customer and dispatched according to a structured baking and shipping schedule.</li>
-            <li><strong>Delivery Date:</strong> While you may prefer a specific delivery date, delivery times are managed by external couriers. Parcels may arrive before, on, or after your selected date. Please reach out to us if you have a specific date in mind when placing an order.</li>
-          </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">2. COURIER & DELIVERY</h3>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li><strong>Door-to-Door Courier:</strong> We use PUDO for most nationwide door-to-door delivery.</li>
-            <li><strong>Rural & Remote Surcharges:</strong> Additional courier fees may apply for rural, remote, or high-risk areas. The Butter Smith Deli reserves the right to request payment of any courier surcharge prior to dispatch. If declined, the order may be cancelled.</li>
-            <li><strong>Special Deliveries:</strong> For same-day, weekend, or public holiday deliveries, contact us before placing your order. Additional courier fees will apply.</li>
-          </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">3. FAILED DELIVERIES & RETURN FEES</h3>
-          <p>Customers are responsible for providing accurate address details and ensuring someone is available to receive the parcel.</p>
-          <p class="font-semibold pt-1">If a parcel is returned to us due to an incorrect address, recipient unavailability, or ignored courier contact, the customer is responsible for:</p>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li>Re-paying the courier shipping fee.</li>
-            <li>An additional R50 administration fee.</li>
-          </ul>
-          <p class="text-xs text-amber-800 italic pt-1">Note: Due to the perishable nature of our products, uncollected or returned orders that spoil may be forfeited without a refund.</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">4. COURIER RESPONSIBILITY & DELAYS</h3>
-          <p>Once handed over to the courier, delivery timelines, routing, handling, and transit damage are outside of our control.</p>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li>Over-weekend courier holds do not compromise product freshness or safety.</li>
-            <li>Inspect packages upon delivery and report transit damage directly to the courier.</li>
-          </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-1">
-          <h3 class="font-bold text-primary text-sm sm:text-base">5. CONTACT & SUPPORT</h3>
-          <p>For questions or shipping assistance, contact us at <a href="mailto:happiekos@gmail.com" class="underline font-bold text-primary">happiekos@gmail.com</a>. Thank you for your support!</p>
+          <p>All orders are prepared fresh specifically for each customer.</p>
         </div>
       </div>
 
@@ -971,7 +894,7 @@
       <div id="cart-items-container" class="flex-grow overflow-y-auto py-4 space-y-3"></div>
       
       <div class="border-t border-amber-200 pt-4 space-y-3">
-        <!-- Fulfillment Mode Toggle (Delivery vs Collection) -->
+        <!-- Fulfillment Mode Toggle -->
         <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-2">
           <span class="text-xs font-bold text-amber-900 block">Select Fulfillment Option:</span>
           <div class="grid grid-cols-2 gap-2">
@@ -1237,12 +1160,10 @@
         if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminOrders();
       });
 
-      // Heartbeat every 20s to keep live presence active
       setInterval(() => {
         updateLivePresence(window.currentActionDesc || 'Browsing Store');
       }, 20000);
 
-      // Clean up live presence on window close
       window.addEventListener('beforeunload', () => {
         db.ref('analytics/liveVisitors/' + visitorSessionId).remove();
       });
@@ -1329,40 +1250,41 @@
 
     function closeWelcomeModal() { document.getElementById('welcome-discount-modal').classList.add('hidden'); }
 
-    /* FIXED: Updated Google Places Autocomplete logic with robust fallback for manual typing */
+    /* SAFE & FAILSAFE AUTOCOMPLETE INITIALIZER */
     function initGoogleAutocomplete() {
       const setupField = document.getElementById('setup-address');
       const custField = document.getElementById('cust-address');
 
-      if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.places === 'undefined') {
-        console.warn("Google Places API not loaded or blocked. Standard manual address entry enabled.");
+      if (typeof window.google === 'undefined' || typeof window.google.maps === 'undefined' || typeof window.google.maps.places === 'undefined') {
+        console.warn("Google Maps Places API not ready. Address fields remain 100% open for manual typing.");
+        setTimeout(() => {
+          if (typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined' && typeof window.google.maps.places !== 'undefined') {
+            initGoogleAutocomplete();
+          }
+        }, 1500);
         return;
       }
 
-      if (setupField && !setupField.dataset.autocompleteInitialized) {
-        try {
+      try {
+        if (setupField && !setupField.dataset.autocompleteInitialized) {
           const ac1 = new google.maps.places.Autocomplete(setupField, { componentRestrictions: { country: 'za' } });
           ac1.addListener('place_changed', () => {
             const place = ac1.getPlace();
             if (place && place.formatted_address) setupField.value = place.formatted_address;
           });
           setupField.dataset.autocompleteInitialized = 'true';
-        } catch (e) {
-          console.error("Setup address autocomplete error:", e);
         }
-      }
 
-      if (custField && !custField.dataset.autocompleteInitialized) {
-        try {
+        if (custField && !custField.dataset.autocompleteInitialized) {
           const ac2 = new google.maps.places.Autocomplete(custField, { componentRestrictions: { country: 'za' } });
           ac2.addListener('place_changed', () => {
             const place = ac2.getPlace();
             if (place && place.formatted_address) custField.value = place.formatted_address;
           });
           custField.dataset.autocompleteInitialized = 'true';
-        } catch (e) {
-          console.error("Customer address autocomplete error:", e);
         }
+      } catch (err) {
+        console.warn("Places Autocomplete exception captured (ignoring to protect manual input typing):", err);
       }
     }
 
@@ -1674,7 +1596,6 @@
         return;
       }
 
-      // Sort products by view count from analytics, or default to latest products
       const sortedByPopularity = [...visibleProds].sort((a, b) => {
         const viewsA = (productViews[a.id] && productViews[a.id].count) || 0;
         const viewsB = (productViews[b.id] && productViews[b.id].count) || 0;
@@ -1931,7 +1852,7 @@
 
       const liveTbody = document.getElementById('admin-live-visitors-tbody');
       if (activeList.length === 0) {
-        liveTbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-amber-600 italic">No live visitors online right now. (Open the site in another browser tab to test!)</td></tr>`;
+        liveTbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-amber-600 italic">No live visitors online right now.</td></tr>`;
       } else {
         liveTbody.innerHTML = activeList.map(v => `
           <tr class="border-b border-amber-100 hover:bg-amber-50/50">
