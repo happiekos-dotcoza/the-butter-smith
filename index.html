@@ -12,9 +12,6 @@
   
   <!-- Dynamic Google Fonts -->
   <link id="font-imports" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&family=Poppins:wght@500;700&family=Roboto:wght@400;700&display=swap">
-  
-  <!-- Google Maps Places API for Address Verification -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSO44vPx7knub_w6S7W6kbNJ9X5oYtjVc&libraries=places" async defer></script>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -53,7 +50,6 @@
       background-color: var(--footer-bg-color) !important;
       color: var(--footer-text-color) !important;
     }
-    .pac-container { z-index: 99999 !important; font-family: var(--body-font); }
 
     /* Custom Red Circular Badge for Best Seller */
     .badge-bestseller-circle {
@@ -256,7 +252,7 @@
         <form id="address-form" onsubmit="saveCustomerAddress(event)" class="space-y-3">
           <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
           <input type="text" id="cust-phone" placeholder="Cell Phone Number (e.g. 082 123 4567)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          <input type="text" id="cust-address" placeholder="Start typing delivery address, suburb & city..." class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
+          <input type="text" id="cust-address" placeholder="Enter delivery address, suburb & city..." class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
           <button type="submit" class="w-full sm:w-auto bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Delivery Address</button>
         </form>
       </div>
@@ -622,7 +618,7 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-amber-900 mb-1">Delivery Address</label>
-          <input type="text" id="setup-address" placeholder="Start typing address, suburb & city..." class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
+          <input type="text" id="setup-address" placeholder="Enter street address, suburb & city..." class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
         </div>
 
         <button type="submit" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition text-sm shadow-md flex justify-center items-center gap-2">
@@ -779,37 +775,7 @@
 
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h3 class="font-bold text-primary text-sm sm:text-base">1. INFORMATION WE COLLECT</h3>
-          <p>We collect personal information necessary to process orders, fulfill courier deliveries, and provide customer support. This includes:</p>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li><strong>Personal Identifier:</strong> Full Name, Email Address, and Contact Cell Phone Number.</li>
-            <li><strong>Delivery Details:</strong> Physical Delivery Address.</li>
-            <li><strong>Transaction & Activity Data:</strong> Order history, cart selections, and live site interaction analytics.</li>
-          </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">2. PURPOSE OF DATA PROCESSING</h3>
-          <p>Your personal information is collected and processed exclusively for the following lawful business operations:</p>
-          <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm">
-            <li>Processing, fulfilling, and dispatching your purchases.</li>
-            <li>Communicating order confirmations and delivery updates.</li>
-            <li>Facilitating secure online payments via authorized payment providers (Yoco).</li>
-          </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">3. THIRD-PARTY DATA SHARING</h3>
-          <p>We do not sell, rent, or trade your personal information to third parties.</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">4. DATA SECURITY & PROTECTION</h3>
-          <p>We enforce technical and operational measures to protect your personal data against loss or unauthorized access.</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">5. YOUR POPIA RIGHTS</h3>
-          <p>You retain full rights to view, update, or request the deletion of your registered profile at any time.</p>
+          <p>We collect personal information necessary to process orders, fulfill courier deliveries, and provide customer support.</p>
         </div>
       </div>
 
@@ -839,11 +805,6 @@
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h3 class="font-bold text-primary text-sm sm:text-base">1. NO REFUNDS OR CANCELLATIONS</h3>
           <p>Due to food safety and the perishable nature of freshly baked goods, all sales are final.</p>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">2. SHIPPING & DELIVERY</h3>
-          <p>All orders are shipped via third-party couriers or available for local market collection.</p>
         </div>
       </div>
 
@@ -1076,7 +1037,6 @@
       renderProducts();
       renderCategories();
       updateCartUI();
-      initGoogleAutocomplete();
       startHeroCarousel();
       resolveVisitorLocationAndLog();
 
@@ -1250,44 +1210,6 @@
 
     function closeWelcomeModal() { document.getElementById('welcome-discount-modal').classList.add('hidden'); }
 
-    /* SAFE & FAILSAFE AUTOCOMPLETE INITIALIZER */
-    function initGoogleAutocomplete() {
-      const setupField = document.getElementById('setup-address');
-      const custField = document.getElementById('cust-address');
-
-      if (typeof window.google === 'undefined' || typeof window.google.maps === 'undefined' || typeof window.google.maps.places === 'undefined') {
-        console.warn("Google Maps Places API not ready. Address fields remain 100% open for manual typing.");
-        setTimeout(() => {
-          if (typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined' && typeof window.google.maps.places !== 'undefined') {
-            initGoogleAutocomplete();
-          }
-        }, 1500);
-        return;
-      }
-
-      try {
-        if (setupField && !setupField.dataset.autocompleteInitialized) {
-          const ac1 = new google.maps.places.Autocomplete(setupField, { componentRestrictions: { country: 'za' } });
-          ac1.addListener('place_changed', () => {
-            const place = ac1.getPlace();
-            if (place && place.formatted_address) setupField.value = place.formatted_address;
-          });
-          setupField.dataset.autocompleteInitialized = 'true';
-        }
-
-        if (custField && !custField.dataset.autocompleteInitialized) {
-          const ac2 = new google.maps.places.Autocomplete(custField, { componentRestrictions: { country: 'za' } });
-          ac2.addListener('place_changed', () => {
-            const place = ac2.getPlace();
-            if (place && place.formatted_address) custField.value = place.formatted_address;
-          });
-          custField.dataset.autocompleteInitialized = 'true';
-        }
-      } catch (err) {
-        console.warn("Places Autocomplete exception captured (ignoring to protect manual input typing):", err);
-      }
-    }
-
     function startHeroCarousel() {
       if (heroCarouselInterval) clearInterval(heroCarouselInterval);
       renderHeroCarousel();
@@ -1344,7 +1266,6 @@
 
     function openProfileSetupModal() {
       document.getElementById('profile-setup-modal').classList.remove('hidden');
-      setTimeout(initGoogleAutocomplete, 300);
     }
     function closeProfileSetupModal() { document.getElementById('profile-setup-modal').classList.add('hidden'); }
 
@@ -2328,7 +2249,6 @@
       } else if (viewName === 'account') {
         document.getElementById('view-account').classList.remove('hidden');
         loadCustomerProfile();
-        setTimeout(initGoogleAutocomplete, 300);
         updateLivePresence('Viewing Customer Account');
       } else {
         document.getElementById('view-store').classList.remove('hidden');
