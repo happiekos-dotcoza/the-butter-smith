@@ -256,7 +256,10 @@
         <form id="address-form" onsubmit="saveCustomerAddress(event)" class="space-y-3">
           <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
           <input type="text" id="cust-phone" placeholder="Cell Phone Number (e.g. 082 123 4567)" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl" required>
-          <textarea id="cust-address" placeholder="Start typing delivery address for Google Maps verification..." class="w-full p-2.5 text-sm border border-amber-200 rounded-xl h-24" required></textarea>
+          
+          <!-- FIXED: Changed textarea to input type="text" for Google Places API compatibility -->
+          <input type="text" id="cust-address" placeholder="Start typing delivery address, suburb & city..." class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
+          
           <button type="submit" class="w-full sm:w-auto bg-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition">Save Delivery Address</button>
         </form>
       </div>
@@ -622,7 +625,8 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-amber-900 mb-1">Delivery Address (Google verified)</label>
-          <textarea id="setup-address" placeholder="Start typing address..." class="w-full p-3 text-sm border border-amber-200 rounded-xl h-24 focus:ring-2 focus:ring-amber-500" required></textarea>
+          <!-- FIXED: Changed textarea to input type="text" for Google Places API compatibility -->
+          <input type="text" id="setup-address" placeholder="Start typing address, suburb & city..." class="w-full p-3 text-sm border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
         </div>
 
         <button type="submit" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition text-sm shadow-md flex justify-center items-center gap-2">
@@ -1325,27 +1329,40 @@
 
     function closeWelcomeModal() { document.getElementById('welcome-discount-modal').classList.add('hidden'); }
 
+    /* FIXED: Updated Google Places Autocomplete logic with robust fallback for manual typing */
     function initGoogleAutocomplete() {
-      if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.places === 'undefined') return;
       const setupField = document.getElementById('setup-address');
       const custField = document.getElementById('cust-address');
 
+      if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.places === 'undefined') {
+        console.warn("Google Places API not loaded or blocked. Standard manual address entry enabled.");
+        return;
+      }
+
       if (setupField && !setupField.dataset.autocompleteInitialized) {
-        const ac1 = new google.maps.places.Autocomplete(setupField, { componentRestrictions: { country: 'za' } });
-        ac1.addListener('place_changed', () => {
-          const place = ac1.getPlace();
-          if (place && place.formatted_address) setupField.value = place.formatted_address;
-        });
-        setupField.dataset.autocompleteInitialized = 'true';
+        try {
+          const ac1 = new google.maps.places.Autocomplete(setupField, { componentRestrictions: { country: 'za' } });
+          ac1.addListener('place_changed', () => {
+            const place = ac1.getPlace();
+            if (place && place.formatted_address) setupField.value = place.formatted_address;
+          });
+          setupField.dataset.autocompleteInitialized = 'true';
+        } catch (e) {
+          console.error("Setup address autocomplete error:", e);
+        }
       }
 
       if (custField && !custField.dataset.autocompleteInitialized) {
-        const ac2 = new google.maps.places.Autocomplete(custField, { componentRestrictions: { country: 'za' } });
-        ac2.addListener('place_changed', () => {
-          const place = ac2.getPlace();
-          if (place && place.formatted_address) custField.value = place.formatted_address;
-        });
-        custField.dataset.autocompleteInitialized = 'true';
+        try {
+          const ac2 = new google.maps.places.Autocomplete(custField, { componentRestrictions: { country: 'za' } });
+          ac2.addListener('place_changed', () => {
+            const place = ac2.getPlace();
+            if (place && place.formatted_address) custField.value = place.formatted_address;
+          });
+          custField.dataset.autocompleteInitialized = 'true';
+        } catch (e) {
+          console.error("Customer address autocomplete error:", e);
+        }
       }
     }
 
