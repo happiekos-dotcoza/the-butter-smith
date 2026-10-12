@@ -833,6 +833,7 @@
           <h3 class="font-bold text-primary text-sm sm:text-base">1. LOCAL DELIVERY RATE & RADIUS</h3>
           <p>Local deliveries originate from <strong>153 Bokmakierie Road, Rooihuiskraal, Centurion</strong> and are charged at a rate of <strong>R3.50 per km on the round trip</strong>.</p>
           <p>Local deliveries are available within a maximum radius of <strong>30km (one-way)</strong>. Orders beyond 30km must be collected at store/market or shipped via national courier.</p>
+          <p>Compound Butters, Brownies, and Blondies are strictly fresh items and are excluded from courier delivery outside the 30km local radius. Free collection is always available.</p>
           <p>A minimum cart order value of <strong>R100.00</strong> applies to all orders.</p>
         </div>
       </div>
@@ -867,6 +868,15 @@
             <button type="button" onclick="setFulfillmentMode('collection')" id="fulfillment-btn-collection" class="py-2 px-3 text-xs font-bold rounded-lg border transition bg-white text-amber-900 border-amber-300">
               <i class="fa-solid fa-store mr-1"></i> Free Collection
             </button>
+          </div>
+
+          <!-- Collection Location & Hours Selector -->
+          <div id="collection-location-box" class="hidden pt-2 border-t border-amber-200/80 space-y-1.5">
+            <span class="text-[11px] font-bold text-amber-900 block">Select Pickup Point:</span>
+            <select id="collection-point-select" class="w-full p-2 text-xs bg-white border border-amber-300 rounded-lg font-medium focus:ring-2 focus:ring-amber-500">
+              <option value="153 Bokmakierie Rd, Rooihuiskraal (Weekdays 09:00 - 16:00)">🏢 Rooihuiskraal Store (Weekdays 09:00 - 16:00)</option>
+              <option value="Bus Stop 7 Open Air Market (Weekends & Public Holidays)">🎪 Bus Stop 7 Market (Sat, Sun & Public Holidays)</option>
+            </select>
           </div>
         </div>
 
@@ -1047,7 +1057,6 @@
     let visitorSessionId = 'SESS-' + Math.random().toString(36).substring(2, 9);
     let visitorLocationStr = 'Resolving Location...';
     let cachedCalculatedDeliveryFee = null;
-    let cachedDistanceKm = null;
     let cachedAddressQuery = '';
 
     const socialIconMap = {
@@ -1764,13 +1773,16 @@
       currentFulfillmentMode = mode;
       const btnDeliv = document.getElementById('fulfillment-btn-delivery');
       const btnColl = document.getElementById('fulfillment-btn-collection');
+      const collBox = document.getElementById('collection-location-box');
       
       if (mode === 'delivery') {
         btnDeliv.className = 'py-2 px-3 text-xs font-bold rounded-lg border transition bg-primary text-white border-primary shadow-xs';
         btnColl.className = 'py-2 px-3 text-xs font-bold rounded-lg border transition bg-white text-amber-900 border-amber-300';
+        if (collBox) collBox.classList.add('hidden');
       } else {
         btnColl.className = 'py-2 px-3 text-xs font-bold rounded-lg border transition bg-primary text-white border-primary shadow-xs';
         btnDeliv.className = 'py-2 px-3 text-xs font-bold rounded-lg border transition bg-white text-amber-900 border-amber-300';
+        if (collBox) collBox.classList.remove('hidden');
       }
       updateCartUI();
     }
@@ -1986,79 +1998,86 @@
       updateCartUI();
     }
 
+    // CHECK IF CART CONTAINS PERISHABLE RESTRICTED ITEMS
+    function cartHasRestrictedItems() {
+      return cart.some(item => {
+        const title = item.title.toLowerCase();
+        return title.includes('butter') || title.includes('brownie') || title.includes('blondie');
+      });
+    }
+
     // OPENSTREETMAP GEOCODING & OSRM DRIVING DISTANCE ENGINE
-    // NEW UPDATED FUNCTION
-async function calculateDistanceAndDeliveryFee(addressStr) {
-  if (!addressStr || addressStr.trim() === '') {
-    return { fee: 0, distanceKm: 0, isRestricted: false, message: 'Please enter a delivery address.' };
-  }
+    async function calculateDistanceAndDeliveryFee(addressStr) {
+      if (!addressStr || addressStr.trim() === '') {
+        return { fee: 0, distanceKm: 0, isRestricted: false, message: 'Please enter a delivery address.' };
+      }
 
-  const cleanAddr = addressStr.trim().toLowerCase();
-  if (cachedAddressQuery === cleanAddr && cachedCalculatedDeliveryFee !== null) {
-    return cachedCalculatedDeliveryFee;
-  }
+      const cleanAddr = addressStr.trim().toLowerCase();
+      if (cachedAddressQuery === cleanAddr && cachedCalculatedDeliveryFee !== null) {
+        return cachedCalculatedDeliveryFee;
+      }
 
-  try {
-    let searchQuery = addressStr;
-    if (!searchQuery.toLowerCase().includes('south africa')) {
-      searchQuery += ', Gauteng, South Africa';
+      try {
+        let searchQuery = addressStr;
+        if (!searchQuery.toLowerCase().includes('south africa')) {
+          searchQuery += ', Gauteng, South Africa';
+        }
+
+        const query = encodeURIComponent(searchQuery);
+        const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`, {
+          headers: { 'User-Agent': 'TheButterSmithDeli/1.0' }
+        });
+        const geoData = await geoRes.json();
+
+        if (!geoData || geoData.length === 0) {
+          return { fee: 0, distanceKm: 0, isRestricted: true, message: 'Address not found. Please enter street, suburb, and city.' };
+        }
+
+        const destLat = parseFloat(geoData[0].lat);
+        const destLng = parseFloat(geoData[0].lon);
+
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${ORIGIN_COORDS.lng},${ORIGIN_COORDS.lat};${destLng},${destLat}?overview=false`;
+        const routeRes = await fetch(osrmUrl);
+        const routeData = await routeRes.json();
+
+        if (!routeData || !routeData.routes || routeData.routes.length === 0) {
+          return { fee: 0, distanceKm: 0, isRestricted: true, message: 'Could not calculate driving distance.' };
+        }
+
+        const oneWayKm = routeData.routes[0].distance / 1000;
+        const roundTripKm = oneWayKm * 2;
+
+        if (oneWayKm > 30) {
+          const resObj = { 
+            fee: 0, 
+            distanceKm: Math.round(oneWayKm), 
+            isRestricted: true, 
+            message: `Address is ${Math.round(oneWayKm)}km away (Exceeds 30km local delivery limit)` 
+          };
+          cachedCalculatedDeliveryFee = resObj;
+          cachedAddressQuery = cleanAddr;
+          return resObj;
+        }
+
+        const calculatedFee = Math.round(roundTripKm * 3.50);
+
+        const resultObj = { 
+          fee: calculatedFee, 
+          distanceKm: Math.round(oneWayKm), 
+          roundTripKm: Math.round(roundTripKm), 
+          isRestricted: false, 
+          message: `R3.50/km round trip (${Math.round(roundTripKm)}km total)` 
+        };
+
+        cachedCalculatedDeliveryFee = resultObj;
+        cachedAddressQuery = cleanAddr;
+        return resultObj;
+
+      } catch (err) {
+        console.error('Distance calculation error:', err);
+        return { fee: 0, distanceKm: 0, isRestricted: true, message: 'Unable to verify address distance.' };
+      }
     }
-
-    const query = encodeURIComponent(searchQuery);
-    const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`, {
-      headers: { 'User-Agent': 'TheButterSmithDeli/1.0' }
-    });
-    const geoData = await geoRes.json();
-
-    if (!geoData || geoData.length === 0) {
-      return { fee: 0, distanceKm: 0, isRestricted: true, message: 'Address not found. Please enter street, suburb, and city.' };
-    }
-
-    const destLat = parseFloat(geoData[0].lat);
-    const destLng = parseFloat(geoData[0].lon);
-
-    const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${ORIGIN_COORDS.lng},${ORIGIN_COORDS.lat};${destLng},${destLat}?overview=false`;
-    const routeRes = await fetch(osrmUrl);
-    const routeData = await routeRes.json();
-
-    if (!routeData || !routeData.routes || routeData.routes.length === 0) {
-      return { fee: 0, distanceKm: 0, isRestricted: true, message: 'Could not calculate driving distance.' };
-    }
-
-    const oneWayKm = routeData.routes[0].distance / 1000;
-    const roundTripKm = oneWayKm * 2;
-
-    if (oneWayKm > 30) {
-      const resObj = { 
-        fee: 0, 
-        distanceKm: Math.round(oneWayKm), 
-        isRestricted: true, 
-        message: `Address is ${Math.round(oneWayKm)}km away (Exceeds 30km local delivery limit)` 
-      };
-      cachedCalculatedDeliveryFee = resObj;
-      cachedAddressQuery = cleanAddr;
-      return resObj;
-    }
-
-    const calculatedFee = Math.round(roundTripKm * 3.50);
-
-    const resultObj = { 
-      fee: calculatedFee, 
-      distanceKm: Math.round(oneWayKm), 
-      roundTripKm: Math.round(roundTripKm), 
-      isRestricted: false, 
-      message: `R3.50/km round trip (${Math.round(roundTripKm)}km total)` 
-    };
-
-    cachedCalculatedDeliveryFee = resultObj;
-    cachedAddressQuery = cleanAddr;
-    return resultObj;
-
-  } catch (err) {
-    console.error('Distance calculation error:', err);
-    return { fee: 0, distanceKm: 0, isRestricted: true, message: 'Unable to verify address distance.' };
-  }
-}
 
     function isFirstTimeBuyerUser(callback) {
       if (!currentUser || isExcludedUser(currentUser.email)) { callback(false); return; }
@@ -2097,7 +2116,7 @@ async function calculateDistanceAndDeliveryFee(addressStr) {
 
         if (currentFulfillmentMode === 'collection') {
           document.getElementById('cart-delivery-label').textContent = 'Collection:';
-          document.getElementById('cart-delivery-display').textContent = 'Free Store / Market Collection';
+          document.getElementById('cart-delivery-display').textContent = 'Free Collection Selected';
           document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
         } else {
           document.getElementById('cart-delivery-label').textContent = 'Delivery Fee:';
@@ -2120,8 +2139,14 @@ async function calculateDistanceAndDeliveryFee(addressStr) {
               const deliveryRes = await calculateDistanceAndDeliveryFee(userAddr);
 
               if (deliveryRes.isRestricted) {
-                document.getElementById('cart-delivery-display').textContent = 'Exceeds 30km Limit';
-                document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
+                const hasRestricted = cartHasRestrictedItems();
+                if (hasRestricted) {
+                  document.getElementById('cart-delivery-display').textContent = 'Delivery Blocked (>30km)';
+                  document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
+                } else {
+                  document.getElementById('cart-delivery-display').textContent = 'Courier Available (R99)';
+                  document.getElementById('cart-total-price').textContent = `R${(discountedSubtotal + 99).toFixed(2)}`;
+                }
               } else {
                 document.getElementById('cart-delivery-display').textContent = `R${deliveryRes.fee}.00 (${deliveryRes.distanceKm}km)`;
                 document.getElementById('cart-total-price').textContent = `R${(discountedSubtotal + deliveryRes.fee).toFixed(2)}`;
@@ -2217,10 +2242,15 @@ async function calculateDistanceAndDeliveryFee(addressStr) {
             } else {
               const deliveryRes = await calculateDistanceAndDeliveryFee(prof.address || '');
               if (deliveryRes.isRestricted) {
-                alert(`Delivery address is outside our 30km fresh local delivery radius (${deliveryRes.distanceKm}km away). Please select Free Store Collection.`);
-                return;
+                const hasRestricted = cartHasRestrictedItems();
+                if (hasRestricted) {
+                  alert('⚠️ Delivery Restriction Notice:\n\nCompound Butters, Brownies, and Blondies are fresh perishable items and cannot be delivered beyond our 30km radius.\n\nPlease select "Free Collection" (Rooihuiskraal or Bus Stop 7) to place your order.');
+                  return;
+                }
+                deliveryFee = 99; // Standard courier fee for non-perishables
+              } else {
+                deliveryFee = deliveryRes.fee;
               }
-              deliveryFee = deliveryRes.fee;
             }
           }
 
@@ -2237,14 +2267,22 @@ async function calculateDistanceAndDeliveryFee(addressStr) {
         const prof = snap.val() || {};
         const orderId = 'ORD-' + Date.now().toString().slice(-6);
         const orderTotal = discountedSubtotal + deliveryFee;
-        const fulfillmentLabel = currentFulfillmentMode === 'collection' ? 'Free Store Collection' : `Delivery Fee: R${deliveryFee}.00`;
+
+        let fulfillmentLabel = 'Delivery';
+        if (currentFulfillmentMode === 'collection') {
+          const collSelect = document.getElementById('collection-point-select');
+          const pickupLoc = collSelect ? collSelect.value : 'Store Collection';
+          fulfillmentLabel = `Free Collection (${pickupLoc})`;
+        } else {
+          fulfillmentLabel = deliveryFee === 99 ? 'Nationwide Courier (R99.00)' : `Local Fresh Delivery (R${deliveryFee}.00)`;
+        }
         
         const order = {
           id: orderId,
           date: new Date().toLocaleString(),
           user: activeUserEmail,
           customerDetails: prof,
-          fulfillment: currentFulfillmentMode === 'collection' ? 'Collection' : 'Delivery',
+          fulfillment: fulfillmentLabel,
           status: 'Pending',
           items: [...cart],
           subtotal: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
@@ -2274,12 +2312,12 @@ async function calculateDistanceAndDeliveryFee(addressStr) {
         cart = [];
         saveCart();
         toggleCartDrawer();
-        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof, deliveryFee, discountAmount, currentFulfillmentMode);
+        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof, deliveryFee, discountAmount, fulfillmentLabel);
         updateLivePresence(`Placed order #${orderId}`);
       });
     }
 
-    function openYocoPaymentModal(orderId, total, link, prof, deliveryFee, discountAmount, mode) {
+    function openYocoPaymentModal(orderId, total, link, prof, deliveryFee, discountAmount, fulfillmentLabel) {
       let modal = document.getElementById('yoco-success-modal');
       if (!modal) {
         modal = document.createElement('div');
@@ -2339,7 +2377,7 @@ async function calculateDistanceAndDeliveryFee(addressStr) {
       document.getElementById('yoco-ref-code').textContent = orderId;
       document.getElementById('yoco-modal-name').textContent = prof.name || 'N/A';
       document.getElementById('yoco-modal-phone').textContent = prof.phone || 'N/A';
-      document.getElementById('yoco-modal-mode').textContent = mode === 'collection' ? '🏪 Free Store / Market Collection' : '🚚 Insured Local Delivery';
+      document.getElementById('yoco-modal-mode').textContent = fulfillmentLabel;
       document.getElementById('yoco-modal-address').textContent = prof.address || 'N/A';
       document.getElementById('yoco-modal-discount').textContent = discountAmount > 0 ? `-R${discountAmount.toFixed(2)}` : 'None';
       document.getElementById('yoco-modal-delivery').textContent = deliveryFee === 0 ? 'Free' : `R${deliveryFee}.00`;
