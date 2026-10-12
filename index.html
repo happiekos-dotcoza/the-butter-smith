@@ -357,7 +357,7 @@
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
           <div class="flex justify-between items-center">
             <h3 class="font-bold text-primary text-base">🟢 Live Visitors Online Right Now (Location, Software & Activity)</h3>
-            <span class="text-xs text-amber-600 italic">Updates live via Firebase presence</span>
+            <span class="text-xs text-amber-600 italic">Excludes Admin Accounts</span>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm text-amber-950 min-w-[600px]">
@@ -961,6 +961,20 @@
     const db = firebase.database();
     const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+    // EXCLUDED ADMIN & INTERNAL ACCOUNTS LIST
+    const EXCLUDED_EMAILS = [
+      'happiekos@gmail.com',
+      'koalalambpooh@gmail.com',
+      'swanniestravels2@gmail.com',
+      'swanniestravels@gmail.com',
+      'vitaoleumsa@gmail.com'
+    ];
+
+    function isExcludedUser(email) {
+      if (!email) return false;
+      return EXCLUDED_EMAILS.includes(email.toLowerCase().trim());
+    }
+
     const sanitizeKey = (email) => email ? email.replace(/[^a-zA-Z0-9]/g, '_') : 'guest';
 
     const defaultProducts = [
@@ -1053,7 +1067,11 @@
         if (user) {
           loadCustomerProfile();
           checkMandatoryProfileSetup();
-          updateLivePresence('Browsing Store (Logged In)');
+          if (!isExcludedUser(user.email)) {
+            updateLivePresence('Browsing Store (Logged In)');
+          } else {
+            db.ref('analytics/liveVisitors/' + visitorSessionId).remove();
+          }
         } else {
           closeProfileSetupModal();
           updateLivePresence('Browsing Store (Guest)');
@@ -1121,7 +1139,9 @@
       });
 
       setInterval(() => {
-        updateLivePresence(window.currentActionDesc || 'Browsing Store');
+        if (!currentUser || !isExcludedUser(currentUser.email)) {
+          updateLivePresence(window.currentActionDesc || 'Browsing Store');
+        }
       }, 20000);
 
       window.addEventListener('beforeunload', () => {
@@ -1168,6 +1188,9 @@
     }
 
     function logSiteVisitWithLocation() {
+      // EXCLUDE ADMIN / INTERNAL ACCOUNTS FROM VISIT LOGS
+      if (currentUser && isExcludedUser(currentUser.email)) return;
+
       const visitId = 'VIS-' + Date.now();
       const softwareInfo = getSimpleBrowserAndOS();
       const visitData = {
@@ -1183,6 +1206,9 @@
     }
 
     function updateLivePresence(actionDesc) {
+      // EXCLUDE ADMIN / INTERNAL ACCOUNTS FROM LIVE PRESENCE
+      if (currentUser && isExcludedUser(currentUser.email)) return;
+
       window.currentActionDesc = actionDesc;
       const softwareInfo = getSimpleBrowserAndOS();
       const presenceObj = {
@@ -1197,6 +1223,9 @@
     }
 
     function logProductView(productId, productTitle) {
+      // EXCLUDE ADMIN / INTERNAL ACCOUNTS FROM INCREMENTING PRODUCT VIEWS
+      if (currentUser && isExcludedUser(currentUser.email)) return;
+
       db.ref('analytics/productViews/' + productId).transaction((curr) => {
         if (!curr) return { title: productTitle, count: 1, firstBestSellerTime: Date.now() };
         return { 
@@ -1255,7 +1284,7 @@
     function goToHeroSlide(idx) { currentHeroSlideIndex = idx; renderHeroCarousel(); }
 
     function checkMandatoryProfileSetup() {
-      if (!currentUser || currentUser.email === 'happiekos@gmail.com') { closeProfileSetupModal(); return; }
+      if (!currentUser || isExcludedUser(currentUser.email)) { closeProfileSetupModal(); return; }
       const userKey = sanitizeKey(currentUser.email);
       db.ref('profiles/' + userKey).once('value', (snap) => {
         const prof = snap.val();
@@ -1765,15 +1794,29 @@
     function renderAdminAnalytics() {
       const liveKeys = Object.keys(liveVisitors);
       const now = Date.now();
-      const activeList = liveKeys.map(k => liveVisitors[k]).filter(v => (now - v.lastActive) < 120000);
+
+      // FILTER OUT ALL EXCLUDED INTERNAL/ADMIN EMAILS FROM LIVE VISITORS
+      const activeList = liveKeys
+        .map(k => liveVisitors[k])
+        .filter(v => v && !isExcludedUser(v.email) && (now - v.lastActive) < 120000);
+
+      // FILTER OUT ALL EXCLUDED VISITOR LOGS
+      const filteredVisitorLogs = visitorLogs.filter(v => v && !isExcludedUser(v.userEmail));
+
+      // FILTER OUT ALL EXCLUDED CUSTOMER PROFILES FROM TOTAL CUSTOMERS COUNT
+      const customerKeys = Object.keys(customerProfiles).filter(k => {
+        const prof = customerProfiles[k];
+        const email = (prof && prof.email) ? prof.email : k.replace(/_/g, '.');
+        return !isExcludedUser(email);
+      });
 
       document.getElementById('stat-live-count').textContent = activeList.length;
-      document.getElementById('stat-total-visits').textContent = visitorLogs.length;
-      document.getElementById('stat-total-customers').textContent = Object.keys(customerProfiles).length;
+      document.getElementById('stat-total-visits').textContent = filteredVisitorLogs.length;
+      document.getElementById('stat-total-customers').textContent = customerKeys.length;
 
       const liveTbody = document.getElementById('admin-live-visitors-tbody');
       if (activeList.length === 0) {
-        liveTbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-amber-600 italic">No live visitors online right now.</td></tr>`;
+        liveTbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-amber-600 italic">No live customer visitors online right now.</td></tr>`;
       } else {
         liveTbody.innerHTML = activeList.map(v => `
           <tr class="border-b border-amber-100 hover:bg-amber-50/50">
@@ -1809,10 +1852,10 @@
       }
 
       const visitorLogContainer = document.getElementById('admin-visitor-log-list');
-      if (visitorLogs.length === 0) {
-        visitorLogContainer.innerHTML = `<p class="italic text-amber-600 text-center py-2">No visits logged yet.</p>`;
+      if (filteredVisitorLogs.length === 0) {
+        visitorLogContainer.innerHTML = `<p class="italic text-amber-600 text-center py-2">No customer visits logged yet.</p>`;
       } else {
-        visitorLogContainer.innerHTML = visitorLogs.slice(0, 25).map(v => `
+        visitorLogContainer.innerHTML = filteredVisitorLogs.slice(0, 25).map(v => `
           <div class="flex justify-between items-center bg-amber-50/50 p-2.5 rounded-xl border border-amber-200">
             <span><i class="fa-solid fa-location-dot text-primary mr-1"></i> ${v.location} | <i class="fa-solid fa-user-clock text-primary mr-1.5"></i> ${v.userEmail} (${v.software})</span>
             <span class="font-mono text-amber-600">${v.time}</span>
@@ -1824,8 +1867,15 @@
     function renderAdminCustomers() {
       const container = document.getElementById('admin-customers-list');
       const badge = document.getElementById('customer-count-badge');
-      const userKeys = Object.keys(customerProfiles);
-      badge.textContent = `${userKeys.length} Registered`;
+      
+      // EXCLUDE ALL INTERNAL / ADMIN ACCOUNTS FROM CUSTOMER DIRECTORY LIST
+      const userKeys = Object.keys(customerProfiles).filter(k => {
+        const prof = customerProfiles[k] || {};
+        const email = prof.email || k.replace(/_/g, '.');
+        return !isExcludedUser(email);
+      });
+
+      badge.textContent = `${userKeys.length} Registered Customers`;
 
       if (userKeys.length === 0) {
         container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No customer accounts registered yet.</p>`;
@@ -1945,7 +1995,7 @@
     }
 
     function isFirstTimeBuyerUser(callback) {
-      if (!currentUser || currentUser.email === 'happiekos@gmail.com') { callback(false); return; }
+      if (!currentUser || isExcludedUser(currentUser.email)) { callback(false); return; }
       db.ref('orders').orderByChild('user').equalTo(currentUser.email).once('value', (snap) => {
         if (snap.exists()) callback(false);
         else callback(true);
@@ -1978,7 +2028,7 @@
           document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
         } else {
           document.getElementById('cart-delivery-label').textContent = 'Delivery Fee:';
-          if (currentUser && currentUser.email === 'happiekos@gmail.com') {
+          if (currentUser && isExcludedUser(currentUser.email)) {
             document.getElementById('cart-delivery-display').textContent = 'Admin Free Delivery';
             document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
           } else if (currentUser) {
@@ -2054,7 +2104,7 @@
 
       db.ref('profiles/' + userKey).once('value', (snap) => {
         const prof = snap.val() || {};
-        if (currentUser.email !== 'happiekos@gmail.com') {
+        if (!isExcludedUser(currentUser.email)) {
           if (!prof.name || !prof.phone || !prof.address) {
             alert('Please complete your profile details before submitting an order.');
             toggleCartDrawer();
@@ -2070,7 +2120,7 @@
 
           let deliveryFee = 0;
           if (currentFulfillmentMode === 'delivery') {
-            const delivery = currentUser.email === 'happiekos@gmail.com' ? { fee: 0, isFree: true } : calculateDeliveryDetails(prof.address || '');
+            const delivery = isExcludedUser(currentUser.email) ? { fee: 0, isFree: true } : calculateDeliveryDetails(prof.address || '');
             deliveryFee = delivery.fee;
           }
 
@@ -2294,6 +2344,9 @@
     }
 
     function logout() {
+      if (currentUser) {
+        db.ref('analytics/liveVisitors/' + visitorSessionId).remove();
+      }
       auth.signOut().then(() => {
         currentUser = null;
         updateAuthUI();
