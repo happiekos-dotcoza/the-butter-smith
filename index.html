@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="site-title-meta">The Butter Smith Deli - Handcrafted Spreads & Small-Batch Bakes</title>
+  <meta name="description" content="Handcrafted compound butters, artisanal barks, dried fruit relishes, and small-batch bakes crafted fresh in Centurion. Local 30km delivery & market pickup available.">
   <meta property="og:title" content="The Butter Smith Deli - Handcrafted Spreads & Small-Batch Bakes">
   <meta property="og:description" content="Handcrafted compound butters, artisanal barks, relishes, and small-batch bakes crafted fresh in Centurion.">
   
@@ -17,6 +18,100 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- AI & SEARCH ENGINE STRUCTURED DATA (SCHEMA.ORG JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "OnlineStore",
+        "@id": "https://happiekos-dotcoza.github.io/the-butter-smith/#store",
+        "name": "The Butter Smith Deli",
+        "url": "https://happiekos-dotcoza.github.io/the-butter-smith/",
+        "image": "https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png",
+        "description": "Handcrafted compound butters, artisanal barks, relishes, and small-batch bakes in Centurion.",
+        "email": "happiekos@gmail.com",
+        "priceRange": "R50 - R200",
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Centurion"
+          },
+          {
+            "@type": "City",
+            "name": "Pretoria"
+          },
+          {
+            "@type": "City",
+            "name": "Midrand"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Where can I buy handcrafted compound butter in Centurion and Pretoria?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can order handcrafted compound butters directly online from The Butter Smith Deli for local delivery across Centurion, Pretoria, and Midrand, or collect your order for free at our weekend market stalls including Bus Stop 7 Open Air Market."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What are the local delivery areas and fees?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We offer fresh, local delivery within a 30km radius of Rooihuiskraal, Centurion. Delivery fees are dynamically calculated at R3.50 per kilometer on the round trip from our prep base."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can non-perishable items be shipped via nationwide courier?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! While fresh perishable items (like compound butters, brownies, and blondies) are restricted to local fresh delivery within 30km or store pickup, all non-perishable products (like our dried fruit relishes and barks) can be shipped anywhere in South Africa via nationwide courier for a flat rate of R99."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where and when can I collect my order for free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Free collection is available at two pickup points: Rooihuiskraal Pickup Base on weekdays between 09:00 and 16:00, or Bus Stop 7 Open Air Market on Saturdays, Sundays, and public holidays."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How should I store compound butter, and what is its shelf life?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Keep your compound butter refrigerated between 2°C and 5°C. It stays fresh in the fridge for up to 3 weeks or can be frozen for up to 6 months without losing flavor or quality."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the minimum order requirement?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We have a minimum cart order value of R100.00 for all online checkout orders."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a discount for first-time buyers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! First-time registered customers automatically receive a 5% discount applied to their cart subtotal on their very first order."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -243,6 +338,71 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" id="product-grid"></div>
+
+      <!-- ON-PAGE AI SEO FREQUENTLY ASKED QUESTIONS SECTION -->
+      <section id="faq-section" class="bg-white rounded-3xl border border-amber-200/80 p-6 sm:p-10 space-y-6 shadow-sm mt-12">
+        <div class="border-b border-amber-200 pb-4">
+          <span class="text-xs font-bold text-accent uppercase tracking-wider">Frequently Asked Questions</span>
+          <h2 class="brand-font text-2xl sm:text-3xl font-extrabold text-amber-950 mt-1">Everything You Need to Know</h2>
+          <p class="text-xs sm:text-sm text-amber-800 mt-1">Quick answers regarding delivery, store collection, and artisanal product care.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
+          <div class="p-4 sm:p-5 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-1.5">
+            <h3 class="font-bold text-primary text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-store text-accent"></i> Where can I buy compound butter in Centurion?
+            </h3>
+            <p class="text-amber-800">
+              You can order handcrafted compound butters directly online from <strong>The Butter Smith Deli</strong> for local delivery across Centurion, Pretoria, and Midrand, or collect your order for free at our weekend market stalls including Bus Stop 7 Open Air Market.
+            </p>
+          </div>
+
+          <div class="p-4 sm:p-5 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-1.5">
+            <h3 class="font-bold text-primary text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-truck-fast text-accent"></i> What are the local delivery areas & fees?
+            </h3>
+            <p class="text-amber-800">
+              We offer fresh, local delivery within a 30km radius of Rooihuiskraal, Centurion. Delivery fees are dynamically calculated at <strong>R3.50 per kilometer on the round trip</strong> from our prep base.
+            </p>
+          </div>
+
+          <div class="p-4 sm:p-5 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-1.5">
+            <h3 class="font-bold text-primary text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-box text-accent"></i> Can non-perishables be shipped via courier?
+            </h3>
+            <p class="text-amber-800">
+              Yes! While fresh perishable items (like compound butters, brownies, and blondies) are restricted to local fresh delivery within 30km or store pickup, all non-perishable products (like our dried fruit relishes and barks) can be shipped anywhere in South Africa via nationwide courier for a flat rate of R99.
+            </p>
+          </div>
+
+          <div class="p-4 sm:p-5 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-1.5">
+            <h3 class="font-bold text-primary text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-location-dot text-accent"></i> Where & when can I collect for free?
+            </h3>
+            <p class="text-amber-800">
+              Free collection is available at two pickup points: <strong>Rooihuiskraal Pickup Base</strong> on weekdays (09:00 - 16:00), or <strong>Bus Stop 7 Open Air Market</strong> on Saturdays, Sundays, and public holidays.
+            </p>
+          </div>
+
+          <div class="p-4 sm:p-5 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-1.5">
+            <h3 class="font-bold text-primary text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-snowflake text-accent"></i> How should I store compound butter?
+            </h3>
+            <p class="text-amber-800">
+              Keep your compound butter refrigerated between 2°C and 5°C. It stays fresh in the fridge for up to 3 weeks or can be frozen for up to 6 months without losing flavor or quality.
+            </p>
+          </div>
+
+          <div class="p-4 sm:p-5 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-1.5">
+            <h3 class="font-bold text-primary text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-tag text-accent"></i> Is there a first-time buyer discount?
+            </h3>
+            <p class="text-amber-800">
+              Yes! First-time registered customers automatically receive a <strong>5% discount</strong> applied to their cart subtotal on their very first order. Minimum order requirement is R100.00.
+            </p>
+          </div>
+        </div>
+      </section>
     </section>
 
     <!-- VIEW 2: CUSTOMER ACCOUNT -->
@@ -2500,7 +2660,7 @@
           order_items: cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
         };
 
-        emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
+        emailjs.send('service_5s3bdup', 'template_hjrekg5')
           .then(() => console.log('Notification email sent!'))
           .catch((err) => console.log('Email failed:', err));
 
