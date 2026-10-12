@@ -10,6 +10,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- SheetJS Library for Exporting to Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <!-- Dynamic Google Fonts -->
   <link id="font-imports" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&family=Poppins:wght@500;700&family=Roboto:wght@400;700&display=swap">
 
@@ -396,11 +399,16 @@
         </div>
       </div>
 
-      <!-- Admin Tab 3: Customer Accounts Directory -->
+      <!-- Admin Tab 3: Customer Accounts Directory & Excel Export -->
       <div id="admin-tab-customers" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
-        <div class="flex justify-between items-center border-b border-amber-200 pb-3">
-          <h3 class="font-bold text-primary">Registered Customer Accounts</h3>
-          <span class="text-xs text-amber-700" id="customer-count-badge">0 Accounts</span>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-amber-200 pb-3">
+          <div>
+            <h3 class="font-bold text-primary text-base">Registered Customer Accounts Directory</h3>
+            <p class="text-xs text-amber-700" id="customer-count-badge">0 Accounts</p>
+          </div>
+          <button onclick="exportCustomerAccountsToExcel()" class="bg-green-700 hover:bg-green-800 text-white font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-2 shadow-xs">
+            <i class="fa-solid fa-file-excel text-sm"></i> Export Clients to Excel (.xlsx)
+          </button>
         </div>
         <div id="admin-customers-list" class="space-y-4 text-sm"></div>
       </div>
@@ -563,6 +571,41 @@
     </section>
 
   </main>
+
+  <!-- EDIT CUSTOMER ACCOUNT ADMIN MODAL -->
+  <div id="admin-edit-customer-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 border border-amber-200 shadow-2xl relative text-amber-950">
+      <button onclick="closeAdminEditCustomerModal()" class="absolute top-4 right-4 text-amber-600 hover:text-amber-950 bg-amber-100 w-8 h-8 rounded-full flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="space-y-1">
+        <h3 class="brand-font text-xl font-bold text-amber-950">Edit Customer Profile</h3>
+        <p class="text-xs text-amber-700" id="admin-edit-cust-email-label">Editing account details</p>
+      </div>
+
+      <form onsubmit="saveAdminCustomerEdit(event)" class="space-y-3.5">
+        <input type="hidden" id="admin-edit-cust-key">
+        <div>
+          <label class="block text-xs font-bold text-amber-900 mb-1">Full Name</label>
+          <input type="text" id="admin-edit-cust-name" class="w-full p-2.5 text-xs sm:text-sm border border-amber-200 rounded-xl" required>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-amber-900 mb-1">Cell Phone Number</label>
+          <input type="text" id="admin-edit-cust-phone" class="w-full p-2.5 text-xs sm:text-sm border border-amber-200 rounded-xl" required>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-amber-900 mb-1">Delivery Address</label>
+          <input type="text" id="admin-edit-cust-address" class="w-full p-2.5 text-xs sm:text-sm border border-amber-200 rounded-xl" required>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" onclick="closeAdminEditCustomerModal()" class="px-4 py-2 text-xs font-bold text-amber-800 bg-amber-100 rounded-xl">Cancel</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-primary rounded-xl hover:opacity-90">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- DELIVERY BLOCKED EXCEEDED 30KM MODAL -->
   <div id="delivery-blocked-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
@@ -1179,6 +1222,9 @@
         if (snap.exists()) {
           customerProfiles = snap.val();
           if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminCustomers();
+        } else {
+          customerProfiles = {};
+          if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminCustomers();
         }
       });
 
@@ -1389,18 +1435,25 @@
       e.preventDefault();
       if (!currentUser) return;
       const userKey = sanitizeKey(currentUser.email);
-      const profile = {
-        email: currentUser.email,
-        name: document.getElementById('setup-name').value.trim(),
-        phone: document.getElementById('setup-phone').value.trim(),
-        address: document.getElementById('setup-address').value.trim()
-      };
-      db.ref('profiles/' + userKey).set(profile).then(() => {
-        closeProfileSetupModal();
-        alert('Profile saved successfully!');
-        navigateTo('store');
-        updateCartUI();
-      }).catch((err) => alert('Error: ' + err.message));
+      const nowStr = new Date().toLocaleString();
+      
+      db.ref('profiles/' + userKey).once('value', (snap) => {
+        const existingProf = snap.val() || {};
+        const profile = {
+          email: currentUser.email,
+          name: document.getElementById('setup-name').value.trim(),
+          phone: document.getElementById('setup-phone').value.trim(),
+          address: document.getElementById('setup-address').value.trim(),
+          createdAt: existingProf.createdAt || nowStr
+        };
+
+        db.ref('profiles/' + userKey).set(profile).then(() => {
+          closeProfileSetupModal();
+          alert('Profile saved successfully!');
+          navigateTo('store');
+          updateCartUI();
+        }).catch((err) => alert('Error: ' + err.message));
+      });
     }
 
     function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
@@ -1951,6 +2004,7 @@
       }
     }
 
+    // RENDER ADMIN CUSTOMER DIRECTORY WITH EDIT, DELETE & CREATED DATE
     function renderAdminCustomers() {
       const container = document.getElementById('admin-customers-list');
       const badge = document.getElementById('customer-count-badge');
@@ -1961,30 +2015,134 @@
         return !isExcludedUser(email);
       });
 
-      badge.textContent = `${userKeys.length} Registered Customers`;
+      badge.textContent = `${userKeys.length} Registered Customer Accounts`;
 
       if (userKeys.length === 0) {
-        container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No customer accounts registered yet.</p>`;
+        container.innerHTML = `<p class="text-amber-600 italic py-6 text-center">No customer accounts registered yet.</p>`;
         return;
       }
 
       container.innerHTML = userKeys.map(k => {
         const prof = customerProfiles[k] || {};
         const email = prof.email || k.replace(/_/g, '.');
+        const createdDate = prof.createdAt || 'N/A';
         return `
-          <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-2">
-            <div class="flex justify-between items-center font-bold text-amber-950">
-              <span class="text-primary"><i class="fa-regular fa-user mr-1.5"></i> ${email}</span>
-              <span class="text-[10px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300">Customer Account</span>
+          <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3">
+            <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950 border-b border-amber-200/80 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="text-primary text-sm sm:text-base"><i class="fa-regular fa-user mr-1.5"></i> ${email}</span>
+                <span class="text-[10px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300">Registered</span>
+              </div>
+              <div class="text-[11px] font-mono text-amber-700">
+                <i class="fa-regular fa-calendar-check mr-1 text-primary"></i> Created: <strong>${createdDate}</strong>
+              </div>
             </div>
+
             <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
               <p><strong>Full Name:</strong> ${prof.name || 'N/A'}</p>
               <p><strong>Cell Phone:</strong> ${prof.phone || 'N/A'}</p>
               <p><strong>Delivery Address:</strong> ${prof.address || 'N/A'}</p>
             </div>
+
+            <div class="flex justify-end items-center gap-2 pt-1">
+              <button onclick="openAdminEditCustomerModal('${k}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-200 text-amber-900 hover:bg-amber-300 transition flex items-center gap-1">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+              </button>
+              <button onclick="deleteAdminCustomerAccount('${k}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-100 text-red-700 hover:bg-red-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-trash-can"></i> Delete Account
+              </button>
+            </div>
           </div>
         `;
       }).join('');
+    }
+
+    function openAdminEditCustomerModal(userKey) {
+      const prof = customerProfiles[userKey] || {};
+      document.getElementById('admin-edit-cust-key').value = userKey;
+      document.getElementById('admin-edit-cust-email-label').textContent = `Editing profile for: ${prof.email || userKey.replace(/_/g, '.')}`;
+      document.getElementById('admin-edit-cust-name').value = prof.name || '';
+      document.getElementById('admin-edit-cust-phone').value = prof.phone || '';
+      document.getElementById('admin-edit-cust-address').value = prof.address || '';
+      document.getElementById('admin-edit-customer-modal').classList.remove('hidden');
+    }
+
+    function closeAdminEditCustomerModal() {
+      document.getElementById('admin-edit-customer-modal').classList.add('hidden');
+    }
+
+    function saveAdminCustomerEdit(e) {
+      e.preventDefault();
+      const userKey = document.getElementById('admin-edit-cust-key').value;
+      if (!userKey) return;
+
+      const prof = customerProfiles[userKey] || {};
+      const updatedProfile = {
+        ...prof,
+        name: document.getElementById('admin-edit-cust-name').value.trim(),
+        phone: document.getElementById('admin-edit-cust-phone').value.trim(),
+        address: document.getElementById('admin-edit-cust-address').value.trim()
+      };
+
+      db.ref('profiles/' + userKey).set(updatedProfile).then(() => {
+        closeAdminEditCustomerModal();
+        alert('Customer details updated successfully!');
+      }).catch(err => alert('Error updating profile: ' + err.message));
+    }
+
+    function deleteAdminCustomerAccount(userKey) {
+      const prof = customerProfiles[userKey] || {};
+      const email = prof.email || userKey.replace(/_/g, '.');
+      if (!confirm(`Are you sure you want to delete the customer account for "${email}"? This action cannot be undone.`)) return;
+
+      db.ref('profiles/' + userKey).remove().then(() => {
+        alert('Customer profile deleted successfully.');
+      }).catch(err => alert('Error deleting profile: ' + err.message));
+    }
+
+    // EXPORT CUSTOMER DIRECTORY TO EXCEL (.XLSX)
+    function exportCustomerAccountsToExcel() {
+      const userKeys = Object.keys(customerProfiles).filter(k => {
+        const prof = customerProfiles[k] || {};
+        const email = prof.email || k.replace(/_/g, '.');
+        return !isExcludedUser(email);
+      });
+
+      if (userKeys.length === 0) {
+        alert('No registered customer accounts available to export.');
+        return;
+      }
+
+      const excelData = userKeys.map((k, idx) => {
+        const prof = customerProfiles[k] || {};
+        return {
+          "No.": idx + 1,
+          "Customer Email": prof.email || k.replace(/_/g, '.'),
+          "Full Name": prof.name || "N/A",
+          "Cell Phone": prof.phone || "N/A",
+          "Delivery Address": prof.address || "N/A",
+          "Account Created Date": prof.createdAt || "N/A"
+        };
+      });
+
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+      
+      // Auto-fit column widths
+      const colWidths = [
+        { wch: 6 },
+        { wch: 30 },
+        { wch: 25 },
+        { wch: 18 },
+        { wch: 45 },
+        { wch: 22 }
+      ];
+      worksheet['!cols'] = colWidths;
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Customers");
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      XLSX.writeFile(workbook, `The_Butter_Smith_Customers_${todayStr}.xlsx`);
     }
 
     function handleProductSubmit(e) {
@@ -2604,20 +2762,26 @@
       e.preventDefault();
       if (!currentUser) { alert('Please log in first.'); return; }
       const userKey = sanitizeKey(currentUser.email);
-      const profile = {
-        email: currentUser.email,
-        name: document.getElementById('cust-name').value.trim(),
-        phone: document.getElementById('cust-phone').value.trim(),
-        address: document.getElementById('cust-address').value.trim()
-      };
+      const nowStr = new Date().toLocaleString();
 
-      cachedCalculatedDeliveryFee = null;
-      cachedAddressQuery = '';
+      db.ref('profiles/' + userKey).once('value', (snap) => {
+        const existingProf = snap.val() || {};
+        const profile = {
+          email: currentUser.email,
+          name: document.getElementById('cust-name').value.trim(),
+          phone: document.getElementById('cust-phone').value.trim(),
+          address: document.getElementById('cust-address').value.trim(),
+          createdAt: existingProf.createdAt || nowStr
+        };
 
-      db.ref('profiles/' + userKey).set(profile).then(() => {
-        alert('Address saved successfully!');
-        updateCartUI();
-      }).catch((err) => alert('Error: ' + err.message));
+        cachedCalculatedDeliveryFee = null;
+        cachedAddressQuery = '';
+
+        db.ref('profiles/' + userKey).set(profile).then(() => {
+          alert('Address saved successfully!');
+          updateCartUI();
+        }).catch((err) => alert('Error: ' + err.message));
+      });
     }
 
     function loadCustomerProfile() {
