@@ -13,8 +13,10 @@
   <!-- SheetJS Library for Exporting to Excel -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <!-- Dynamic Google Fonts -->
-  <link id="font-imports" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&family=Poppins:wght@500;700&family=Roboto:wght@400;700&display=swap">
+  <!-- Optimized Google Fonts: Playfair Display + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -54,7 +56,6 @@
       color: var(--footer-text-color) !important;
     }
 
-    /* Custom Red Circular Badge for Best Seller */
     .badge-bestseller-circle {
       width: 68px;
       height: 68px;
@@ -74,7 +75,6 @@
       padding: 4px;
     }
 
-    /* Continuous Ticker Ribbon Animation */
     @keyframes ticker-scroll {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
@@ -218,7 +218,6 @@
       <!-- HIGHLIGHTED TOP 4 BEST SELLERS & TRENDING SECTION -->
       <div id="top-sellers-section" class="bg-gradient-to-r from-amber-100/80 via-amber-50 to-amber-100/80 rounded-3xl border-2 border-amber-300/80 p-4 sm:p-6 shadow-sm space-y-4">
         
-        <!-- Moving Carousel Ticker Ribbon -->
         <div class="ticker-container overflow-hidden rounded-xl bg-primary text-white py-2 shadow-xs border border-amber-900/20">
           <div class="animate-ticker text-xs sm:text-sm font-extrabold uppercase tracking-wider space-x-6">
             <span>🔥 Selling Like Hotcakes! • Top Trending Favourites • Small-Batch Best Sellers • Order Yours Fresh Today! 🔥</span>
@@ -240,7 +239,6 @@
           </span>
         </div>
 
-        <!-- Top 4 Product Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="top-sellers-grid"></div>
       </div>
 
@@ -359,7 +357,7 @@
 
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
           <div class="flex justify-between items-center">
-            <h3 class="font-bold text-primary text-base">🟢 Live Visitors Online Right Now (Location, Software & Activity)</h3>
+            <h3 class="font-bold text-primary text-base">🟢 Live Visitors Online Right Now</h3>
             <span class="text-xs text-amber-600 italic">Excludes Admin Accounts</span>
           </div>
           <div class="overflow-x-auto">
@@ -378,7 +376,7 @@
         </div>
 
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
-          <h3 class="font-bold text-primary text-base">Most Frequently Viewed Products (Popularity & Interest)</h3>
+          <h3 class="font-bold text-primary text-base">Most Frequently Viewed Products</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm text-amber-950 min-w-[400px]">
               <thead class="bg-amber-100/60 text-primary font-bold border-b border-amber-200">
@@ -465,23 +463,6 @@
                   <input type="color" id="cust-footer-text" class="h-10 w-16 p-1 border border-amber-200 rounded-lg cursor-pointer">
                   <span class="text-xs text-amber-700 font-mono" id="footer-text-hex-display">#fcd34d</span>
                 </div>
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-amber-800 mb-1">Heading Font Style</label>
-                <select id="cust-heading-font" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
-                  <option value="'Playfair Display', serif">Playfair Display (Classic Elegant)</option>
-                  <option value="'Lora', serif">Lora (Warm Serif)</option>
-                  <option value="'Poppins', sans-serif">Poppins (Modern Bold)</option>
-                  <option value="'Roboto', sans-serif">Roboto (Clean Neutral)</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-amber-800 mb-1">Body Text Font Style</label>
-                <select id="cust-body-font" class="w-full p-2.5 text-sm border border-amber-200 rounded-xl">
-                  <option value="'Inter', sans-serif">Inter (Modern Clean)</option>
-                  <option value="'Roboto', sans-serif">Roboto (Standard)</option>
-                  <option value="'Lora', serif">Lora (Editorial Serif)</option>
-                </select>
               </div>
             </div>
           </div>
@@ -1077,10 +1058,8 @@
     const db = firebase.database();
     const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-    // STORE ORIGIN LAT/LNG FOR 153 BOKMAKIERIE ROAD, ROOIHUISKRAAL, CENTURION
     const ORIGIN_COORDS = { lat: -25.8856, lng: 28.1583 };
 
-    // EXCLUDED ADMIN & INTERNAL ACCOUNTS LIST
     const EXCLUDED_EMAILS = [
       'happiekos@gmail.com',
       'koalalambpooh@gmail.com',
@@ -1359,13 +1338,8 @@
     }
 
     function closeWelcomeModal() { document.getElementById('welcome-discount-modal').classList.add('hidden'); }
-    
-    function openDeliveryBlockedModal() {
-      document.getElementById('delivery-blocked-modal').classList.remove('hidden');
-    }
-    function closeDeliveryBlockedModal() {
-      document.getElementById('delivery-blocked-modal').classList.add('hidden');
-    }
+    function openDeliveryBlockedModal() { document.getElementById('delivery-blocked-modal').classList.remove('hidden'); }
+    function closeDeliveryBlockedModal() { document.getElementById('delivery-blocked-modal').classList.add('hidden'); }
     function switchCartToCollectionAndClose() {
       closeDeliveryBlockedModal();
       setFulfillmentMode('collection');
@@ -1426,9 +1400,7 @@
       });
     }
 
-    function openProfileSetupModal() {
-      document.getElementById('profile-setup-modal').classList.remove('hidden');
-    }
+    function openProfileSetupModal() { document.getElementById('profile-setup-modal').classList.remove('hidden'); }
     function closeProfileSetupModal() { document.getElementById('profile-setup-modal').classList.add('hidden'); }
 
     function saveMandatoryProfile(e) {
@@ -1472,8 +1444,6 @@
       root.style.setProperty('--accent-color', settings.accentColor || '#6B8E23');
       root.style.setProperty('--footer-bg-color', settings.footerBgColor || '#3b4e1e');
       root.style.setProperty('--footer-text-color', settings.footerTextColor || '#fcd34d');
-      root.style.setProperty('--heading-font', settings.headingFont || "'Playfair Display', serif");
-      root.style.setProperty('--body-font', settings.bodyFont || "'Inter', sans-serif");
 
       document.getElementById('header-brand-name').textContent = settings.title || defaultSettings.title;
       document.getElementById('footer-brand').textContent = settings.title || defaultSettings.title;
@@ -1524,8 +1494,6 @@
       document.getElementById('footer-bg-hex-display').textContent = settings.footerBgColor || '#3b4e1e';
       document.getElementById('footer-text-hex-display').textContent = settings.footerTextColor || '#fcd34d';
 
-      document.getElementById('cust-heading-font').value = settings.headingFont || "'Playfair Display', serif";
-      document.getElementById('cust-body-font').value = settings.bodyFont || "'Inter', sans-serif";
       document.getElementById('cust-logo-url').value = settings.logoUrl || '';
       document.getElementById('cust-site-title').value = settings.title || defaultSettings.title;
       document.getElementById('cust-site-tagline').value = settings.tagline || defaultSettings.tagline;
@@ -1557,7 +1525,11 @@
       settings.heroImages.push('https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80');
       renderAdminHeroCarouselList();
     }
-    function updateHeroCarouselUrl(index, val) { settings.heroImages[index] = val; }
+    function updateHeroCarouselUrl(index, val) { 
+      if (settings.heroImages && settings.heroImages[index] !== undefined) {
+        settings.heroImages[index] = val; 
+      }
+    }
     function deleteHeroCarouselImage(index) {
       settings.heroImages.splice(index, 1);
       renderAdminHeroCarouselList();
@@ -1633,7 +1605,7 @@
       if (item) { item.platform = val; renderAdminSocialLinksList(); }
     }
     function updateSocialLinkField(id, key, val) {
-      const item = settings.socialLinks.find(s => s.id === id);
+      const item = settings.socialLinks ? settings.socialLinks.find(s => s.id === id) : null;
       if (item) item[key] = val;
     }
     function toggleSocialLinkActive(id, isChecked) {
@@ -1665,8 +1637,8 @@
         accentColor: document.getElementById('cust-accent-color').value,
         footerBgColor: document.getElementById('cust-footer-bg').value,
         footerTextColor: document.getElementById('cust-footer-text').value,
-        headingFont: document.getElementById('cust-heading-font').value,
-        bodyFont: document.getElementById('cust-body-font').value,
+        headingFont: "'Playfair Display', serif",
+        bodyFont: "'Inter', sans-serif",
         socialLinks: settings.socialLinks || defaultSocials
       };
       db.ref('settings').set(settings);
@@ -2004,7 +1976,6 @@
       }
     }
 
-    // RENDER ADMIN CUSTOMER DIRECTORY WITH EDIT, DELETE & CREATED DATE
     function renderAdminCustomers() {
       const container = document.getElementById('admin-customers-list');
       const badge = document.getElementById('customer-count-badge');
@@ -2100,7 +2071,6 @@
       }).catch(err => alert('Error deleting profile: ' + err.message));
     }
 
-    // EXPORT CUSTOMER DIRECTORY TO EXCEL (.XLSX)
     function exportCustomerAccountsToExcel() {
       const userKeys = Object.keys(customerProfiles).filter(k => {
         const prof = customerProfiles[k] || {};
@@ -2127,7 +2097,6 @@
 
       const worksheet = XLSX.utils.json_to_sheet(excelData);
       
-      // Auto-fit column widths
       const colWidths = [
         { wch: 6 },
         { wch: 30 },
@@ -2224,7 +2193,6 @@
       updateCartUI();
     }
 
-    // CHECK IF CART CONTAINS PERISHABLE RESTRICTED ITEMS
     function cartHasRestrictedItems() {
       return cart.some(item => {
         const title = item.title.toLowerCase();
@@ -2232,7 +2200,6 @@
       });
     }
 
-    // OPENSTREETMAP GEOCODING & OSRM DRIVING DISTANCE ENGINE
     async function calculateDistanceAndDeliveryFee(addressStr) {
       if (!addressStr || addressStr.trim() === '') {
         return { fee: 0, distanceKm: 0, isRestricted: false, message: 'Please enter a delivery address.' };
@@ -2477,7 +2444,7 @@
                   openDeliveryBlockedModal();
                   return;
                 }
-                deliveryFee = 99; // Standard courier fee for non-perishables
+                deliveryFee = 99;
               } else {
                 deliveryFee = deliveryRes.fee;
               }
