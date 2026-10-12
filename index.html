@@ -564,6 +564,62 @@
 
   </main>
 
+  <!-- DELIVERY BLOCKED EXCEEDED 30KM MODAL -->
+  <div id="delivery-blocked-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-red-200 shadow-2xl relative text-amber-950">
+      <button onclick="closeDeliveryBlockedModal()" class="absolute top-4 right-4 text-amber-600 hover:text-amber-950 bg-amber-100 w-8 h-8 rounded-full flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold border border-red-200 shadow-xs">
+          <i class="fa-solid fa-truck-ramp-box"></i>
+        </div>
+        <h3 class="brand-font text-2xl font-extrabold text-amber-950">Delivery Distance Limit Exceeded</h3>
+        <p class="text-xs text-red-800 bg-red-50 p-2.5 rounded-xl border border-red-200 font-semibold">
+          Your delivery address is beyond our 30km fresh local delivery radius.
+        </p>
+      </div>
+
+      <div class="space-y-3 text-xs leading-relaxed text-amber-900 bg-amber-50/80 p-4 rounded-2xl border border-amber-200">
+        <p class="font-bold text-amber-950 flex items-center gap-1.5 text-sm">
+          <i class="fa-solid fa-snowflake text-primary"></i> Why is delivery blocked?
+        </p>
+        <p>
+          Your cart contains <strong>fresh perishable items</strong> (Compound Butters or Fresh Bakes) which require temperature control and cannot be delivered past our 30km radius.
+        </p>
+      </div>
+
+      <div class="space-y-2.5 pt-1">
+        <span class="text-xs font-bold text-amber-950 block">Please choose one of the options below:</span>
+        
+        <button onclick="switchCartToCollectionAndClose()" class="w-full bg-primary text-white font-bold py-3 px-4 rounded-xl hover:opacity-95 transition text-xs shadow-md text-left flex items-center justify-between">
+          <span><i class="fa-solid fa-store mr-2"></i> 1. Choose Free Collection</span>
+          <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        </button>
+        <p class="text-[11px] text-amber-700 pl-2">
+          Collect from <strong>Rooihuiskraal (Weekdays)</strong> or <strong>Bus Stop 7 Market (Weekends)</strong>.
+        </p>
+
+        <div class="border-t border-amber-200 my-2"></div>
+
+        <button onclick="closeDeliveryBlockedModal(); toggleCartDrawer(true);" class="w-full bg-amber-100 text-amber-900 font-bold py-2.5 px-4 rounded-xl hover:bg-amber-200 transition text-xs text-left flex items-center justify-between">
+          <span><i class="fa-solid fa-trash-can mr-2 text-red-600"></i> 2. Remove Perishable Items</span>
+          <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        </button>
+        <p class="text-[11px] text-amber-700 pl-2">
+          Remove compound butters/fresh bakes from cart to unlock <strong>Nationwide Courier (R99)</strong> for non-perishable goods.
+        </p>
+      </div>
+
+      <div class="pt-2">
+        <button onclick="closeDeliveryBlockedModal()" class="w-full text-center text-xs font-bold text-amber-700 hover:underline">
+          Dismiss & Back to Cart
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- FIRST-TIME VISITOR WELCOME 5% OFF MODAL -->
   <div id="welcome-discount-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 border border-amber-200 shadow-2xl relative text-center">
@@ -888,9 +944,9 @@
           <span>First-Order Discount (5%):</span>
           <span id="cart-discount-price">-R0.00</span>
         </div>
-        <div class="flex justify-between text-xs sm:text-sm text-amber-800">
+        <div class="flex justify-between text-xs sm:text-sm text-amber-800 items-center">
           <span id="cart-delivery-label">Delivery Fee:</span>
-          <span id="cart-delivery-display">Calculated at checkout</span>
+          <div id="cart-delivery-display" class="text-right font-medium">Calculated at checkout</div>
         </div>
         <div class="flex justify-between font-bold text-base sm:text-lg text-amber-950 border-t border-amber-100 pt-2">
           <span>Total:</span>
@@ -1257,6 +1313,18 @@
     }
 
     function closeWelcomeModal() { document.getElementById('welcome-discount-modal').classList.add('hidden'); }
+    
+    function openDeliveryBlockedModal() {
+      document.getElementById('delivery-blocked-modal').classList.remove('hidden');
+    }
+    function closeDeliveryBlockedModal() {
+      document.getElementById('delivery-blocked-modal').classList.add('hidden');
+    }
+    function switchCartToCollectionAndClose() {
+      closeDeliveryBlockedModal();
+      setFulfillmentMode('collection');
+      toggleCartDrawer(true);
+    }
 
     function startHeroCarousel() {
       if (heroCarouselInterval) clearInterval(heroCarouselInterval);
@@ -2116,12 +2184,12 @@
 
         if (currentFulfillmentMode === 'collection') {
           document.getElementById('cart-delivery-label').textContent = 'Collection:';
-          document.getElementById('cart-delivery-display').textContent = 'Free Collection Selected';
+          document.getElementById('cart-delivery-display').innerHTML = '<span class="text-green-700 font-bold">Free Collection Selected</span>';
           document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
         } else {
           document.getElementById('cart-delivery-label').textContent = 'Delivery Fee:';
           if (currentUser && isExcludedUser(currentUser.email)) {
-            document.getElementById('cart-delivery-display').textContent = 'Admin Free Delivery';
+            document.getElementById('cart-delivery-display').innerHTML = '<span class="text-green-700 font-bold">Admin Free Delivery</span>';
             document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
           } else if (currentUser) {
             const userKey = sanitizeKey(currentUser.email);
@@ -2130,30 +2198,34 @@
               const userAddr = prof.address || '';
               
               if (!userAddr) {
-                document.getElementById('cart-delivery-display').textContent = 'Set address in account';
+                document.getElementById('cart-delivery-display').innerHTML = '<span class="text-amber-800 font-semibold">Set address in account</span>';
                 document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
                 return;
               }
 
-              document.getElementById('cart-delivery-display').textContent = 'Calculating distance...';
+              document.getElementById('cart-delivery-display').innerHTML = '<span class="text-amber-700 italic">Calculating distance...</span>';
               const deliveryRes = await calculateDistanceAndDeliveryFee(userAddr);
 
               if (deliveryRes.isRestricted) {
                 const hasRestricted = cartHasRestrictedItems();
                 if (hasRestricted) {
-                  document.getElementById('cart-delivery-display').textContent = 'Delivery Blocked (>30km)';
+                  document.getElementById('cart-delivery-display').innerHTML = `
+                    <button type="button" onclick="openDeliveryBlockedModal()" class="text-red-600 hover:text-red-800 font-extrabold underline flex items-center gap-1 justify-end cursor-pointer">
+                      <span>Delivery Blocked (>30km)</span> <i class="fa-solid fa-circle-info text-xs"></i>
+                    </button>
+                  `;
                   document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
                 } else {
-                  document.getElementById('cart-delivery-display').textContent = 'Courier Available (R99)';
+                  document.getElementById('cart-delivery-display').innerHTML = '<span class="text-amber-900 font-bold">Courier Available (R99)</span>';
                   document.getElementById('cart-total-price').textContent = `R${(discountedSubtotal + 99).toFixed(2)}`;
                 }
               } else {
-                document.getElementById('cart-delivery-display').textContent = `R${deliveryRes.fee}.00 (${deliveryRes.distanceKm}km)`;
+                document.getElementById('cart-delivery-display').innerHTML = `<span class="font-bold text-amber-950">R${deliveryRes.fee}.00 (${deliveryRes.distanceKm}km)</span>`;
                 document.getElementById('cart-total-price').textContent = `R${(discountedSubtotal + deliveryRes.fee).toFixed(2)}`;
               }
             });
           } else {
-            document.getElementById('cart-delivery-display').textContent = 'Log in to calculate rate';
+            document.getElementById('cart-delivery-display').innerHTML = '<span class="text-amber-800 font-semibold">Log in to calculate rate</span>';
             document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
           }
         }
@@ -2244,7 +2316,7 @@
               if (deliveryRes.isRestricted) {
                 const hasRestricted = cartHasRestrictedItems();
                 if (hasRestricted) {
-                  alert('⚠️ Delivery Restriction Notice:\n\nCompound Butters, Brownies, and Blondies are fresh perishable items and cannot be delivered beyond our 30km radius.\n\nPlease select "Free Collection" (Rooihuiskraal or Bus Stop 7) to place your order.');
+                  openDeliveryBlockedModal();
                   return;
                 }
                 deliveryFee = 99; // Standard courier fee for non-perishables
