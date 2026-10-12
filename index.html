@@ -90,7 +90,7 @@
 
   <!-- Announcement Bar -->
   <div id="announcement-bar" class="bg-primary text-white text-[11px] sm:text-sm text-center py-2 px-3 font-medium flex justify-between items-center shadow-sm">
-    <span class="w-full text-center truncate" id="announcement-text">Free Centurion Delivery over R400 | Free National Delivery over R800 | Free Store Collection</span>
+    <span class="w-full text-center truncate" id="announcement-text">Local Delivery @ R3.50/km (Max 30km from Rooihuiskraal) | Free Market & Store Collection</span>
   </div>
 
   <!-- Header -->
@@ -825,13 +825,15 @@
 
       <div class="border-b border-amber-200 pb-3">
         <span class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider">Delivery Guidelines</span>
-        <h2 class="brand-font text-xl sm:text-3xl font-bold text-amber-950 mt-0.5">Shipping Policy</h2>
+        <h2 class="brand-font text-xl sm:text-3xl font-bold text-amber-950 mt-0.5">Shipping & Distance Policy</h2>
       </div>
 
       <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">1. PROCESSING & SCHEDULE</h3>
-          <p>All orders are prepared fresh specifically for each customer.</p>
+          <h3 class="font-bold text-primary text-sm sm:text-base">1. LOCAL DELIVERY RATE & RADIUS</h3>
+          <p>Local deliveries originate from <strong>153 Bokmakierie Road, Rooihuiskraal, Centurion</strong> and are charged at a rate of <strong>R3.50 per km on the round trip</strong>.</p>
+          <p>Local deliveries are available within a maximum radius of <strong>30km (one-way)</strong>. Orders beyond 30km must be collected at store/market or shipped via national courier.</p>
+          <p>A minimum cart order value of <strong>R100.00</strong> applies to all orders.</p>
         </div>
       </div>
 
@@ -884,6 +886,11 @@
           <span>Total:</span>
           <span id="cart-total-price">R0.00</span>
         </div>
+        
+        <div id="min-order-warning" class="hidden bg-red-100 border border-red-300 text-red-800 p-2.5 rounded-xl text-xs text-center font-bold">
+          <i class="fa-solid fa-circle-exclamation mr-1"></i> Minimum order requirement is R100.00.
+        </div>
+
         <button onclick="initiateCheckout()" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-90 transition flex justify-center items-center text-xs sm:text-sm">
           <i class="fa-solid fa-paper-plane mr-2"></i> Submit Order to Store
         </button>
@@ -961,6 +968,9 @@
     const db = firebase.database();
     const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+    // STORE ORIGIN LAT/LNG FOR 153 BOKMAKIERIE ROAD, ROOIHUISKRAAL, CENTURION
+    const ORIGIN_COORDS = { lat: -25.8856, lng: 28.1583 };
+
     // EXCLUDED ADMIN & INTERNAL ACCOUNTS LIST
     const EXCLUDED_EMAILS = [
       'happiekos@gmail.com',
@@ -1003,7 +1013,7 @@
       heroSub: 'Elevate your meals and snack moments with our handcrafted compound butters, barks, relishes, and small-batch bakes.',
       heroImages: defaultHeroImages,
       logoUrl: 'https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png',
-      announcement: 'Free Centurion Delivery over R400 | Free National Delivery over R800 | Free Store Collection',
+      announcement: 'Local Delivery @ R3.50/km (Max 30km from Rooihuiskraal) | Free Market & Store Collection',
       primaryColor: '#556B2F',
       accentColor: '#6B8E23',
       footerBgColor: '#3b4e1e',
@@ -1011,8 +1021,8 @@
       footerCopyright: 'All rights reserved.',
       contactEmail: 'happiekos@gmail.com',
       contactPhone: '+27 82 000 0000',
-      contactAddress: 'Centurion, Gauteng, South Africa (Bus Stop 7 Market & Collection)',
-      mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d57270.28185011707!2d28.140228050000003!3d-25.85694295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e95655d8f615e45%3A0x6b4fb6c3a19eb189!2sCenturion!5e0!3m2!1sen!2sza!4v1710000000000!5m2!1sen!2sza',
+      contactAddress: '153 Bokmakierie Road, Rooihuiskraal, Centurion, Gauteng',
+      mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3580.4735870977!2d28.1557283!3d-25.8856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e956501170d4d9b%3A0xb3f56b7c7eb5f15a!2s153%20Bokmakierie%20Rd%2C%20Rooihuiskraal%2C%20Centurion%2C%200157!5e0!3m2!1sen!2sza!4v1710000000000!5m2!1sen!2sza',
       headingFont: "'Playfair Display', serif",
       bodyFont: "'Inter', sans-serif",
       socialLinks: defaultSocials
@@ -1036,6 +1046,9 @@
     let heroCarouselInterval = null;
     let visitorSessionId = 'SESS-' + Math.random().toString(36).substring(2, 9);
     let visitorLocationStr = 'Resolving Location...';
+    let cachedCalculatedDeliveryFee = null;
+    let cachedDistanceKm = null;
+    let cachedAddressQuery = '';
 
     const socialIconMap = {
       facebook: 'fa-brands fa-facebook',
@@ -1188,7 +1201,6 @@
     }
 
     function logSiteVisitWithLocation() {
-      // EXCLUDE ADMIN / INTERNAL ACCOUNTS FROM VISIT LOGS
       if (currentUser && isExcludedUser(currentUser.email)) return;
 
       const visitId = 'VIS-' + Date.now();
@@ -1206,7 +1218,6 @@
     }
 
     function updateLivePresence(actionDesc) {
-      // EXCLUDE ADMIN / INTERNAL ACCOUNTS FROM LIVE PRESENCE
       if (currentUser && isExcludedUser(currentUser.email)) return;
 
       window.currentActionDesc = actionDesc;
@@ -1223,7 +1234,6 @@
     }
 
     function logProductView(productId, productTitle) {
-      // EXCLUDE ADMIN / INTERNAL ACCOUNTS FROM INCREMENTING PRODUCT VIEWS
       if (currentUser && isExcludedUser(currentUser.email)) return;
 
       db.ref('analytics/productViews/' + productId).transaction((curr) => {
@@ -1795,15 +1805,12 @@
       const liveKeys = Object.keys(liveVisitors);
       const now = Date.now();
 
-      // FILTER OUT ALL EXCLUDED INTERNAL/ADMIN EMAILS FROM LIVE VISITORS
       const activeList = liveKeys
         .map(k => liveVisitors[k])
         .filter(v => v && !isExcludedUser(v.email) && (now - v.lastActive) < 120000);
 
-      // FILTER OUT ALL EXCLUDED VISITOR LOGS
       const filteredVisitorLogs = visitorLogs.filter(v => v && !isExcludedUser(v.userEmail));
 
-      // FILTER OUT ALL EXCLUDED CUSTOMER PROFILES FROM TOTAL CUSTOMERS COUNT
       const customerKeys = Object.keys(customerProfiles).filter(k => {
         const prof = customerProfiles[k];
         const email = (prof && prof.email) ? prof.email : k.replace(/_/g, '.');
@@ -1868,7 +1875,6 @@
       const container = document.getElementById('admin-customers-list');
       const badge = document.getElementById('customer-count-badge');
       
-      // EXCLUDE ALL INTERNAL / ADMIN ACCOUNTS FROM CUSTOMER DIRECTORY LIST
       const userKeys = Object.keys(customerProfiles).filter(k => {
         const prof = customerProfiles[k] || {};
         const email = prof.email || k.replace(/_/g, '.');
@@ -1980,17 +1986,63 @@
       updateCartUI();
     }
 
-    function calculateDeliveryDetails(address = '') {
-      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      const lowerAddr = address.toLowerCase();
-      const isCenturion = lowerAddr.includes('centurion') || lowerAddr.includes('lyttelton') || lowerAddr.includes('pierre van ryneveld') || lowerAddr.includes('irene') || lowerAddr.includes('highveld') || lowerAddr.includes('rooihuiskraal') || lowerAddr.includes('amberfield') || lowerAddr.includes('doringkloof');
+    // OPENSTREETMAP GEOCODING & OSRM DRIVING DISTANCE ENGINE
+    async function calculateDistanceAndDeliveryFee(addressStr) {
+      if (!addressStr || addressStr.trim() === '') {
+        return { fee: 0, distanceKm: 0, isRestricted: false, message: 'Please enter a delivery address.' };
+      }
 
-      if (isCenturion) {
-        if (subtotal >= 400) return { type: 'centurion', fee: 0, isFree: true, threshold: 400, short: 0 };
-        else return { type: 'centurion', fee: 20, isFree: false, threshold: 400, short: 400 - subtotal };
-      } else {
-        if (subtotal >= 800) return { type: 'national', fee: 0, isFree: true, threshold: 800, short: 0 };
-        else return { type: 'national', fee: 69, isFree: false, threshold: 800, short: 800 - subtotal };
+      if (cachedAddressQuery === addressStr.trim().toLowerCase() && cachedCalculatedDeliveryFee !== null) {
+        return cachedCalculatedDeliveryFee;
+      }
+
+      try {
+        const query = encodeURIComponent(addressStr + ', South Africa');
+        const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
+        const geoData = await geoRes.json();
+
+        if (!geoData || geoData.length === 0) {
+          return { fee: 60, distanceKm: 10, isRestricted: false, message: 'Approximate local fee applied' };
+        }
+
+        const destLat = parseFloat(geoData[0].lat);
+        const destLng = parseFloat(geoData[0].lon);
+
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${ORIGIN_COORDS.lng},${ORIGIN_COORDS.lat};${destLng},${destLat}?overview=false`;
+        const routeRes = await fetch(osrmUrl);
+        const routeData = await routeRes.json();
+
+        if (!routeData || !routeData.routes || routeData.routes.length === 0) {
+          return { fee: 60, distanceKm: 10, isRestricted: false, message: 'Approximate local fee applied' };
+        }
+
+        const oneWayKm = routeData.routes[0].distance / 1000;
+        const roundTripKm = oneWayKm * 2;
+
+        if (oneWayKm > 30) {
+          const resObj = { fee: 0, distanceKm: Math.round(oneWayKm), isRestricted: true, message: `Address is ${Math.round(oneWayKm)}km away (Exceeds 30km local delivery limit)` };
+          cachedCalculatedDeliveryFee = resObj;
+          cachedAddressQuery = addressStr.trim().toLowerCase();
+          return resObj;
+        }
+
+        const calculatedFee = Math.round(roundTripKm * 3.50);
+
+        const resultObj = { 
+          fee: calculatedFee, 
+          distanceKm: Math.round(oneWayKm), 
+          roundTripKm: Math.round(roundTripKm), 
+          isRestricted: false, 
+          message: `R3.50/km round trip (${Math.round(roundTripKm)}km total)` 
+        };
+
+        cachedCalculatedDeliveryFee = resultObj;
+        cachedAddressQuery = addressStr.trim().toLowerCase();
+        return resultObj;
+
+      } catch (err) {
+        console.log('Distance calculation error:', err);
+        return { fee: 50, distanceKm: 8, isRestricted: false, message: 'Standard estimated delivery' };
       }
     }
 
@@ -2008,6 +2060,13 @@
       
       document.getElementById('cart-count').textContent = count;
       document.getElementById('cart-subtotal-price').textContent = `R${subtotal.toFixed(2)}`;
+
+      const minWarning = document.getElementById('min-order-warning');
+      if (subtotal < 100 && subtotal > 0) {
+        minWarning.classList.remove('hidden');
+      } else {
+        minWarning.classList.add('hidden');
+      }
 
       isFirstTimeBuyerUser((isFirstTime) => {
         const discountRow = document.getElementById('discount-row');
@@ -2033,15 +2092,29 @@
             document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
           } else if (currentUser) {
             const userKey = sanitizeKey(currentUser.email);
-            db.ref('profiles/' + userKey).once('value', (snap) => {
+            db.ref('profiles/' + userKey).once('value', async (snap) => {
               const prof = snap.val() || {};
-              const delivery = calculateDeliveryDetails(prof.address || '');
-              const deliveryText = delivery.fee === 0 ? 'Free Delivery' : `R${delivery.fee}.00 (${delivery.type === 'centurion' ? 'Centurion' : 'National'})`;
-              document.getElementById('cart-delivery-display').textContent = deliveryText;
-              document.getElementById('cart-total-price').textContent = `R${(discountedSubtotal + delivery.fee).toFixed(2)}`;
+              const userAddr = prof.address || '';
+              
+              if (!userAddr) {
+                document.getElementById('cart-delivery-display').textContent = 'Set address in account';
+                document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
+                return;
+              }
+
+              document.getElementById('cart-delivery-display').textContent = 'Calculating distance...';
+              const deliveryRes = await calculateDistanceAndDeliveryFee(userAddr);
+
+              if (deliveryRes.isRestricted) {
+                document.getElementById('cart-delivery-display').textContent = 'Exceeds 30km Limit';
+                document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
+              } else {
+                document.getElementById('cart-delivery-display').textContent = `R${deliveryRes.fee}.00 (${deliveryRes.distanceKm}km)`;
+                document.getElementById('cart-total-price').textContent = `R${(discountedSubtotal + deliveryRes.fee).toFixed(2)}`;
+              }
             });
           } else {
-            document.getElementById('cart-delivery-display').textContent = 'Log in / set address';
+            document.getElementById('cart-delivery-display').textContent = 'Log in to calculate rate';
             document.getElementById('cart-total-price').textContent = `R${discountedSubtotal.toFixed(2)}`;
           }
         }
@@ -2092,6 +2165,12 @@
 
     function initiateCheckout() {
       if (cart.length === 0) return alert('Cart is empty.');
+      
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      if (subtotal < 100) {
+        return alert('Minimum order requirement is R100.00. Please add more items to your cart.');
+      }
+
       if (!currentUser) {
         alert('Please log in or create an account to place your order.');
         toggleCartDrawer();
@@ -2102,7 +2181,7 @@
       const activeUserEmail = currentUser.email;
       const userKey = sanitizeKey(activeUserEmail);
 
-      db.ref('profiles/' + userKey).once('value', (snap) => {
+      db.ref('profiles/' + userKey).once('value', async (snap) => {
         const prof = snap.val() || {};
         if (!isExcludedUser(currentUser.email)) {
           if (!prof.name || !prof.phone || !prof.address) {
@@ -2113,15 +2192,22 @@
           }
         }
 
-        isFirstTimeBuyerUser((isFirstTime) => {
-          const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        isFirstTimeBuyerUser(async (isFirstTime) => {
           const discount = isFirstTime ? subtotal * 0.05 : 0;
           const discountedSubtotal = subtotal - discount;
 
           let deliveryFee = 0;
           if (currentFulfillmentMode === 'delivery') {
-            const delivery = isExcludedUser(currentUser.email) ? { fee: 0, isFree: true } : calculateDeliveryDetails(prof.address || '');
-            deliveryFee = delivery.fee;
+            if (isExcludedUser(currentUser.email)) {
+              deliveryFee = 0;
+            } else {
+              const deliveryRes = await calculateDistanceAndDeliveryFee(prof.address || '');
+              if (deliveryRes.isRestricted) {
+                alert(`Delivery address is outside our 30km fresh local delivery radius (${deliveryRes.distanceKm}km away). Please select Free Store Collection.`);
+                return;
+              }
+              deliveryFee = deliveryRes.fee;
+            }
           }
 
           executeOrderSubmission(discountedSubtotal, discount, deliveryFee);
@@ -2137,7 +2223,7 @@
         const prof = snap.val() || {};
         const orderId = 'ORD-' + Date.now().toString().slice(-6);
         const orderTotal = discountedSubtotal + deliveryFee;
-        const fulfillmentLabel = currentFulfillmentMode === 'collection' ? 'Free Store Collection' : (deliveryFee === 0 ? 'Free Delivery' : `Delivery Fee: R${deliveryFee}.00`);
+        const fulfillmentLabel = currentFulfillmentMode === 'collection' ? 'Free Store Collection' : `Delivery Fee: R${deliveryFee}.00`;
         
         const order = {
           id: orderId,
@@ -2239,7 +2325,7 @@
       document.getElementById('yoco-ref-code').textContent = orderId;
       document.getElementById('yoco-modal-name').textContent = prof.name || 'N/A';
       document.getElementById('yoco-modal-phone').textContent = prof.phone || 'N/A';
-      document.getElementById('yoco-modal-mode').textContent = mode === 'collection' ? '🏪 Free Store / Market Collection' : '🚚 Insured Delivery';
+      document.getElementById('yoco-modal-mode').textContent = mode === 'collection' ? '🏪 Free Store / Market Collection' : '🚚 Insured Local Delivery';
       document.getElementById('yoco-modal-address').textContent = prof.address || 'N/A';
       document.getElementById('yoco-modal-discount').textContent = discountAmount > 0 ? `-R${discountAmount.toFixed(2)}` : 'None';
       document.getElementById('yoco-modal-delivery').textContent = deliveryFee === 0 ? 'Free' : `R${deliveryFee}.00`;
@@ -2400,6 +2486,10 @@
         phone: document.getElementById('cust-phone').value.trim(),
         address: document.getElementById('cust-address').value.trim()
       };
+
+      cachedCalculatedDeliveryFee = null;
+      cachedAddressQuery = '';
+
       db.ref('profiles/' + userKey).set(profile).then(() => {
         alert('Address saved successfully!');
         updateCartUI();
