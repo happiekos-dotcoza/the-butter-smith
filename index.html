@@ -1987,64 +1987,78 @@
     }
 
     // OPENSTREETMAP GEOCODING & OSRM DRIVING DISTANCE ENGINE
-    async function calculateDistanceAndDeliveryFee(addressStr) {
-      if (!addressStr || addressStr.trim() === '') {
-        return { fee: 0, distanceKm: 0, isRestricted: false, message: 'Please enter a delivery address.' };
-      }
+    // NEW UPDATED FUNCTION
+async function calculateDistanceAndDeliveryFee(addressStr) {
+  if (!addressStr || addressStr.trim() === '') {
+    return { fee: 0, distanceKm: 0, isRestricted: false, message: 'Please enter a delivery address.' };
+  }
 
-      if (cachedAddressQuery === addressStr.trim().toLowerCase() && cachedCalculatedDeliveryFee !== null) {
-        return cachedCalculatedDeliveryFee;
-      }
+  const cleanAddr = addressStr.trim().toLowerCase();
+  if (cachedAddressQuery === cleanAddr && cachedCalculatedDeliveryFee !== null) {
+    return cachedCalculatedDeliveryFee;
+  }
 
-      try {
-        const query = encodeURIComponent(addressStr + ', South Africa');
-        const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
-        const geoData = await geoRes.json();
-
-        if (!geoData || geoData.length === 0) {
-          return { fee: 60, distanceKm: 10, isRestricted: false, message: 'Approximate local fee applied' };
-        }
-
-        const destLat = parseFloat(geoData[0].lat);
-        const destLng = parseFloat(geoData[0].lon);
-
-        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${ORIGIN_COORDS.lng},${ORIGIN_COORDS.lat};${destLng},${destLat}?overview=false`;
-        const routeRes = await fetch(osrmUrl);
-        const routeData = await routeRes.json();
-
-        if (!routeData || !routeData.routes || routeData.routes.length === 0) {
-          return { fee: 60, distanceKm: 10, isRestricted: false, message: 'Approximate local fee applied' };
-        }
-
-        const oneWayKm = routeData.routes[0].distance / 1000;
-        const roundTripKm = oneWayKm * 2;
-
-        if (oneWayKm > 30) {
-          const resObj = { fee: 0, distanceKm: Math.round(oneWayKm), isRestricted: true, message: `Address is ${Math.round(oneWayKm)}km away (Exceeds 30km local delivery limit)` };
-          cachedCalculatedDeliveryFee = resObj;
-          cachedAddressQuery = addressStr.trim().toLowerCase();
-          return resObj;
-        }
-
-        const calculatedFee = Math.round(roundTripKm * 3.50);
-
-        const resultObj = { 
-          fee: calculatedFee, 
-          distanceKm: Math.round(oneWayKm), 
-          roundTripKm: Math.round(roundTripKm), 
-          isRestricted: false, 
-          message: `R3.50/km round trip (${Math.round(roundTripKm)}km total)` 
-        };
-
-        cachedCalculatedDeliveryFee = resultObj;
-        cachedAddressQuery = addressStr.trim().toLowerCase();
-        return resultObj;
-
-      } catch (err) {
-        console.log('Distance calculation error:', err);
-        return { fee: 50, distanceKm: 8, isRestricted: false, message: 'Standard estimated delivery' };
-      }
+  try {
+    let searchQuery = addressStr;
+    if (!searchQuery.toLowerCase().includes('south africa')) {
+      searchQuery += ', Gauteng, South Africa';
     }
+
+    const query = encodeURIComponent(searchQuery);
+    const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`, {
+      headers: { 'User-Agent': 'TheButterSmithDeli/1.0' }
+    });
+    const geoData = await geoRes.json();
+
+    if (!geoData || geoData.length === 0) {
+      return { fee: 0, distanceKm: 0, isRestricted: true, message: 'Address not found. Please enter street, suburb, and city.' };
+    }
+
+    const destLat = parseFloat(geoData[0].lat);
+    const destLng = parseFloat(geoData[0].lon);
+
+    const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${ORIGIN_COORDS.lng},${ORIGIN_COORDS.lat};${destLng},${destLat}?overview=false`;
+    const routeRes = await fetch(osrmUrl);
+    const routeData = await routeRes.json();
+
+    if (!routeData || !routeData.routes || routeData.routes.length === 0) {
+      return { fee: 0, distanceKm: 0, isRestricted: true, message: 'Could not calculate driving distance.' };
+    }
+
+    const oneWayKm = routeData.routes[0].distance / 1000;
+    const roundTripKm = oneWayKm * 2;
+
+    if (oneWayKm > 30) {
+      const resObj = { 
+        fee: 0, 
+        distanceKm: Math.round(oneWayKm), 
+        isRestricted: true, 
+        message: `Address is ${Math.round(oneWayKm)}km away (Exceeds 30km local delivery limit)` 
+      };
+      cachedCalculatedDeliveryFee = resObj;
+      cachedAddressQuery = cleanAddr;
+      return resObj;
+    }
+
+    const calculatedFee = Math.round(roundTripKm * 3.50);
+
+    const resultObj = { 
+      fee: calculatedFee, 
+      distanceKm: Math.round(oneWayKm), 
+      roundTripKm: Math.round(roundTripKm), 
+      isRestricted: false, 
+      message: `R3.50/km round trip (${Math.round(roundTripKm)}km total)` 
+    };
+
+    cachedCalculatedDeliveryFee = resultObj;
+    cachedAddressQuery = cleanAddr;
+    return resultObj;
+
+  } catch (err) {
+    console.error('Distance calculation error:', err);
+    return { fee: 0, distanceKm: 0, isRestricted: true, message: 'Unable to verify address distance.' };
+  }
+}
 
     function isFirstTimeBuyerUser(callback) {
       if (!currentUser || isExcludedUser(currentUser.email)) { callback(false); return; }
