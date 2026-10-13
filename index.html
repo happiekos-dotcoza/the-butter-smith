@@ -14,6 +14,9 @@
   <!-- SheetJS Library for Exporting to Excel -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+  <!-- Yoco Inline SDK for Embedded In-Page Payment Popup -->
+  <script src="https://js.yoco.com/sdk/v1/yoco-sdk-web.js"></script>
+
   <!-- Optimized Google Fonts: Playfair Display + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -405,7 +408,7 @@
       </section>
     </section>
 
-    <!-- VIEW 2: CUSTOMER ACCOUNT -->
+    <!-- VIEW 2: CUSTOMER ACCOUNT & LIVE ORDER PROGRESS TRACKER -->
     <section id="view-account" class="hidden max-w-3xl mx-auto space-y-6">
       <h2 class="text-xl sm:text-2xl font-bold text-amber-950">My Account & Shipping Details</h2>
       <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
@@ -419,14 +422,14 @@
       </div>
 
       <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-base sm:text-lg text-primary">Order History</h3>
-        <div id="customer-order-history" class="text-sm text-amber-800 space-y-2">
-          <p class="text-amber-600 italic">No previous orders found.</p>
+        <h3 class="font-bold text-base sm:text-lg text-primary">Order History & Live Status Tracking</h3>
+        <div id="customer-order-history" class="space-y-4">
+          <p class="text-amber-600 italic text-sm">No previous orders found.</p>
         </div>
       </div>
     </section>
 
-    <!-- VIEW 3: ADMIN DASHBOARD -->
+    <!-- VIEW 3: ADMIN DASHBOARD (WITH 3-STAGE PIPELINE) -->
     <section id="view-admin" class="hidden space-y-6 sm:space-y-8">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-amber-200 pb-4">
         <div>
@@ -441,7 +444,7 @@
         <button onclick="switchAdminTab('analytics')" id="tab-btn-analytics" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Analytics & Live Visitors</button>
         <button onclick="switchAdminTab('customers')" id="tab-btn-customers" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Customer Accounts</button>
         <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer</button>
-        <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Received</button>
+        <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Pipeline</button>
       </div>
 
       <!-- Admin Tab 1: Products -->
@@ -502,7 +505,7 @@
             </p>
           </div>
           <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-xs space-y-1">
-            <span class="text-xs font-bold text-amber-700 uppercase">Total Site Visits</span>
+            <span class="text-xs font-bold text-amber-700 uppercase">Total Unique Visits</span>
             <p class="text-3xl font-extrabold text-primary" id="stat-total-visits">0</p>
           </div>
           <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-xs space-y-1">
@@ -701,13 +704,47 @@
         </form>
       </div>
 
-      <!-- Admin Tab 5: Orders -->
-      <div id="admin-tab-orders" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
-        <div class="flex justify-between items-center border-b border-amber-200 pb-3">
-          <h3 class="font-bold text-primary">Incoming Orders</h3>
-          <span class="text-xs text-amber-700">Mark orders fulfilled or delete cleared orders</span>
+      <!-- Admin Tab 5: 3-Stage Order Pipeline -->
+      <div id="admin-tab-orders" class="hidden space-y-6">
+        <div class="border-b border-amber-200 pb-3 flex justify-between items-center">
+          <div>
+            <h3 class="font-bold text-primary text-lg">Orders Pipeline Management</h3>
+            <p class="text-xs text-amber-700">Advance orders through stages or revert mistakes with a single click.</p>
+          </div>
         </div>
-        <div id="admin-orders-list" class="space-y-4 text-sm"></div>
+
+        <!-- Stage 1: Orders Received -->
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4 shadow-xs">
+          <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+            <h4 class="font-extrabold text-amber-950 flex items-center gap-2 text-base">
+              <span class="w-3 h-3 rounded-full bg-blue-500"></span> 📥 1. Orders Received
+            </h4>
+            <span id="badge-count-received" class="text-xs font-bold bg-blue-100 text-blue-800 px-3 py-1 rounded-full border border-blue-200">0 Orders</span>
+          </div>
+          <div id="admin-orders-list-received" class="space-y-4 text-sm"></div>
+        </div>
+
+        <!-- Stage 2: In Processing -->
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4 shadow-xs">
+          <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+            <h4 class="font-extrabold text-amber-950 flex items-center gap-2 text-base">
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span> ⚙️ 2. Orders Marked for Processing / Prep
+            </h4>
+            <span id="badge-count-processing" class="text-xs font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full border border-amber-200">0 Orders</span>
+          </div>
+          <div id="admin-orders-list-processing" class="space-y-4 text-sm"></div>
+        </div>
+
+        <!-- Stage 3: Delivered / Ready -->
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4 shadow-xs">
+          <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+            <h4 class="font-extrabold text-amber-950 flex items-center gap-2 text-base">
+              <span class="w-3 h-3 rounded-full bg-green-500"></span> 🚚 3. Delivered / Fulfilled Orders
+            </h4>
+            <span id="badge-count-delivered" class="text-xs font-bold bg-green-100 text-green-800 px-3 py-1 rounded-full border border-green-200">0 Orders</span>
+          </div>
+          <div id="admin-orders-list-delivered" class="space-y-4 text-sm"></div>
+        </div>
       </div>
     </section>
 
@@ -945,6 +982,43 @@
             <p id="modal-delivery-text"></p>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IN-PAGE YOCO PAYMENT MODAL (POPUP ON PAGE) -->
+  <div id="yoco-popup-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-5 border border-amber-200 shadow-2xl relative text-amber-950">
+      <button onclick="closeYocoPopupModal()" class="absolute top-4 right-4 text-amber-600 hover:text-amber-950 bg-amber-100 w-8 h-8 rounded-full flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-xl font-bold border border-amber-300">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3 class="brand-font text-2xl font-extrabold text-amber-950">Secure Card Checkout</h3>
+        <p class="text-xs text-amber-800" id="yoco-modal-ref-label">Order Reference: #</p>
+      </div>
+
+      <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-200 space-y-1.5 text-xs">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-amber-900">Total Amount Payable:</span>
+          <span class="text-lg font-extrabold text-primary" id="yoco-modal-total-display">R0.00</span>
+        </div>
+        <p class="text-[11px] text-amber-700 leading-snug">
+          Complete your order using your debit or credit card securely below. Your order will update automatically once payment is authorized.
+        </p>
+      </div>
+
+      <!-- Yoco Inline Payment Container Frame -->
+      <div id="yoco-card-frame-container" class="min-h-[120px] bg-white rounded-2xl border border-amber-200 p-2 flex items-center justify-center">
+        <p class="text-xs text-amber-600 italic animate-pulse">Initializing secure Yoco payment portal...</p>
+      </div>
+
+      <div class="pt-2 flex justify-between items-center text-[11px] text-amber-700">
+        <span><i class="fa-solid fa-lock text-green-600 mr-1"></i> 256-Bit SSL Encrypted</span>
+        <button onclick="closeYocoPopupModal()" class="text-red-600 hover:underline font-semibold">Cancel Order</button>
       </div>
     </div>
   </div>
@@ -1292,7 +1366,14 @@
     let currentFulfillmentMode = 'delivery';
     let currentHeroSlideIndex = 0;
     let heroCarouselInterval = null;
-    let visitorSessionId = 'SESS-' + Math.random().toString(36).substring(2, 9);
+
+    // PAGE REFRESH GUARD: Reuse visitorSessionId across refreshes inside same tab
+    let visitorSessionId = sessionStorage.getItem('bs_session_id');
+    if (!visitorSessionId) {
+      visitorSessionId = 'SESS-' + Math.random().toString(36).substring(2, 9);
+      sessionStorage.setItem('bs_session_id', visitorSessionId);
+    }
+
     let visitorLocationStr = 'Resolving Location...';
     let cachedCalculatedDeliveryFee = null;
     let cachedAddressQuery = '';
@@ -1398,7 +1479,8 @@
           orders = [];
         }
         renderProducts();
-        if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminOrders();
+        renderCustomerOrderHistory();
+        if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminOrdersPipeline();
       });
 
       setInterval(() => {
@@ -1450,8 +1532,15 @@
         });
     }
 
+    // PAGE REFRESH ANALYTICS GUARD
     function logSiteVisitWithLocation() {
       if (currentUser && isExcludedUser(currentUser.email)) return;
+
+      // Prevent logging duplicate visit entry on F5 or page refresh
+      if (sessionStorage.getItem('bs_visit_logged')) {
+        updateLivePresence('Browsing Store Front');
+        return;
+      }
 
       const visitId = 'VIS-' + Date.now();
       const softwareInfo = getSimpleBrowserAndOS();
@@ -1462,8 +1551,11 @@
         software: softwareInfo,
         userEmail: currentUser ? currentUser.email : 'Guest Visitor'
       };
+
       db.ref('analytics/visitors/' + visitId).set(visitData);
       db.ref('analytics/totalVisits').transaction((current) => (current || 0) + 1);
+
+      sessionStorage.setItem('bs_visit_logged', 'true');
       updateLivePresence('Browsing Store Front');
     }
 
@@ -2640,7 +2732,7 @@
           user: activeUserEmail,
           customerDetails: prof,
           fulfillment: fulfillmentLabel,
-          status: 'Pending',
+          status: 'Received',
           items: [...cart],
           subtotal: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
           discount: discountAmount,
@@ -2660,101 +2752,79 @@
           order_items: cart.map(i => `- ${i.title} (x${i.qty}) - R${(i.price * i.qty).toFixed(2)}`).join('\n')
         };
 
-        emailjs.send('service_5s3bdup', 'template_hjrekg5')
+        emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
           .then(() => console.log('Notification email sent!'))
           .catch((err) => console.log('Email failed:', err));
-
-        const yocoPaymentLink = 'https://pay.yoco.com/thebuttersmithdeli';
 
         cart = [];
         saveCart();
         toggleCartDrawer();
-        openYocoPaymentModal(orderId, orderTotal, yocoPaymentLink, prof, deliveryFee, discountAmount, fulfillmentLabel);
+        openInPageYocoModal(orderId, orderTotal, prof);
         updateLivePresence(`Placed order #${orderId}`);
       });
     }
 
-    function openYocoPaymentModal(orderId, total, link, prof, deliveryFee, discountAmount, fulfillmentLabel) {
-      let modal = document.getElementById('yoco-success-modal');
-      if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'yoco-success-modal';
-        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4';
-        modal.innerHTML = `
-          <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 border border-amber-200 shadow-2xl relative text-amber-950 text-center">
-            <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-xl font-bold border border-amber-300">
-              <i class="fa-solid fa-credit-card"></i>
-            </div>
-            <div class="space-y-0.5">
-              <h3 class="brand-font text-xl font-bold text-amber-950">Order Placed Successfully!</h3>
-              <p class="text-xs text-amber-800" id="yoco-modal-order-id">Order Reference: #</p>
-            </div>
-            
-            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-left text-xs space-y-1">
-              <p class="font-bold text-primary border-b border-amber-200 pb-1 mb-1"><i class="fa-solid fa-user mr-1"></i> Customer Details</p>
-              <p><strong>Name:</strong> <span id="yoco-modal-name"></span></p>
-              <p><strong>Phone:</strong> <span id="yoco-modal-phone"></span></p>
-              <p><strong>Fulfillment:</strong> <span id="yoco-modal-mode" class="font-bold text-primary"></span></p>
-              <p><strong>Address:</strong> <span id="yoco-modal-address"></span></p>
-              <p><strong>Discount:</strong> <span id="yoco-modal-discount"></span></p>
-              <p><strong>Delivery Fee:</strong> <span id="yoco-modal-delivery"></span></p>
-            </div>
+    // EMBEDDED IN-PAGE YOCO MODAL SDK IMPLEMENTATION
+    function openInPageYocoModal(orderId, totalAmount, customerProf) {
+      document.getElementById('yoco-modal-ref-label').textContent = `Order Reference: #${orderId}`;
+      document.getElementById('yoco-modal-total-display').textContent = `R${totalAmount.toFixed(2)}`;
+      
+      const popupModal = document.getElementById('yoco-popup-modal');
+      const frameContainer = document.getElementById('yoco-card-frame-container');
+      popupModal.classList.remove('hidden');
 
-            <div class="bg-amber-100/70 p-3.5 rounded-xl border border-amber-300 space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-amber-900 uppercase font-bold">Total Amount Due</span>
-                <p class="text-2xl font-extrabold text-amber-950" id="yoco-modal-total">R0.00</p>
-              </div>
-              
-              <div class="pt-1">
-                <button onclick="copySpecificValue('reference')" class="w-full bg-white hover:bg-amber-50 text-amber-900 font-bold px-3 py-2.5 rounded-xl text-xs border border-amber-300 shadow-xs flex items-center justify-center gap-1.5">
-                  <i class="fa-solid fa-copy text-primary"></i> Copy Payment Reference Number
-                </button>
-              </div>
-              <div class="text-[11px] text-amber-800 bg-white p-2 rounded-lg border border-amber-200 text-center">
-                Reference Code: <strong id="yoco-ref-code"></strong>
-              </div>
-            </div>
+      frameContainer.innerHTML = '';
 
-            <div class="space-y-2">
-              <a id="yoco-pay-btn" href="#" target="_blank" onclick="handleYocoPayClick(event)" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
-                <i class="fa-solid fa-lock"></i> Open Yoco Payment Page
+      if (window.YocoSDK) {
+        const sdkKey = 'pk_live_d82483d9I11L4Q616f73'; // Live/Test Yoco Inline Public Key Container
+        const yoco = new window.YocoSDK({ publicKey: sdkKey });
+
+        yoco.inline({
+          layout: 'field',
+          amountInCents: Math.round(totalAmount * 100),
+          currency: 'ZAR',
+          name: 'The Butter Smith Deli',
+          description: `Order #${orderId}`,
+          container: '#yoco-card-frame-container',
+          customer: {
+            email: customerProf.email || (currentUser ? currentUser.email : ''),
+            name: customerProf.name || 'Valued Customer'
+          }
+        }).then((inline) => {
+          inline.on('chargeDone', (result) => {
+            if (result.chargeId) {
+              db.ref('orders/' + orderId + '/paymentStatus').set('Paid');
+              db.ref('orders/' + orderId + '/chargeId').set(result.chargeId);
+              alert('Payment Successful! Thank you for your order.');
+              closeYocoPopupModal();
+              navigateTo('account');
+            }
+          });
+        }).catch((err) => {
+          frameContainer.innerHTML = `
+            <div class="text-center p-3 space-y-2">
+              <p class="text-xs text-amber-900 font-bold">Standard Payment Portal Loaded</p>
+              <a href="https://pay.yoco.com/thebuttersmithdeli" target="_blank" class="inline-block bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl">
+                Click to Complete Payment on Yoco
               </a>
-              <button onclick="closeYocoPaymentModal()" class="w-full bg-amber-100 text-amber-900 font-bold py-2 rounded-xl hover:bg-amber-200 transition text-xs">
-                Close & Return to Store
-              </button>
             </div>
+          `;
+        });
+      } else {
+        frameContainer.innerHTML = `
+          <div class="text-center p-3 space-y-2">
+            <p class="text-xs text-amber-900 font-bold">Standard Payment Portal Loaded</p>
+            <a href="https://pay.yoco.com/thebuttersmithdeli" target="_blank" class="inline-block bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl">
+              Click to Complete Payment on Yoco
+            </a>
           </div>
         `;
-        document.body.appendChild(modal);
-      }
-
-      document.getElementById('yoco-modal-order-id').textContent = `Order Reference: #${orderId}`;
-      document.getElementById('yoco-modal-total').textContent = `R${total.toFixed(2)}`;
-      document.getElementById('yoco-ref-code').textContent = orderId;
-      document.getElementById('yoco-modal-name').textContent = prof.name || 'N/A';
-      document.getElementById('yoco-modal-phone').textContent = prof.phone || 'N/A';
-      document.getElementById('yoco-modal-mode').textContent = fulfillmentLabel;
-      document.getElementById('yoco-modal-address').textContent = prof.address || 'N/A';
-      document.getElementById('yoco-modal-discount').textContent = discountAmount > 0 ? `-R${discountAmount.toFixed(2)}` : 'None';
-      document.getElementById('yoco-modal-delivery').textContent = deliveryFee === 0 ? 'Free' : `R${deliveryFee}.00`;
-      document.getElementById('yoco-pay-btn').href = link;
-      modal.classList.remove('hidden');
-    }
-
-    function copySpecificValue(type) {
-      if (type === 'reference') {
-        const refText = document.getElementById('yoco-ref-code').textContent.trim();
-        navigator.clipboard.writeText(refText).then(() => alert('Reference Code copied!'));
       }
     }
 
-    function handleYocoPayClick(e) {
-      const refCode = document.getElementById('yoco-ref-code').textContent.trim();
-      navigator.clipboard.writeText(refCode).catch(err => console.log(err));
+    function closeYocoPopupModal() {
+      document.getElementById('yoco-popup-modal').classList.add('hidden');
     }
-
-    function closeYocoPaymentModal() { document.getElementById('yoco-success-modal').classList.add('hidden'); }
 
     function renderCategories() {
       const cats = ['All', ...new Set(products.filter(p => p.visible !== false).map(p => p.category))];
@@ -2789,16 +2859,84 @@
         renderAdminProducts();
         renderAdminAnalytics();
         renderAdminCustomers();
-        renderAdminOrders();
+        renderAdminOrdersPipeline();
         updateLivePresence('Viewing Admin Control Panel');
       } else if (viewName === 'account') {
         document.getElementById('view-account').classList.remove('hidden');
         loadCustomerProfile();
+        renderCustomerOrderHistory();
         updateLivePresence('Viewing Customer Account');
       } else {
         document.getElementById('view-store').classList.remove('hidden');
         updateLivePresence('Browsing Store Catalog');
       }
+    }
+
+    // CLIENT REAL-TIME ORDER PROGRESS TRACKER
+    function renderCustomerOrderHistory() {
+      const container = document.getElementById('customer-order-history');
+      if (!currentUser) {
+        container.innerHTML = `<p class="text-amber-600 italic text-sm py-2">Log in to view your order history.</p>`;
+        return;
+      }
+
+      const myOrders = orders.filter(o => o.user && o.user.toLowerCase() === currentUser.email.toLowerCase());
+      if (myOrders.length === 0) {
+        container.innerHTML = `<p class="text-amber-600 italic text-sm py-2">No previous orders found.</p>`;
+        return;
+      }
+
+      container.innerHTML = myOrders.map(o => {
+        const rawStatus = o.status || 'Received';
+        
+        let step = 1;
+        if (rawStatus === 'Processing') step = 2;
+        if (rawStatus === 'Delivered' || rawStatus === 'Completed') step = 3;
+
+        return `
+          <div class="p-4 sm:p-5 bg-amber-50/60 rounded-2xl border border-amber-200 space-y-4">
+            <div class="flex flex-wrap justify-between items-center gap-2 border-b border-amber-200 pb-2">
+              <div>
+                <span class="font-extrabold text-amber-950 text-sm">Order #${o.id}</span>
+                <span class="text-xs text-amber-700 block">${o.date}</span>
+              </div>
+              <div class="text-right">
+                <span class="text-base font-extrabold text-primary block">R${o.total.toFixed(2)}</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800">${o.fulfillment}</span>
+              </div>
+            </div>
+
+            <!-- VISUAL 3-STAGE PROGRESS BAR -->
+            <div class="py-2">
+              <span class="text-[11px] font-bold text-amber-900 mb-2 block">Live Order Status:</span>
+              <div class="grid grid-cols-3 gap-1 relative text-center">
+                <!-- Step 1 -->
+                <div class="p-2 rounded-xl text-xs font-bold transition ${step >= 1 ? 'bg-primary text-white shadow-xs' : 'bg-amber-100 text-amber-600'}">
+                  <i class="fa-solid fa-receipt block text-sm mb-0.5"></i>
+                  <span class="text-[10px]">1. Received</span>
+                </div>
+                <!-- Step 2 -->
+                <div class="p-2 rounded-xl text-xs font-bold transition ${step >= 2 ? 'bg-primary text-white shadow-xs' : 'bg-amber-100 text-amber-600'}">
+                  <i class="fa-solid fa-cookie-bite block text-sm mb-0.5"></i>
+                  <span class="text-[10px]">2. In Prep</span>
+                </div>
+                <!-- Step 3 -->
+                <div class="p-2 rounded-xl text-xs font-bold transition ${step >= 3 ? 'bg-green-700 text-white shadow-xs' : 'bg-amber-100 text-amber-600'}">
+                  <i class="fa-solid fa-truck-fast block text-sm mb-0.5"></i>
+                  <span class="text-[10px]">3. Delivered</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-3 rounded-xl border border-amber-100 text-xs space-y-1">
+              <span class="font-bold text-amber-900 block border-b border-amber-100 pb-1">Items Ordered:</span>
+              <ul class="list-disc pl-4 text-amber-800 space-y-0.5">
+                ${o.items.map(i => `<li>${i.title} x ${i.qty} (R${(i.price * i.qty).toFixed(2)})</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
@@ -2945,68 +3083,103 @@
 
       if (tab === 'analytics') renderAdminAnalytics();
       if (tab === 'customers') renderAdminCustomers();
-      if (tab === 'orders') renderAdminOrders();
+      if (tab === 'orders') renderAdminOrdersPipeline();
     }
 
-    function renderAdminOrders() {
-      const container = document.getElementById('admin-orders-list');
-      if (orders.length === 0) {
-        container.innerHTML = `<p class="text-amber-600 italic py-4 text-center">No orders received yet.</p>`;
-        return;
+    // ADMIN 3-STAGE ORDERS PIPELINE & REVERT CONTROL FUNCTIONS
+    function renderAdminOrdersPipeline() {
+      const recContainer = document.getElementById('admin-orders-list-received');
+      const procContainer = document.getElementById('admin-orders-list-processing');
+      const delivContainer = document.getElementById('admin-orders-list-delivered');
+
+      const recOrders = orders.filter(o => !o.status || o.status === 'Received' || o.status === 'Pending');
+      const procOrders = orders.filter(o => o.status === 'Processing');
+      const delivOrders = orders.filter(o => o.status === 'Delivered' || o.status === 'Completed');
+
+      document.getElementById('badge-count-received').textContent = `${recOrders.length} Orders`;
+      document.getElementById('badge-count-processing').textContent = `${procOrders.length} Orders`;
+      document.getElementById('badge-count-delivered').textContent = `${delivOrders.length} Orders`;
+
+      recContainer.innerHTML = recOrders.length === 0 ? `<p class="text-amber-600 italic py-2 text-xs">No orders in received queue.</p>` : recOrders.map(o => renderAdminOrderCard(o, 'Received')).join('');
+      procContainer.innerHTML = procOrders.length === 0 ? `<p class="text-amber-600 italic py-2 text-xs">No orders in processing queue.</p>` : procOrders.map(o => renderAdminOrderCard(o, 'Processing')).join('');
+      delivContainer.innerHTML = delivOrders.length === 0 ? `<p class="text-amber-600 italic py-2 text-xs">No delivered orders logged.</p>` : delivOrders.map(o => renderAdminOrderCard(o, 'Delivered')).join('');
+    }
+
+    function renderAdminOrderCard(o, currentStage) {
+      const cd = o.customerDetails || {};
+      const fulfillmentDisplay = o.fulfillment || 'Delivery';
+      const discountDisplay = o.discount !== undefined && o.discount > 0 ? `-R${o.discount.toFixed(2)}` : 'None';
+
+      let actionButtons = '';
+      if (currentStage === 'Received') {
+        actionButtons = `
+          <button onclick="updatePipelineStatus('${o.id}', 'Processing')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition flex items-center gap-1">
+            <span>Move to Processing</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        `;
+      } else if (currentStage === 'Processing') {
+        actionButtons = `
+          <button onclick="updatePipelineStatus('${o.id}', 'Received')" class="text-xs font-bold px-2.5 py-1.5 rounded-xl bg-amber-200 text-amber-900 hover:bg-amber-300 transition flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Revert
+          </button>
+          <button onclick="updatePipelineStatus('${o.id}', 'Delivered')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-green-700 text-white hover:bg-green-800 transition flex items-center gap-1">
+            <span>Mark Delivered</span> <i class="fa-solid fa-check"></i>
+          </button>
+        `;
+      } else if (currentStage === 'Delivered') {
+        actionButtons = `
+          <button onclick="updatePipelineStatus('${o.id}', 'Processing')" class="text-xs font-bold px-2.5 py-1.5 rounded-xl bg-amber-200 text-amber-900 hover:bg-amber-300 transition flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Revert to Processing
+          </button>
+        `;
       }
 
-      container.innerHTML = orders.map(o => {
-        const isDone = o.status === 'Completed';
-        const cd = o.customerDetails || {};
-        const fulfillmentDisplay = o.fulfillment || 'Delivery';
-        const discountDisplay = o.discount !== undefined && o.discount > 0 ? `-R${o.discount.toFixed(2)}` : 'None';
-        return `
-          <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3">
-            <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950">
-              <div class="flex items-center gap-2">
-                <span>Order #${o.id}</span>
-                <span class="text-xs px-2.5 py-0.5 rounded-full font-bold ${isDone ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">
-                  ${o.status || 'Pending'}
-                </span>
-                <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-bold">${fulfillmentDisplay}</span>
-              </div>
-              <span class="text-base text-primary">R${o.total.toFixed(2)}</span>
+      return `
+        <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3 shadow-2xs">
+          <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950">
+            <div class="flex items-center gap-2">
+              <span>Order #${o.id}</span>
+              <span class="text-xs bg-primary/10 text-primary px-2.5 py-0.5 rounded font-bold">${fulfillmentDisplay}</span>
             </div>
-            <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
-              <p><strong>Customer Email:</strong> ${o.user}</p>
-              <p><strong>Full Name:</strong> ${cd.name || 'N/A'}</p>
-              <p><strong>Cell Phone:</strong> ${cd.phone || 'N/A'}</p>
-              <p><strong>Address:</strong> ${cd.address || 'N/A'}</p>
-              <p><strong>Discount:</strong> ${discountDisplay}</p>
-              <p class="text-[10px] text-amber-600 pt-1">Date: ${o.date}</p>
-            </div>
-            <ul class="text-xs space-y-1 list-disc pl-4 text-amber-900 bg-white p-3 rounded-xl border border-amber-100">
-              ${o.items.map(i => `<li>${i.title} x ${i.qty} (R${(i.price * i.qty).toFixed(2)})</li>`).join('')}
-            </ul>
-            <div class="flex justify-end items-center gap-2 pt-1">
-              <button onclick="toggleOrderStatus('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl transition ${isDone ? 'bg-amber-100 text-amber-900' : 'bg-green-700 text-white'}">
-                ${isDone ? 'Mark Pending' : 'Mark Completed'}
-              </button>
-              <button onclick="deleteOrder('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-100 text-red-700">Delete</button>
+            <span class="text-base text-primary">R${o.total.toFixed(2)}</span>
+          </div>
+
+          <div class="text-xs text-amber-800 space-y-1 bg-white p-3 rounded-xl border border-amber-100">
+            <p><strong>Customer Email:</strong> ${o.user}</p>
+            <p><strong>Full Name:</strong> ${cd.name || 'N/A'}</p>
+            <p><strong>Cell Phone:</strong> ${cd.phone || 'N/A'}</p>
+            <p><strong>Address:</strong> ${cd.address || 'N/A'}</p>
+            <p><strong>Discount:</strong> ${discountDisplay}</p>
+            <p class="text-[10px] text-amber-600 pt-1">Date Logged: ${o.date}</p>
+          </div>
+
+          <ul class="text-xs space-y-1 list-disc pl-4 text-amber-900 bg-white p-3 rounded-xl border border-amber-100">
+            ${o.items.map(i => `<li>${i.title} x ${i.qty} (R${(i.price * i.qty).toFixed(2)})</li>`).join('')}
+          </ul>
+
+          <div class="flex flex-wrap justify-between items-center gap-2 pt-1 border-t border-amber-200/60">
+            <button onclick="deleteOrder('${o.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-100 text-red-700 hover:bg-red-200">
+              <i class="fa-solid fa-trash-can mr-1"></i> Delete
+            </button>
+            <div class="flex items-center gap-2">
+              ${actionButtons}
             </div>
           </div>
-        `;
-      }).join('');
+        </div>
+      `;
     }
 
-    function toggleOrderStatus(orderId) {
-      const order = orders.find(o => o.id === orderId);
-      if (order) {
-        const nextStatus = order.status === 'Completed' ? 'Pending' : 'Completed';
-        db.ref('orders/' + orderId + '/status').set(nextStatus);
-      }
+    function updatePipelineStatus(orderId, newStatus) {
+      db.ref('orders/' + orderId + '/status').set(newStatus).then(() => {
+        renderAdminOrdersPipeline();
+      });
     }
 
     function deleteOrder(orderId) {
       if (!confirm(`Delete order #${orderId}?`)) return;
       db.ref('orders/' + orderId).remove().then(() => {
         orders = orders.filter(o => o.id !== orderId);
-        renderAdminOrders();
+        renderAdminOrdersPipeline();
       });
     }
   </script>
