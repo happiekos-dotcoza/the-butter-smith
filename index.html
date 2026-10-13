@@ -14,9 +14,6 @@
   <!-- SheetJS Library for Exporting to Excel -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <!-- Yoco Inline SDK for Embedded In-Page Payment Popup -->
-  <script src="https://js.yoco.com/sdk/v1/yoco-sdk-web.js"></script>
-
   <!-- Optimized Google Fonts: Playfair Display + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -986,39 +983,36 @@
     </div>
   </div>
 
-  <!-- IN-PAGE YOCO PAYMENT MODAL (POPUP ON PAGE) -->
-  <div id="yoco-popup-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-5 border border-amber-200 shadow-2xl relative text-amber-950">
-      <button onclick="closeYocoPopupModal()" class="absolute top-4 right-4 text-amber-600 hover:text-amber-950 bg-amber-100 w-8 h-8 rounded-full flex items-center justify-center font-bold">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-      <div class="text-center space-y-1">
-        <div class="w-12 h-12 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-xl font-bold border border-amber-300">
-          <i class="fa-solid fa-shield-halved"></i>
+  <!-- IN-PAGE EMBEDDED YOCO IFRAME MODAL (OPTION 3) -->
+  <div id="yoco-popup-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-3 sm:p-6">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-4 sm:p-6 space-y-4 border border-amber-200 shadow-2xl relative text-amber-950 flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center border-b border-amber-200 pb-3 shrink-0">
+        <div>
+          <h3 class="brand-font text-xl sm:text-2xl font-extrabold text-amber-950">Secure Card Checkout</h3>
+          <p class="text-xs text-amber-800" id="yoco-modal-ref-label">Order Reference: #</p>
         </div>
-        <h3 class="brand-font text-2xl font-extrabold text-amber-950">Secure Card Checkout</h3>
-        <p class="text-xs text-amber-800" id="yoco-modal-ref-label">Order Reference: #</p>
+        <button onclick="closeYocoPopupModal()" class="text-amber-600 hover:text-amber-950 bg-amber-100 w-8 h-8 rounded-full flex items-center justify-center font-bold">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
 
-      <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-200 space-y-1.5 text-xs">
-        <div class="flex justify-between items-center">
-          <span class="font-bold text-amber-900">Total Amount Payable:</span>
-          <span class="text-lg font-extrabold text-primary" id="yoco-modal-total-display">R0.00</span>
-        </div>
-        <p class="text-[11px] text-amber-700 leading-snug">
-          Complete your order using your debit or credit card securely below. Your order will update automatically once payment is authorized.
-        </p>
+      <!-- Order Total Summary -->
+      <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 flex justify-between items-center text-xs shrink-0">
+        <span class="font-bold text-amber-900">Total Amount Payable:</span>
+        <span class="text-base font-extrabold text-primary" id="yoco-modal-total-display">R0.00</span>
       </div>
 
-      <!-- Yoco Inline Payment Container Frame -->
-      <div id="yoco-card-frame-container" class="min-h-[120px] bg-white rounded-2xl border border-amber-200 p-2 flex items-center justify-center">
-        <p class="text-xs text-amber-600 italic animate-pulse">Initializing secure Yoco payment portal...</p>
+      <!-- Embedded Yoco Payment Iframe Container -->
+      <div class="w-full flex-grow h-[430px] rounded-2xl overflow-hidden border border-amber-200 bg-amber-50/50 relative">
+        <iframe id="yoco-embedded-iframe" src="" class="w-full h-full border-0" allow="payment"></iframe>
       </div>
 
-      <div class="pt-2 flex justify-between items-center text-[11px] text-amber-700">
+      <!-- Modal Footer -->
+      <div class="flex justify-between items-center text-[11px] text-amber-700 pt-2 border-t border-amber-100 shrink-0">
         <span><i class="fa-solid fa-lock text-green-600 mr-1"></i> 256-Bit SSL Encrypted</span>
-        <button onclick="closeYocoPopupModal()" class="text-red-600 hover:underline font-semibold">Cancel Order</button>
+        <button onclick="closeYocoPopupModal()" class="text-amber-800 hover:underline font-semibold">Done / Close Modal</button>
       </div>
     </div>
   </div>
@@ -2708,6 +2702,7 @@
       });
     }
 
+    // ORDER SUBMISSION & OPTION 3 IN-PAGE EMBEDDED YOCO MODAL TRIGGER
     function executeOrderSubmission(discountedSubtotal, discountAmount, deliveryFee) {
       const activeUserEmail = currentUser.email;
       const userKey = sanitizeKey(activeUserEmail);
@@ -2733,6 +2728,7 @@
           customerDetails: prof,
           fulfillment: fulfillmentLabel,
           status: 'Received',
+          paymentStatus: 'Pending',
           items: [...cart],
           subtotal: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
           discount: discountAmount,
@@ -2759,71 +2755,29 @@
         cart = [];
         saveCart();
         toggleCartDrawer();
-        openInPageYocoModal(orderId, orderTotal, prof);
+
+        // Launch Embedded Yoco Iframe Modal Directly
+        openEmbeddedYocoIframeModal(orderId, orderTotal);
         updateLivePresence(`Placed order #${orderId}`);
       });
     }
 
-    // EMBEDDED IN-PAGE YOCO MODAL SDK IMPLEMENTATION
-    function openInPageYocoModal(orderId, totalAmount, customerProf) {
+    // OPEN EMBEDDED YOCO MODAL (OPTION 3)
+    function openEmbeddedYocoIframeModal(orderId, totalAmount) {
       document.getElementById('yoco-modal-ref-label').textContent = `Order Reference: #${orderId}`;
       document.getElementById('yoco-modal-total-display').textContent = `R${totalAmount.toFixed(2)}`;
       
-      const popupModal = document.getElementById('yoco-popup-modal');
-      const frameContainer = document.getElementById('yoco-card-frame-container');
-      popupModal.classList.remove('hidden');
+      const iframe = document.getElementById('yoco-embedded-iframe');
+      iframe.src = 'https://pay.yoco.com/thebuttersmithdeli';
 
-      frameContainer.innerHTML = '';
-
-      if (window.YocoSDK) {
-        const sdkKey = 'pk_live_d82483d9I11L4Q616f73'; // Live/Test Yoco Inline Public Key Container
-        const yoco = new window.YocoSDK({ publicKey: sdkKey });
-
-        yoco.inline({
-          layout: 'field',
-          amountInCents: Math.round(totalAmount * 100),
-          currency: 'ZAR',
-          name: 'The Butter Smith Deli',
-          description: `Order #${orderId}`,
-          container: '#yoco-card-frame-container',
-          customer: {
-            email: customerProf.email || (currentUser ? currentUser.email : ''),
-            name: customerProf.name || 'Valued Customer'
-          }
-        }).then((inline) => {
-          inline.on('chargeDone', (result) => {
-            if (result.chargeId) {
-              db.ref('orders/' + orderId + '/paymentStatus').set('Paid');
-              db.ref('orders/' + orderId + '/chargeId').set(result.chargeId);
-              alert('Payment Successful! Thank you for your order.');
-              closeYocoPopupModal();
-              navigateTo('account');
-            }
-          });
-        }).catch((err) => {
-          frameContainer.innerHTML = `
-            <div class="text-center p-3 space-y-2">
-              <p class="text-xs text-amber-900 font-bold">Standard Payment Portal Loaded</p>
-              <a href="https://pay.yoco.com/thebuttersmithdeli" target="_blank" class="inline-block bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl">
-                Click to Complete Payment on Yoco
-              </a>
-            </div>
-          `;
-        });
-      } else {
-        frameContainer.innerHTML = `
-          <div class="text-center p-3 space-y-2">
-            <p class="text-xs text-amber-900 font-bold">Standard Payment Portal Loaded</p>
-            <a href="https://pay.yoco.com/thebuttersmithdeli" target="_blank" class="inline-block bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl">
-              Click to Complete Payment on Yoco
-            </a>
-          </div>
-        `;
-      }
+      document.getElementById('yoco-popup-modal').classList.remove('hidden');
     }
 
     function closeYocoPopupModal() {
+      const iframe = document.getElementById('yoco-embedded-iframe');
+      iframe.src = ''; // Reset iframe
       document.getElementById('yoco-popup-modal').classList.add('hidden');
+      navigateTo('account');
     }
 
     function renderCategories() {
