@@ -8,6 +8,29 @@
   <meta property="og:title" content="The Butter Smith Deli - Handcrafted Spreads & Small-Batch Bakes">
   <meta property="og:description" content="Handcrafted compound butters, artisanal barks, relishes, and small-batch bakes crafted fresh in Centurion.">
   
+  <!-- PWA SETTINGS & MANIFEST -->
+  <meta name="theme-color" content="#556B2F">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Butter Smith">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png">
+  
+  <link rel="manifest" href='data:application/manifest+json,{
+    "name": "The Butter Smith Deli",
+    "short_name": "Butter Smith",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#556B2F",
+    "icons": [
+      {
+        "src": "https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png",
+        "sizes": "192x192 512x512",
+        "type": "image/png"
+      }
+    ]
+  }'>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -747,6 +770,36 @@
 
   </main>
 
+  <!-- PWA INSTALLATION PROMPT MODAL (EVERY 2 WEEKS) -->
+  <div id="pwa-install-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-amber-200 shadow-2xl relative text-center text-amber-950">
+      <button onclick="dismissInstallModal()" class="absolute top-4 right-4 text-amber-600 hover:text-amber-950 bg-amber-100 w-8 h-8 rounded-full flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-16 h-16 bg-amber-100 text-primary rounded-full flex items-center justify-center mx-auto text-3xl font-bold border border-amber-300 shadow-sm">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-xs font-bold text-accent uppercase tracking-wider">Fast & Easy Access</span>
+        <h3 class="brand-font text-2xl font-extrabold text-amber-950">Install Our App</h3>
+        <p class="text-xs sm:text-sm text-amber-800 leading-relaxed">
+          Get quick access to <strong>The Butter Smith Deli</strong> directly from your home screen. Enjoy faster loading and instant access to our latest spreads and bakes!
+        </p>
+      </div>
+
+      <div class="space-y-3 pt-2">
+        <button onclick="triggerPWAInstall()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:opacity-95 transition text-sm shadow-md flex justify-center items-center gap-2">
+          <i class="fa-solid fa-download"></i> Install App Now
+        </button>
+        <button onclick="dismissInstallModal()" class="w-full bg-amber-100 text-amber-900 font-bold py-2.5 rounded-xl hover:bg-amber-200 transition text-xs">
+          Not Now, Remind Me Later
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- EDIT CUSTOMER ACCOUNT ADMIN MODAL -->
   <div id="admin-edit-customer-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 border border-amber-200 shadow-2xl relative text-amber-950">
@@ -1360,6 +1413,7 @@
     let currentFulfillmentMode = 'delivery';
     let currentHeroSlideIndex = 0;
     let heroCarouselInterval = null;
+    let deferredPrompt = null;
 
     // PAGE REFRESH GUARD: Reuse visitorSessionId across refreshes inside same tab
     let visitorSessionId = sessionStorage.getItem('bs_session_id');
@@ -1380,6 +1434,60 @@
       twitter: 'fa-brands fa-x-twitter',
       youtube: 'fa-brands fa-youtube'
     };
+
+    // SERVICE WORKER REGISTRATION FOR PWA INSTALL
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const swCode = `
+          self.addEventListener('install', (e) => self.skipWaiting());
+          self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+          self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
+        `;
+        const blob = new Blob([swCode], { type: 'text/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration error:', err));
+      });
+    }
+
+    // CAPTURE INSTALL PROMPT FOR PWA
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      checkBiWeeklyInstallPrompt();
+    });
+
+    // BI-WEEKLY (14 DAYS) INSTALL MODAL CHECK
+    function checkBiWeeklyInstallPrompt() {
+      const lastPrompt = localStorage.getItem('bs_pwa_last_prompt');
+      const now = Date.now();
+      const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
+
+      if (!lastPrompt || (now - parseInt(lastPrompt, 10)) > fourteenDaysMs) {
+        setTimeout(() => {
+          document.getElementById('pwa-install-modal').classList.remove('hidden');
+        }, 3000);
+      }
+    }
+
+    function triggerPWAInstall() {
+      dismissInstallModal();
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted PWA installation');
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        alert('To install, tap your browser menu (3 dots or share button) and select "Add to Home Screen" or "Install App".');
+      }
+    }
+
+    function dismissInstallModal() {
+      document.getElementById('pwa-install-modal').classList.add('hidden');
+      localStorage.setItem('bs_pwa_last_prompt', Date.now().toString());
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
       applyStylesAndSettings();
