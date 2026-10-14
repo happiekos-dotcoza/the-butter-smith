@@ -1119,7 +1119,7 @@
     </div>
   </div>
 
-  <!-- POPIA PRIVACY POLICY MODAL -->
+  <!-- POPIA PRIVACY POLICY MODAL (FULLY EXPANDED) -->
   <div id="privacy-policy-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
     <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto text-amber-950 space-y-5">
       <button onclick="closePrivacyModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-base sm:text-lg z-10">
@@ -1136,7 +1136,33 @@
 
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
           <h3 class="font-bold text-primary text-sm sm:text-base">1. INFORMATION WE COLLECT</h3>
-          <p>We collect personal information necessary to process orders, fulfill courier deliveries, and provide customer support.</p>
+          <p>We collect personal information necessary to process orders, fulfill local or courier deliveries, and provide customer support. This includes your full name, cell phone number, email address, physical delivery address, and order transaction history.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">2. PURPOSE OF DATA PROCESSING</h3>
+          <p>Your personal information is collected and processed solely for legitimate business purposes, including:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>Processing, packing, and dispatching your artisanal butter and small-batch orders.</li>
+            <li>Calculating exact local delivery distances and courier shipping costs.</li>
+            <li>Communicating order status updates via email or WhatsApp.</li>
+            <li>Managing registered customer accounts and order history.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">3. DATA STORAGE & SECURITY</h3>
+          <p>All client records and transaction data are securely stored using encrypted cloud services powered by Firebase. We implement strict security measures to prevent unauthorized access, loss, or misuse of your personal data.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">4. THIRD-PARTY SHARING</h3>
+          <p>We do not sell, rent, or trade your personal information to third parties. Data is shared exclusively with necessary service providers required to fulfill your order (e.g., payment gateways like Yoco, or delivery/courier services).</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">5. YOUR RIGHTS UNDER POPIA</h3>
+          <p>You have the right to request access to your personal information, request corrections, or request deletion of your account and personal records at any time by contacting our Information Officer at <strong>happiekos@gmail.com</strong>.</p>
         </div>
       </div>
 
@@ -1148,7 +1174,7 @@
     </div>
   </div>
 
-  <!-- REFUND & RETURN POLICY MODAL -->
+  <!-- REFUND & RETURN POLICY MODAL (FULLY EXPANDED) -->
   <div id="refund-policy-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
     <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto text-amber-950 space-y-5">
       <button onclick="closeRefundModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-base sm:text-lg z-10">
@@ -1157,15 +1183,30 @@
 
       <div class="border-b border-amber-200 pb-3">
         <span class="text-[10px] sm:text-xs font-bold text-accent uppercase tracking-wider">Store Policy & Terms</span>
-        <h2 class="brand-font text-xl sm:text-3xl font-bold text-amber-950 mt-0.5">Refund, Shipping & Delivery Policy</h2>
+        <h2 class="brand-font text-xl sm:text-3xl font-bold text-amber-950 mt-0.5">Refund, Shipping & Return Policy</h2>
       </div>
 
       <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
-        <p class="italic font-medium">By placing an order on our website, you agree to our Shipping, Delivery, and Refund Policies.</p>
+        <p class="italic font-medium">By placing an order on our website, you agree to our Shipping, Delivery, and Return Policies outlined below.</p>
 
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">1. NO REFUNDS OR CANCELLATIONS</h3>
-          <p>Due to food safety and the perishable nature of freshly baked goods, all sales are final.</p>
+          <h3 class="font-bold text-primary text-sm sm:text-base">1. PERISHABLE GOODS & FINAL SALES</h3>
+          <p>Due to health regulations, food safety standards, and the fresh, perishable nature of our handcrafted compound butters and small-batch bakes, all sales are final once orders have been prepared or dispatched. Returns or exchanges of food items are strictly prohibited once they have left our prep facility.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">2. DAMAGED OR INCORRECT ITEMS</h3>
+          <p>If you receive an incorrect item or an item that has been physically damaged during local delivery, please notify us within <strong>24 hours</strong> of receipt by emailing <strong>happiekos@gmail.com</strong> or WhatsApping us with photographs of the item and packaging. Verified damaged or incorrect orders will be replaced promptly or issued a store credit.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">3. ORDER CANCELLATIONS</h3>
+          <p>Orders may be cancelled for a full refund prior to order preparation or dispatch. Once an order is marked as "In Prep" or "Processing" in our system, cancellations can no longer be accepted as raw ingredients will have already been allocated.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">4. UNCOLLECTED MARKET & STORE ORDERS</h3>
+          <p>Orders selected for free store or weekend market pickup (Bus Stop 7 / Rooihuiskraal) must be collected during designated market operating hours. Uncollected perishable items cannot be refunded after the scheduled pickup window expires.</p>
         </div>
       </div>
 
@@ -1177,7 +1218,7 @@
     </div>
   </div>
 
-  <!-- SHIPPING POLICY MODAL -->
+  <!-- SHIPPING POLICY MODAL (FULLY EXPANDED) -->
   <div id="shipping-policy-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto">
     <div class="bg-amber-50/95 border border-amber-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto text-amber-950 space-y-5">
       <button onclick="closeShippingModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 text-amber-600 hover:text-amber-950 bg-amber-200/60 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-base sm:text-lg z-10">
@@ -1191,11 +1232,35 @@
 
       <div class="space-y-4 text-xs sm:text-sm text-amber-900 leading-relaxed">
         <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
-          <h3 class="font-bold text-primary text-sm sm:text-base">1. LOCAL DELIVERY RATE & RADIUS</h3>
-          <p>Local deliveries originate from <strong>153 Bokmakierie Road, Rooihuiskraal, Centurion</strong> and are charged at a rate of <strong>R3.50 per km on the round trip</strong>.</p>
-          <p>Local deliveries are available within a maximum radius of <strong>30km (one-way)</strong>. Orders beyond 30km must be collected at store/market or shipped via national courier.</p>
-          <p>Compound Butters, Brownies, and Blondies are strictly fresh items and are excluded from courier delivery outside the 30km local radius. Free collection is always available.</p>
-          <p>A minimum cart order value of <strong>R100.00</strong> applies to all orders.</p>
+          <h3 class="font-bold text-primary text-sm sm:text-base">1. LOCAL FRESH DELIVERY RATE & RADIUS</h3>
+          <p>Local fresh deliveries originate from our main prep base at <strong>153 Bokmakierie Road, Rooihuiskraal, Centurion</strong>.</p>
+          <p>Local delivery is dynamically calculated at a rate of <strong>R3.50 per kilometer on the round trip</strong> from our location to your specified delivery address.</p>
+          <p>Fresh local delivery is strictly capped at a maximum distance radius of <strong>30km (one-way)</strong> to maintain cold-chain integrity and product quality.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">2. RESTRICTED PERISHABLE PRODUCTS</h3>
+          <p><strong>Compound Butters, Brownies, and Fresh Bakes</strong> are temperature-sensitive perishable products. They are strictly restricted to local fresh delivery within our 30km radius or for store/market collection.</p>
+          <p>Orders containing perishable goods that exceed the 30km local delivery radius will require free collection or removal of perishable items before checkout can proceed.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">3. NATIONWIDE COURIER SHIPPING (NON-PERISHABLES)</h3>
+          <p>Non-perishable items (such as our Dried Fruit Relishes, Barks, and dry goods) are eligible for nationwide courier delivery anywhere in South Africa for a flat rate of <strong>R99.00</strong>.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">4. FREE COLLECTION OPTIONS & LOCATIONS</h3>
+          <p>We offer free pickup at two designated collection locations:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><strong>Rooihuiskraal Prep Base:</strong> Weekdays (Monday to Friday) from 09:00 to 16:00.</li>
+            <li><strong>Bus Stop 7 Open Air Market:</strong> Saturdays, Sundays, and Public Holidays during market trading hours.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+          <h3 class="font-bold text-primary text-sm sm:text-base">5. MINIMUM ORDER VALUE</h3>
+          <p>A minimum cart value of <strong>R100.00</strong> applies to all online checkout orders across all delivery and collection options.</p>
         </div>
       </div>
 
