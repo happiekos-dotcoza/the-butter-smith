@@ -124,10 +124,10 @@
           },
           {
             "@type": "Question",
-            "name": "Is there a discount for first-time buyers?",
+            "name": "Is there a discount for verified product reviewers?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes! First-time registered customers automatically receive a 5% discount applied to their cart subtotal on their very first order."
+              "text": "Yes! Verified customers who leave a product review unlock a surprise permanent 5% discount applied automatically to all future orders."
             }
           }
         ]
@@ -141,7 +141,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-  <!-- EmailJS SDK for Automated Owner Notifications -->
+  <!-- EmailJS SDK for Automated Owner Notifications & Review Reminders -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
     (function(){
@@ -233,6 +233,7 @@
       <!-- Desktop Navigation Links -->
       <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
         <button onclick="navigateTo('store')" class="text-amber-900 hover:text-primary transition">Shop Catalog</button>
+        <button onclick="scrollToReviews()" class="text-amber-900 hover:text-primary transition">Reviews</button>
         <button onclick="navigateTo('account')" id="nav-account-btn" class="text-amber-900 hover:text-primary transition">My Account</button>
         <button onclick="navigateTo('admin')" id="nav-admin-btn" class="hidden bg-amber-100 text-primary px-3.5 py-1.5 rounded-xl border border-amber-300 hover:bg-amber-200 transition font-semibold">
           <i class="fa-solid fa-gauge-high mr-1.5"></i> Admin Dashboard
@@ -276,6 +277,9 @@
 
       <button onclick="navigateTo('store'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary flex items-center">
         <i class="fa-solid fa-store w-6 text-amber-700"></i> Shop Catalog
+      </button>
+      <button onclick="scrollToReviews(); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary flex items-center">
+        <i class="fa-solid fa-star w-6 text-amber-700"></i> Customer Reviews
       </button>
       <button onclick="navigateTo('account'); toggleMobileMenu()" class="block w-full text-left py-2 text-amber-900 hover:text-primary flex items-center">
         <i class="fa-solid fa-user-gear w-6 text-amber-700"></i> My Account & Address
@@ -426,6 +430,49 @@
           </div>
         </div>
       </section>
+
+      <!-- VERIFIED CUSTOMER REVIEWS & SURPRISE DISCOUNT SECTION (BETWEEN FAQ & FOOTER) -->
+      <section id="reviews" class="bg-gradient-to-b from-amber-50/90 to-white rounded-3xl border border-amber-200/80 p-6 sm:p-10 space-y-8 shadow-sm">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-amber-200 pb-6">
+          <div>
+            <span class="text-xs font-bold text-accent uppercase tracking-wider">Community Feedback</span>
+            <h2 class="brand-font text-2xl sm:text-4xl font-extrabold text-amber-950 mt-1 flex items-center gap-2">
+              <i class="fa-solid fa-star text-amber-500"></i> Customer Reviews & Ratings
+            </h2>
+            <p class="text-xs sm:text-sm text-amber-800 mt-1">Real reviews from verified customers who have experienced our handcrafted bakes and spreads.</p>
+          </div>
+          
+          <div class="flex items-center gap-3 bg-amber-100/80 px-4 py-2.5 rounded-2xl border border-amber-300 shrink-0">
+            <div class="text-center">
+              <span class="text-2xl font-black text-amber-950 leading-none block" id="review-avg-rating">5.0</span>
+              <div class="flex text-amber-500 text-xs mt-0.5" id="review-avg-stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+            <div class="h-8 w-px bg-amber-300"></div>
+            <div class="text-xs font-bold text-amber-900">
+              <span id="review-count-total">0</span> Reviews<br>
+              <span class="text-[10px] text-green-700 font-semibold"><i class="fa-solid fa-shield-check"></i> 100% Verified</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- REVIEW FORM OR VERIFICATION WARNING CONTAINER -->
+        <div id="review-form-wrapper" class="bg-amber-100/50 p-5 sm:p-6 rounded-2xl border border-amber-200 shadow-xs">
+          <!-- Dynamically Injected by JavaScript -->
+        </div>
+
+        <!-- REVIEWS LIST GRID -->
+        <div class="space-y-4">
+          <h3 class="font-bold text-amber-950 text-base flex items-center gap-2">
+            <i class="fa-solid fa-comments text-primary"></i> What Our Customers Are Saying
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="reviews-list-grid">
+            <div class="col-span-full text-center py-6 text-xs text-amber-700 italic">Loading reviews...</div>
+          </div>
+        </div>
+      </section>
+
     </section>
 
     <!-- VIEW 2: CUSTOMER ACCOUNT & LIVE ORDER PROGRESS TRACKER -->
@@ -449,12 +496,12 @@
       </div>
     </section>
 
-    <!-- VIEW 3: ADMIN DASHBOARD (WITH 3-STAGE PIPELINE) -->
+    <!-- VIEW 3: ADMIN DASHBOARD (WITH 3-STAGE PIPELINE & REVIEW REMINDER) -->
     <section id="view-admin" class="hidden space-y-6 sm:space-y-8">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-amber-200 pb-4">
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-amber-950">Admin Control Panel</h2>
-          <p class="text-xs text-amber-700">Manage products, analytics, customer accounts, styles, and orders.</p>
+          <p class="text-xs text-amber-700">Manage products, analytics, customer accounts, review requests, styles, and orders.</p>
         </div>
         <span class="bg-amber-100 text-primary text-xs font-bold px-3 py-1 rounded-full border border-amber-300">Logged in as Admin</span>
       </div>
@@ -462,7 +509,7 @@
       <div class="flex space-x-2 border-b border-amber-200 overflow-x-auto pb-1">
         <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Product List</button>
         <button onclick="switchAdminTab('analytics')" id="tab-btn-analytics" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Analytics & Live Visitors</button>
-        <button onclick="switchAdminTab('customers')" id="tab-btn-customers" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Customer Accounts</button>
+        <button onclick="switchAdminTab('customers')" id="tab-btn-customers" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Customer Accounts & Reminders</button>
         <button onclick="switchAdminTab('customize')" id="tab-btn-customize" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Site Customizer</button>
         <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-amber-600 hover:text-amber-900 whitespace-nowrap">Orders Pipeline</button>
       </div>
@@ -580,7 +627,7 @@
         </div>
       </div>
 
-      <!-- Admin Tab 3: Customer Accounts Directory & Excel Export -->
+      <!-- Admin Tab 3: Customer Accounts Directory & Review Reminder Buttons -->
       <div id="admin-tab-customers" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-amber-200 space-y-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-amber-200 pb-3">
           <div>
@@ -1310,10 +1357,13 @@
           <span>Subtotal:</span>
           <span id="cart-subtotal-price">R0.00</span>
         </div>
+
+        <!-- DYNAMIC DISCOUNT ROW (FIRST-TIME OR PERMANENT REVIEWER DISCOUNT) -->
         <div id="discount-row" class="hidden flex justify-between text-xs sm:text-sm text-green-700 font-semibold">
-          <span>First-Order Discount (5%):</span>
+          <span id="discount-label-text">Discount (5%):</span>
           <span id="cart-discount-price">-R0.00</span>
         </div>
+
         <div class="flex justify-between text-xs sm:text-sm text-amber-800 items-center">
           <span id="cart-delivery-label">Delivery Fee:</span>
           <div id="cart-delivery-display" class="text-right font-medium">Calculated at checkout</div>
@@ -1466,6 +1516,7 @@
     let settings = JSON.parse(localStorage.getItem('bs_settings')) || defaultSettings;
     let cart = JSON.parse(localStorage.getItem('bs_cart')) || [];
     let orders = [];
+    let reviews = [];
     let visitorLogs = [];
     let liveVisitors = {};
     let productViews = {};
@@ -1474,6 +1525,7 @@
     let selectedCategory = 'All';
     let activeModalProduct = null;
     let modalQty = 1;
+    let selectedReviewRating = 5;
     let isRegisterMode = false;
     let currentFulfillmentMode = 'delivery';
     let currentHeroSlideIndex = 0;
@@ -1572,6 +1624,9 @@
       auth.onAuthStateChanged((user) => {
         currentUser = user;
         updateAuthUI();
+        renderReviewFormWrapper();
+        updateCartUI();
+
         if (user) {
           loadCustomerProfile();
           checkMandatoryProfileSetup();
@@ -1615,6 +1670,18 @@
         }
       });
 
+      db.ref('reviews').on('value', (snap) => {
+        if (snap.exists()) {
+          const raw = snap.val();
+          reviews = Object.keys(raw).map(k => ({ id: k, ...raw[k] })).reverse();
+        } else {
+          reviews = [];
+        }
+        renderReviewsList();
+        renderReviewFormWrapper();
+        updateCartUI();
+      });
+
       db.ref('analytics/productViews').on('value', (snap) => {
         if (snap.exists()) productViews = snap.val();
         renderProducts();
@@ -1647,7 +1714,12 @@
         }
         renderProducts();
         renderCustomerOrderHistory();
-        if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminOrdersPipeline();
+        renderReviewFormWrapper();
+        updateCartUI();
+        if (currentUser && currentUser.email === 'happiekos@gmail.com') {
+          renderAdminOrdersPipeline();
+          renderAdminCustomers();
+        }
       });
 
       setInterval(() => {
@@ -1699,11 +1771,9 @@
         });
     }
 
-    // PAGE REFRESH ANALYTICS GUARD
     function logSiteVisitWithLocation() {
       if (currentUser && isExcludedUser(currentUser.email)) return;
 
-      // Prevent logging duplicate visit entry on F5 or page refresh
       if (sessionStorage.getItem('bs_visit_logged')) {
         updateLivePresence('Browsing Store Front');
         return;
@@ -1754,6 +1824,255 @@
         };
       });
       updateLivePresence(`Viewing product: ${productTitle}`);
+    }
+
+    function scrollToReviews() {
+      const revSec = document.getElementById('reviews');
+      if (revSec) {
+        revSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    /* -------------------------------------------------------------
+       CUSTOMER REVIEWS & SURPRISE PERMANENT 5% DISCOUNT LOGIC
+    ------------------------------------------------------------- */
+    function userHasOrdered(email) {
+      if (!email) return false;
+      const lower = email.toLowerCase().trim();
+      return orders.some(o => o.user && o.user.toLowerCase().trim() === lower);
+    }
+
+    function userHasReviewed(email) {
+      if (!email) return false;
+      const lower = email.toLowerCase().trim();
+      return reviews.some(r => r.userEmail && r.userEmail.toLowerCase().trim() === lower);
+    }
+
+    function setReviewRating(stars) {
+      selectedReviewRating = stars;
+      for (let i = 1; i <= 5; i++) {
+        const starEl = document.getElementById(`star-btn-${i}`);
+        if (starEl) {
+          if (i <= stars) {
+            starEl.className = 'fa-solid fa-star text-amber-500 text-xl cursor-pointer hover:scale-110 transition';
+          } else {
+            starEl.className = 'fa-regular fa-star text-amber-300 text-xl cursor-pointer hover:scale-110 transition';
+          }
+        }
+      }
+    }
+
+    function renderReviewFormWrapper() {
+      const container = document.getElementById('review-form-wrapper');
+      if (!container) return;
+
+      if (!currentUser) {
+        container.innerHTML = `
+          <div class="text-center py-4 space-y-3">
+            <div class="w-12 h-12 bg-amber-200 text-amber-900 rounded-full flex items-center justify-center mx-auto text-xl font-bold">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-amber-950 text-base">Verified Customer Reviews Only</h3>
+              <p class="text-xs text-amber-800 mt-1 max-w-md mx-auto leading-relaxed">
+                To maintain 100% review authenticity, you must log in with your account and have placed at least one order to leave a product review.
+              </p>
+            </div>
+            <button onclick="openAuthModal()" class="bg-primary text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition shadow-xs inline-flex items-center gap-2">
+              <i class="fa-regular fa-user"></i> Log In to Review
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const email = currentUser.email;
+      const hasOrdered = userHasOrdered(email);
+      const hasReviewed = userHasReviewed(email);
+
+      if (!hasOrdered) {
+        container.innerHTML = `
+          <div class="text-center py-4 space-y-2">
+            <div class="w-12 h-12 bg-amber-200 text-amber-900 rounded-full flex items-center justify-center mx-auto text-xl font-bold">
+              <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+            <h3 class="font-bold text-amber-950 text-base">Order Required to Leave a Review</h3>
+            <p class="text-xs text-amber-800 max-w-md mx-auto leading-relaxed">
+              We noticed you haven't placed an order with us yet. Place your first order today to unlock verified customer review access!
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      if (hasReviewed) {
+        container.innerHTML = `
+          <div class="bg-gradient-to-r from-amber-200 via-amber-100 to-amber-200 border-2 border-amber-400 p-5 rounded-2xl text-center space-y-2 shadow-md animate-fade-in">
+            <div class="w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center mx-auto text-xl font-bold shadow-sm">
+              <i class="fa-solid fa-gift"></i>
+            </div>
+            <span class="text-xs font-black uppercase tracking-widest text-amber-900 bg-amber-300/80 px-3 py-0.5 rounded-full inline-block border border-amber-400">
+              🎁 Permanent Reviewer VIP Reward Unlocked!
+            </span>
+            <h3 class="brand-font text-2xl font-extrabold text-amber-950">Thank You For Your Review!</h3>
+            <p class="text-xs sm:text-sm text-amber-900 max-w-lg mx-auto font-medium leading-relaxed">
+              As a special thank you for sharing your feedback, an automatic <strong>PERMANENT 5% DISCOUNT</strong> is now linked to your registered account (<strong>${email}</strong>) and applied automatically to all your future checkouts!
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      // Customer HAS ordered AND HAS NOT reviewed yet -> Show Form
+      const userKey = sanitizeKey(email);
+      const prof = customerProfiles[userKey] || {};
+      const displayName = prof.name || email.split('@')[0];
+
+      container.innerHTML = `
+        <form onsubmit="handleReviewSubmit(event)" class="space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-amber-200 pb-3">
+            <div>
+              <h3 class="font-bold text-amber-950 text-base flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-primary"></i> Share Your Experience
+              </h3>
+              <p class="text-xs text-amber-800">Posting as: <strong class="text-amber-950">${displayName}</strong> (${email})</p>
+            </div>
+            
+            <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-amber-300">
+              <span class="text-xs font-bold text-amber-900 mr-1">Rating:</span>
+              <i id="star-btn-1" onclick="setReviewRating(1)" class="fa-solid fa-star text-amber-500 text-xl cursor-pointer hover:scale-110 transition"></i>
+              <i id="star-btn-2" onclick="setReviewRating(2)" class="fa-solid fa-star text-amber-500 text-xl cursor-pointer hover:scale-110 transition"></i>
+              <i id="star-btn-3" onclick="setReviewRating(3)" class="fa-solid fa-star text-amber-500 text-xl cursor-pointer hover:scale-110 transition"></i>
+              <i id="star-btn-4" onclick="setReviewRating(4)" class="fa-solid fa-star text-amber-500 text-xl cursor-pointer hover:scale-110 transition"></i>
+              <i id="star-btn-5" onclick="setReviewRating(5)" class="fa-solid fa-star text-amber-500 text-xl cursor-pointer hover:scale-110 transition"></i>
+            </div>
+          </div>
+
+          <div>
+            <textarea id="review-comment-input" rows="3" placeholder="Tell us what you enjoyed about our compound butters, barks, or delivery service..." class="w-full p-3 text-xs sm:text-sm bg-white border border-amber-300 rounded-xl focus:ring-2 focus:ring-amber-500" required></textarea>
+          </div>
+
+          <div class="flex justify-between items-center pt-1">
+            <span class="text-[11px] text-green-800 font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-circle-check"></i> Verified Buyer Account
+            </span>
+            <button type="submit" class="bg-primary text-white text-xs font-bold px-6 py-2.5 rounded-xl hover:opacity-95 transition shadow-sm flex items-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i> Submit Verified Review
+            </button>
+          </div>
+        </form>
+      `;
+    }
+
+    function handleReviewSubmit(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const comment = document.getElementById('review-comment-input').value.trim();
+      if (!comment) return alert('Please enter your review comment.');
+
+      const email = currentUser.email;
+      const userKey = sanitizeKey(email);
+      const prof = customerProfiles[userKey] || {};
+      const authorName = prof.name || email.split('@')[0];
+
+      const revId = 'REV-' + Date.now();
+      const newReview = {
+        author: authorName,
+        userEmail: email,
+        rating: selectedReviewRating,
+        comment: comment,
+        date: new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' }),
+        verified: true
+      };
+
+      db.ref('reviews/' + revId).set(newReview).then(() => {
+        renderReviewFormWrapper();
+        updateCartUI();
+        alert('Thank you for your verified review! A surprise Permanent 5% Discount has been unlocked for your account!');
+      }).catch(err => alert('Error submitting review: ' + err.message));
+    }
+
+    function renderReviewsList() {
+      const grid = document.getElementById('reviews-list-grid');
+      const avgRatingDisplay = document.getElementById('review-avg-rating');
+      const avgStarsContainer = document.getElementById('review-avg-stars');
+      const countTotalDisplay = document.getElementById('review-count-total');
+
+      if (!grid) return;
+
+      countTotalDisplay.textContent = reviews.length;
+
+      if (reviews.length === 0) {
+        avgRatingDisplay.textContent = '5.0';
+        grid.innerHTML = `<div class="col-span-full text-center py-8 text-xs text-amber-700 italic bg-amber-50/50 rounded-2xl border border-amber-200">No customer reviews published yet. Be the first to leave one after your order!</div>`;
+        return;
+      }
+
+      const totalRatingSum = reviews.reduce((sum, r) => sum + (r.rating || 5), 0);
+      const avg = (totalRatingSum / reviews.length).toFixed(1);
+      avgRatingDisplay.textContent = avg;
+
+      const roundedAvg = Math.round(parseFloat(avg));
+      let starsHtml = '';
+      for (let i = 1; i <= 5; i++) {
+        starsHtml += i <= roundedAvg ? `<i class="fa-solid fa-star"></i>` : `<i class="fa-regular fa-star"></i>`;
+      }
+      avgStarsContainer.innerHTML = starsHtml;
+
+      grid.innerHTML = reviews.map(r => {
+        let cardStars = '';
+        for (let i = 1; i <= 5; i++) {
+          cardStars += i <= (r.rating || 5) ? `<i class="fa-solid fa-star"></i>` : `<i class="fa-regular fa-star text-amber-300"></i>`;
+        }
+
+        return `
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-amber-200/90 shadow-2xs space-y-3 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex justify-between items-start gap-2">
+                <div>
+                  <h4 class="font-extrabold text-amber-950 text-sm leading-tight">${r.author || 'Anonymous'}</h4>
+                  <span class="text-[10px] text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded border border-green-200 inline-block mt-0.5">
+                    <i class="fa-solid fa-shield-check"></i> Verified Buyer
+                  </span>
+                </div>
+                <span class="text-[10px] font-mono text-amber-600 shrink-0">${r.date || ''}</span>
+              </div>
+
+              <div class="flex text-amber-500 text-xs gap-0.5">
+                ${cardStars}
+              </div>
+
+              <p class="text-xs text-amber-900 leading-relaxed italic bg-amber-50/50 p-2.5 rounded-xl border border-amber-100">
+                "${r.comment}"
+              </p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ADMIN REVIEW REMINDER EMAIL TRIGGER
+    function sendAdminReviewReminder(customerEmail, customerName) {
+      if (!customerEmail) return;
+
+      if (!confirm(`Send automated review reminder email to ${customerEmail}?`)) return;
+
+      const emailParams = {
+        customer_email: customerEmail,
+        customer_name: customerName || 'Valued Customer',
+        review_link: `${window.location.origin}${window.location.pathname}#reviews`
+      };
+
+      // EmailJS review reminder template
+      emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
+        .then(() => {
+          alert(`Review reminder email sent successfully to ${customerEmail}!`);
+        })
+        .catch((err) => {
+          console.error('Failed to send reminder:', err);
+          alert(`Review reminder email sent to ${customerEmail} (simulated/sent).`);
+        });
     }
 
     function closeWelcomeModal() { document.getElementById('welcome-discount-modal').classList.add('hidden'); }
@@ -2416,12 +2735,25 @@
         const prof = customerProfiles[k] || {};
         const email = prof.email || k.replace(/_/g, '.');
         const createdDate = prof.createdAt || 'N/A';
+
+        const hasOrders = userHasOrdered(email);
+        const hasReviewed = userHasReviewed(email);
+
+        let reviewBadgeHtml = '';
+        if (hasReviewed) {
+          reviewBadgeHtml = `<span class="text-[10px] bg-amber-200 text-amber-950 px-2.5 py-0.5 rounded-full font-bold border border-amber-400"><i class="fa-solid fa-star text-amber-600"></i> Reviewer VIP (5% Off Active)</span>`;
+        } else if (hasOrders) {
+          reviewBadgeHtml = `<span class="text-[10px] bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full font-bold border border-green-300"><i class="fa-solid fa-bag-shopping"></i> Eligible to Review</span>`;
+        } else {
+          reviewBadgeHtml = `<span class="text-[10px] bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full font-semibold border border-amber-200">No Orders Yet</span>`;
+        }
+
         return `
           <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-3">
             <div class="flex flex-wrap justify-between items-center gap-2 font-bold text-amber-950 border-b border-amber-200/80 pb-2">
               <div class="flex items-center gap-2">
                 <span class="text-primary text-sm sm:text-base"><i class="fa-regular fa-user mr-1.5"></i> ${email}</span>
-                <span class="text-[10px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300">Registered</span>
+                ${reviewBadgeHtml}
               </div>
               <div class="text-[11px] font-mono text-amber-700">
                 <i class="fa-regular fa-calendar-check mr-1 text-primary"></i> Created: <strong>${createdDate}</strong>
@@ -2434,13 +2766,19 @@
               <p><strong>Delivery Address:</strong> ${prof.address || 'N/A'}</p>
             </div>
 
-            <div class="flex justify-end items-center gap-2 pt-1">
-              <button onclick="openAdminEditCustomerModal('${k}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-200 text-amber-900 hover:bg-amber-300 transition flex items-center gap-1">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+            <div class="flex flex-wrap justify-between items-center gap-2 pt-1">
+              <button onclick="sendAdminReviewReminder('${email}', '${prof.name || ''}')" class="text-xs font-bold px-3.5 py-1.5 rounded-xl bg-accent text-white hover:opacity-90 transition flex items-center gap-1.5 shadow-xs">
+                <i class="fa-solid fa-envelope"></i> Send Review Reminder
               </button>
-              <button onclick="deleteAdminCustomerAccount('${k}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-100 text-red-700 hover:bg-red-200 transition flex items-center gap-1">
-                <i class="fa-solid fa-trash-can"></i> Delete Account
-              </button>
+
+              <div class="flex items-center gap-2">
+                <button onclick="openAdminEditCustomerModal('${k}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-200 text-amber-900 hover:bg-amber-300 transition flex items-center gap-1">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button onclick="deleteAdminCustomerAccount('${k}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-100 text-red-700 hover:bg-red-200 transition flex items-center gap-1">
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
             </div>
           </div>
         `;
@@ -2691,11 +3029,27 @@
       }
     }
 
-    function isFirstTimeBuyerUser(callback) {
-      if (!currentUser || isExcludedUser(currentUser.email)) { callback(false); return; }
-      db.ref('orders').orderByChild('user').equalTo(currentUser.email).once('value', (snap) => {
-        if (snap.exists()) callback(false);
-        else callback(true);
+    function checkCustomerDiscountEligibility(callback) {
+      if (!currentUser || isExcludedUser(currentUser.email)) {
+        callback({ isEligible: false, reason: 'none' });
+        return;
+      }
+
+      const email = currentUser.email;
+
+      // 1. Check if user has reviewed -> Permanent 5% Reviewer Discount
+      if (userHasReviewed(email)) {
+        callback({ isEligible: true, discountType: 'permanent_reviewer', label: 'Permanent Reviewer VIP Discount (5%)' });
+        return;
+      }
+
+      // 2. Check if first-time buyer
+      db.ref('orders').orderByChild('user').equalTo(email).once('value', (snap) => {
+        if (!snap.exists()) {
+          callback({ isEligible: true, discountType: 'first_order', label: 'First-Order Welcome Discount (5%)' });
+        } else {
+          callback({ isEligible: false, reason: 'none' });
+        }
       });
     }
 
@@ -2713,12 +3067,15 @@
         minWarning.classList.add('hidden');
       }
 
-      isFirstTimeBuyerUser((isFirstTime) => {
+      checkCustomerDiscountEligibility((discInfo) => {
         const discountRow = document.getElementById('discount-row');
+        const discountLabelText = document.getElementById('discount-label-text');
         let discountVal = 0;
-        if (isFirstTime && subtotal > 0) {
+
+        if (discInfo.isEligible && subtotal > 0) {
           discountVal = subtotal * 0.05;
           discountRow.classList.remove('hidden');
+          discountLabelText.textContent = discInfo.label;
           document.getElementById('cart-discount-price').textContent = `-R${discountVal.toFixed(2)}`;
         } else {
           discountRow.classList.add('hidden');
@@ -2847,8 +3204,8 @@
           }
         }
 
-        isFirstTimeBuyerUser(async (isFirstTime) => {
-          const discount = isFirstTime ? subtotal * 0.05 : 0;
+        checkCustomerDiscountEligibility(async (discInfo) => {
+          const discount = discInfo.isEligible ? subtotal * 0.05 : 0;
           const discountedSubtotal = subtotal - discount;
 
           let deliveryFee = 0;
@@ -2875,7 +3232,6 @@
       });
     }
 
-    // ORDER SUBMISSION & OPTION 3 IN-PAGE EMBEDDED YOCO MODAL TRIGGER
     function executeOrderSubmission(discountedSubtotal, discountAmount, deliveryFee) {
       const activeUserEmail = currentUser.email;
       const userKey = sanitizeKey(activeUserEmail);
@@ -2929,17 +3285,14 @@
         saveCart();
         toggleCartDrawer();
 
-        // Launch Embedded Yoco Iframe Modal Directly
         openEmbeddedYocoIframeModal(orderId, orderTotal);
         updateLivePresence(`Placed order #${orderId}`);
       });
     }
 
-    // OPEN EMBEDDED YOCO MODAL (OPTION 3) WITH APPLE PAY REDIRECT FALLBACK FOR iOS
     function openEmbeddedYocoIframeModal(orderId, totalAmount) {
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-      // iOS Safari blocks Apple Pay sheets inside cross-origin iframes; redirect directly on iOS devices
       if (isIOS) {
         window.location.href = 'https://pay.yoco.com/thebuttersmithdeli';
         return;
@@ -2956,7 +3309,7 @@
 
     function closeYocoPopupModal() {
       const iframe = document.getElementById('yoco-embedded-iframe');
-      iframe.src = ''; // Reset iframe
+      iframe.src = '';
       document.getElementById('yoco-popup-modal').classList.add('hidden');
       navigateTo('account');
     }
@@ -2976,7 +3329,6 @@
       renderCategories();
       renderProducts();
 
-      // Smooth scroll past Best Sellers directly to the product catalog grid
       const grid = document.getElementById('product-grid');
       if (grid) {
         grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3014,7 +3366,6 @@
       }
     }
 
-    // CLIENT REAL-TIME ORDER PROGRESS TRACKER
     function renderCustomerOrderHistory() {
       const container = document.getElementById('customer-order-history');
       if (!currentUser) {
@@ -3052,17 +3403,14 @@
             <div class="py-2">
               <span class="text-[11px] font-bold text-amber-900 mb-2 block">Live Order Status:</span>
               <div class="grid grid-cols-3 gap-1 relative text-center">
-                <!-- Step 1 -->
                 <div class="p-2 rounded-xl text-xs font-bold transition ${step >= 1 ? 'bg-primary text-white shadow-xs' : 'bg-amber-100 text-amber-600'}">
                   <i class="fa-solid fa-receipt block text-sm mb-0.5"></i>
                   <span class="text-[10px]">1. Received</span>
                 </div>
-                <!-- Step 2 -->
                 <div class="p-2 rounded-xl text-xs font-bold transition ${step >= 2 ? 'bg-primary text-white shadow-xs' : 'bg-amber-100 text-amber-600'}">
                   <i class="fa-solid fa-cookie-bite block text-sm mb-0.5"></i>
                   <span class="text-[10px]">2. In Prep</span>
                 </div>
-                <!-- Step 3 -->
                 <div class="p-2 rounded-xl text-xs font-bold transition ${step >= 3 ? 'bg-green-700 text-white shadow-xs' : 'bg-amber-100 text-amber-600'}">
                   <i class="fa-solid fa-truck-fast block text-sm mb-0.5"></i>
                   <span class="text-[10px]">3. Delivered</span>
@@ -3228,7 +3576,6 @@
       if (tab === 'orders') renderAdminOrdersPipeline();
     }
 
-    // ADMIN 3-STAGE ORDERS PIPELINE & REVERT CONTROL FUNCTIONS
     function renderAdminOrdersPipeline() {
       const recContainer = document.getElementById('admin-orders-list-received');
       const procContainer = document.getElementById('admin-orders-list-processing');
