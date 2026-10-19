@@ -1059,7 +1059,7 @@
 
       <!-- Embedded Yoco Payment Iframe Container -->
       <div class="w-full flex-grow h-[430px] rounded-2xl overflow-hidden border border-amber-200 bg-amber-50/50 relative">
-        <iframe id="yoco-embedded-iframe" src="" class="w-full h-full border-0" allow="payment"></iframe>
+        <iframe id="yoco-embedded-iframe" src="" class="w-full h-full border-0" allow="payment *" allowpaymentrequest="true" sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
       </div>
 
       <!-- Modal Footer -->
@@ -2139,16 +2139,16 @@
       });
 
       const now = Date.now();
-      const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+      const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
       grid.innerHTML = filtered.map(p => {
         const isVisible = p.visible !== false;
-        const createdAt = p.createdAt || now;
-        const isNew = (now - createdAt) < oneWeekMs;
+        const createdAtMs = p.createdAt ? new Date(p.createdAt).getTime() : 0;
+        const isNew = createdAtMs > 0 && (now - createdAtMs) <= SEVEN_DAYS_MS;
 
         let badgeHtml = '';
         if (isNew) {
-          badgeHtml = `<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow uppercase tracking-wider z-10"><i class="fa-solid fa-sparkles mr-1"></i> New</span>`;
+          badgeHtml = `<span class="absolute top-2 left-2 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow uppercase tracking-wider z-10"><i class="fa-solid fa-sparkles mr-1"></i> New</span>`;
         }
 
         if (topProductId && p.id === topProductId && maxViews > 0) {
@@ -2935,8 +2935,16 @@
       });
     }
 
-    // OPEN EMBEDDED YOCO MODAL (OPTION 3)
+    // OPEN EMBEDDED YOCO MODAL (OPTION 3) WITH APPLE PAY REDIRECT FALLBACK FOR iOS
     function openEmbeddedYocoIframeModal(orderId, totalAmount) {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+      // iOS Safari blocks Apple Pay sheets inside cross-origin iframes; redirect directly on iOS devices
+      if (isIOS) {
+        window.location.href = 'https://pay.yoco.com/thebuttersmithdeli';
+        return;
+      }
+
       document.getElementById('yoco-modal-ref-label').textContent = `Order Reference: #${orderId}`;
       document.getElementById('yoco-modal-total-display').textContent = `R${totalAmount.toFixed(2)}`;
       
@@ -2967,6 +2975,13 @@
       selectedCategory = cat;
       renderCategories();
       renderProducts();
+
+      // Smooth scroll past Best Sellers directly to the product catalog grid
+      const grid = document.getElementById('product-grid');
+      if (grid) {
+        grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
       updateLivePresence(`Filtering category: ${cat}`);
     }
 
