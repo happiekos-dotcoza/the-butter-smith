@@ -329,14 +329,6 @@
         </div>
       </div>
 
-      <div class="flex flex-col md:flex-row gap-4 justify-between items-center border-b border-amber-200/80 pb-6">
-        <div class="flex flex-wrap gap-2 w-full md:w-auto" id="category-filter-list"></div>
-        <div class="relative w-full md:w-72">
-          <input type="text" id="search-input" onkeyup="renderProducts()" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
-          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-amber-400 text-xs"></i>
-        </div>
-      </div>
-
       <!-- HIGHLIGHTED TOP 4 BEST SELLERS & TRENDING SECTION -->
       <div id="top-sellers-section" class="bg-gradient-to-r from-amber-100/80 via-amber-50 to-amber-100/80 rounded-3xl border-2 border-amber-300/80 p-4 sm:p-6 shadow-sm space-y-4">
         
@@ -364,6 +356,34 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="top-sellers-grid"></div>
       </div>
 
+      <!-- REFINED FILTER & SORTING CONTROL BAR -->
+      <div class="bg-white rounded-2xl border border-amber-200/80 p-4 shadow-xs space-y-3 md:space-y-0 md:flex md:items-center md:justify-between gap-4">
+        <div class="flex flex-wrap gap-2 items-center w-full md:w-auto" id="category-filter-list"></div>
+        
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          <!-- SEARCH INPUT -->
+          <div class="relative w-full sm:w-60">
+            <input type="text" id="search-input" onkeyup="renderProducts()" placeholder="Search catalog..." class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-amber-50/50 border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-amber-400 text-xs"></i>
+          </div>
+
+          <!-- SORT BY SELECT DROPDOWN -->
+          <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+            <label for="sort-select" class="text-xs font-bold text-amber-900 whitespace-nowrap">
+              <i class="fa-solid fa-arrow-down-short-wide text-primary mr-1"></i> Sort By:
+            </label>
+            <select id="sort-select" onchange="handleSortChange(this.value)" class="w-full sm:w-auto p-2 text-xs sm:text-sm font-semibold bg-amber-50/50 border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer">
+              <option value="newest" selected>✨ New Products First</option>
+              <option value="popular">🔥 Most Popular</option>
+              <option value="price-asc">🏷️ Price: Low to High</option>
+              <option value="price-desc">🏷️ Price: High to Low</option>
+              <option value="name-asc">🔤 Name: A to Z</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN PRODUCT GRID -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" id="product-grid"></div>
 
       <!-- ON-PAGE AI SEO FREQUENTLY ASKED QUESTIONS SECTION -->
@@ -1523,6 +1543,7 @@
     let currentUser = null;
     let customerProfiles = {};
     let selectedCategory = 'All';
+    let selectedSortMode = 'newest';
     let activeModalProduct = null;
     let modalQty = 1;
     let selectedReviewRating = 5;
@@ -1923,7 +1944,6 @@
         return;
       }
 
-      // Customer HAS ordered AND HAS NOT reviewed yet -> Show Form
       const userKey = sanitizeKey(email);
       const prof = customerProfiles[userKey] || {};
       const displayName = prof.name || email.split('@')[0];
@@ -2052,7 +2072,6 @@
       }).join('');
     }
 
-    // ADMIN REVIEW REMINDER EMAIL TRIGGER
     function sendAdminReviewReminder(customerEmail, customerName) {
       if (!customerEmail) return;
 
@@ -2064,7 +2083,6 @@
         review_link: `${window.location.origin}${window.location.pathname}#reviews`
       };
 
-      // EmailJS review reminder template
       emailjs.send('service_5s3bdup', 'template_hjrekg5', emailParams)
         .then(() => {
           alert(`Review reminder email sent successfully to ${customerEmail}!`);
@@ -2431,20 +2449,48 @@
       `).join('');
     }
 
+    function handleSortChange(sortVal) {
+      selectedSortMode = sortVal;
+      renderProducts();
+      updateLivePresence(`Sorted products by: ${sortVal}`);
+    }
+
     function renderProducts() {
       renderTopSellersGrid();
 
       const query = document.getElementById('search-input').value.toLowerCase();
       const grid = document.getElementById('product-grid');
-      const filtered = products.filter(p => {
+      let filtered = products.filter(p => {
         if (p.visible === false) return false;
         const matchesCat = selectedCategory === 'All' || p.category === selectedCategory;
         const matchesQuery = p.title.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
         return matchesCat && matchesQuery;
       });
 
+      // DYNAMIC SORTING LOGIC (NEWEST PRODUCTS FIRST BY DEFAULT)
+      filtered.sort((a, b) => {
+        const viewsA = (productViews[a.id] && productViews[a.id].count) || 0;
+        const viewsB = (productViews[b.id] && productViews[b.id].count) || 0;
+        const createdA = a.createdAt || 0;
+        const createdB = b.createdAt || 0;
+
+        if (selectedSortMode === 'newest') {
+          return createdB - createdA;
+        } else if (selectedSortMode === 'popular') {
+          if (viewsB !== viewsA) return viewsB - viewsA;
+          return createdB - createdA;
+        } else if (selectedSortMode === 'price-asc') {
+          return a.price - b.price;
+        } else if (selectedSortMode === 'price-desc') {
+          return b.price - a.price;
+        } else if (selectedSortMode === 'name-asc') {
+          return a.title.localeCompare(b.title);
+        }
+        return createdB - createdA;
+      });
+
       if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-12 text-amber-700">No products available.</div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-amber-700">No products available in this view.</div>`;
         return;
       }
 
@@ -2467,7 +2513,7 @@
 
         let badgeHtml = '';
         if (isNew) {
-          badgeHtml = `<span class="absolute top-2 left-2 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow uppercase tracking-wider z-10"><i class="fa-solid fa-sparkles mr-1"></i> New</span>`;
+          badgeHtml = `<span class="absolute top-2 left-2 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow uppercase tracking-wider z-10 flex items-center"><i class="fa-solid fa-sparkles mr-1"></i> New</span>`;
         }
 
         if (topProductId && p.id === topProductId && maxViews > 0) {
@@ -3037,13 +3083,11 @@
 
       const email = currentUser.email;
 
-      // 1. Check if user has reviewed -> Permanent 5% Reviewer Discount
       if (userHasReviewed(email)) {
         callback({ isEligible: true, discountType: 'permanent_reviewer', label: 'Permanent Reviewer VIP Discount (5%)' });
         return;
       }
 
-      // 2. Check if first-time buyer
       db.ref('orders').orderByChild('user').equalTo(email).once('value', (snap) => {
         if (!snap.exists()) {
           callback({ isEligible: true, discountType: 'first_order', label: 'First-Order Welcome Discount (5%)' });
@@ -3318,7 +3362,7 @@
       const cats = ['All', ...new Set(products.filter(p => p.visible !== false).map(p => p.category))];
       const container = document.getElementById('category-filter-list');
       container.innerHTML = cats.map(c => `
-        <button onclick="setCategory('${c}')" class="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition ${selectedCategory === c ? 'bg-primary text-white' : 'bg-white text-amber-900 border border-amber-200 hover:bg-amber-100'}">
+        <button onclick="setCategory('${c}')" class="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition ${selectedCategory === c ? 'bg-primary text-white shadow-xs' : 'bg-white text-amber-900 border border-amber-200 hover:bg-amber-100'}">
           ${c}
         </button>
       `).join('');
