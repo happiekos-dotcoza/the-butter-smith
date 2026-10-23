@@ -31,6 +31,12 @@
     ]
   }'>
 
+  <!-- IMAGE CDN PRECONNECT HINTS FOR ULTRA-FAST LOADING -->
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+  <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -205,6 +211,16 @@
     .ticker-container:hover .animate-ticker {
       animation-play-state: paused;
     }
+
+    .img-skeleton {
+      background: linear-gradient(90deg, #fef3c7 25%, #fde68a 50%, #fef3c7 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+    }
+    @keyframes skeleton-loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
   </style>
 </head>
 <body class="bg-amber-50/30 text-amber-950 min-h-screen flex flex-col">
@@ -222,7 +238,7 @@
       <div class="flex items-center space-x-2.5 cursor-pointer" onclick="navigateTo('store')">
         <div id="header-logo-wrapper" class="w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-amber-400 bg-amber-100 text-amber-800 shadow-sm shrink-0">
           <i id="header-logo-icon" class="fa-solid fa-butter text-base sm:text-xl hidden"></i>
-          <img id="header-logo-img" src="https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png" alt="Logo" class="w-full h-full object-cover">
+          <img id="header-logo-img" src="https://raw.githubusercontent.com/happiekos-dotcoza/the-butter-smith/main/assets/THE%20BUTTER%20SMITH%20Logo.png" alt="Logo" class="w-full h-full object-cover" decoding="async">
         </div>
         <div class="leading-tight">
           <span class="brand-font text-lg sm:text-2xl font-bold tracking-tight text-amber-950 block" id="header-brand-name">The Butter Smith Deli</span>
@@ -314,17 +330,17 @@
         </div>
 
         <div class="md:col-span-5 flex justify-center">
-          <div class="w-full h-52 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100 group">
+          <div class="w-full h-52 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-amber-200 relative bg-amber-100 group img-skeleton">
             <div id="hero-carousel-slides" class="w-full h-full relative"></div>
             
-            <button onclick="prevHeroSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs transition opacity-0 group-hover:opacity-100">
+            <button onclick="prevHeroSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs transition opacity-0 group-hover:opacity-100 z-20">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
-            <button onclick="nextHeroSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs transition opacity-0 group-hover:opacity-100">
+            <button onclick="nextHeroSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs transition opacity-0 group-hover:opacity-100 z-20">
               <i class="fa-solid fa-chevron-right"></i>
             </button>
 
-            <div id="hero-carousel-dots" class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10"></div>
+            <div id="hero-carousel-dots" class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20"></div>
           </div>
         </div>
       </div>
@@ -1031,8 +1047,8 @@
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-8 items-start">
         <div class="md:col-span-6 space-y-4">
-          <div class="w-full h-56 sm:h-96 rounded-2xl overflow-hidden shadow-md border border-amber-200 bg-white flex items-center justify-center">
-            <img id="modal-prod-img" src="" alt="Product Photo" class="w-full h-full object-cover">
+          <div class="w-full h-56 sm:h-96 rounded-2xl overflow-hidden shadow-md border border-amber-200 bg-amber-100 flex items-center justify-center img-skeleton">
+            <img id="modal-prod-img" src="" alt="Product Photo" class="w-full h-full object-cover" decoding="async">
           </div>
         </div>
 
@@ -1554,7 +1570,6 @@
     let heroCarouselInterval = null;
     let deferredPrompt = null;
 
-    // PAGE REFRESH GUARD: Reuse visitorSessionId across refreshes inside same tab
     let visitorSessionId = sessionStorage.getItem('bs_session_id');
     if (!visitorSessionId) {
       visitorSessionId = 'SESS-' + Math.random().toString(36).substring(2, 9);
@@ -1574,7 +1589,6 @@
       youtube: 'fa-brands fa-youtube'
     };
 
-    // SERVICE WORKER REGISTRATION FOR PWA INSTALL
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         const swCode = `
@@ -1588,14 +1602,12 @@
       });
     }
 
-    // CAPTURE INSTALL PROMPT FOR PWA
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
       checkBiWeeklyInstallPrompt();
     });
 
-    // BI-WEEKLY (14 DAYS) INSTALL MODAL CHECK
     function checkBiWeeklyInstallPrompt() {
       const lastPrompt = localStorage.getItem('bs_pwa_last_prompt');
       const now = Date.now();
@@ -1628,12 +1640,24 @@
       localStorage.setItem('bs_pwa_last_prompt', Date.now().toString());
     }
 
+    // PRELOAD/PREFETCH PRODUCT IMAGES TO BROWSER MEMORY
+    function preloadProductImages(prodArray) {
+      if (!prodArray || !Array.isArray(prodArray)) return;
+      prodArray.forEach(p => {
+        if (p.img) {
+          const img = new Image();
+          img.src = p.img;
+        }
+      });
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       applyStylesAndSettings();
       renderCategories();
       updateCartUI();
       startHeroCarousel();
       resolveVisitorLocationAndLog();
+      preloadProductImages(products);
 
       if (!localStorage.getItem('bs_welcome_shown')) {
         setTimeout(() => {
@@ -1666,6 +1690,7 @@
         if (snap.exists()) { 
           products = snap.val(); 
           localStorage.setItem('bs_products', JSON.stringify(products));
+          preloadProductImages(products);
           renderProducts(); 
           renderCategories(); 
           if (currentUser && currentUser.email === 'happiekos@gmail.com') renderAdminProducts();
@@ -1855,9 +1880,6 @@
       }
     }
 
-    /* -------------------------------------------------------------
-       CUSTOMER REVIEWS & SURPRISE PERMANENT 5% DISCOUNT LOGIC
-    ------------------------------------------------------------- */
     function userHasOrdered(email) {
       if (!email) return false;
       const lower = email.toLowerCase().trim();
@@ -2116,7 +2138,7 @@
       if (!slidesContainer || !dotsContainer) return;
 
       if (images.length === 0) {
-        slidesContainer.innerHTML = `<img src="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">`;
+        slidesContainer.innerHTML = `<img src="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" decoding="async" loading="eager">`;
         dotsContainer.innerHTML = '';
         return;
       }
@@ -2124,7 +2146,7 @@
 
       slidesContainer.innerHTML = images.map((imgUrl, idx) => `
         <div class="absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === currentHeroSlideIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}">
-          <img src="${imgUrl}" alt="Slide ${idx + 1}" class="w-full h-full object-cover">
+          <img src="${imgUrl}" alt="Slide ${idx + 1}" class="w-full h-full object-cover" decoding="async" loading="eager">
         </div>
       `).join('');
 
@@ -2270,7 +2292,7 @@
       if (!container) return;
       container.innerHTML = images.map((url, index) => `
         <div class="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-amber-200">
-          <img src="${url}" class="w-10 h-10 object-cover rounded-lg border border-amber-300 shrink-0">
+          <img src="${url}" class="w-10 h-10 object-cover rounded-lg border border-amber-300 shrink-0" decoding="async">
           <input type="text" value="${url}" onchange="updateHeroCarouselUrl(${index}, this.value)" class="w-full p-2 text-xs border border-amber-200 rounded-lg font-mono">
           <button type="button" onclick="deleteHeroCarouselImage(${index})" class="text-xs text-red-600 hover:text-red-800 font-bold px-3 py-1.5 rounded-lg bg-red-50 shrink-0">Delete</button>
         </div>
@@ -2428,8 +2450,8 @@
 
       topSellersGrid.innerHTML = top4.map((p, idx) => `
         <div onclick="openProductModal('${p.id}')" class="bg-white rounded-2xl border border-amber-200 overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
-          <div class="relative overflow-hidden bg-amber-100 h-36 sm:h-40">
-            <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+          <div class="relative overflow-hidden bg-amber-100 h-36 sm:h-40 img-skeleton">
+            <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" decoding="async" loading="eager">
             <span class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-extrabold px-2 py-0.5 rounded shadow uppercase tracking-wider z-10 flex items-center gap-1">
               <i class="fa-solid fa-fire text-amber-300"></i> #${idx + 1} Hot Seller
             </span>
@@ -2473,7 +2495,6 @@
         return matchesCat && matchesQuery;
       });
 
-      // DYNAMIC SORTING LOGIC (NEWEST PRODUCTS FIRST BY DEFAULT)
       filtered.sort((a, b) => {
         const viewsA = (productViews[a.id] && productViews[a.id].count) || 0;
         const viewsB = (productViews[b.id] && productViews[b.id].count) || 0;
@@ -2539,8 +2560,8 @@
 
         return `
           <div onclick="openProductModal('${p.id}')" class="bg-white rounded-2xl border border-amber-200/80 overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
-            <div class="relative overflow-hidden bg-amber-100 h-44 sm:h-48">
-              <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+            <div class="relative overflow-hidden bg-amber-100 h-44 sm:h-48 img-skeleton">
+              <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" decoding="async" loading="eager">
               ${badgeHtml}
               <span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-xs">View Details</span>
             </div>
@@ -2677,7 +2698,7 @@
         return `
           <tr class="border-b border-amber-100 hover:bg-amber-50/50">
             <td class="p-3 font-bold flex items-center gap-2">
-              <img src="${p.img}" class="w-8 h-8 rounded-lg object-cover bg-amber-50 border border-amber-200">
+              <img src="${p.img}" class="w-8 h-8 rounded-lg object-cover bg-amber-50 border border-amber-200" decoding="async">
               <span>${p.title}</span>
             </td>
             <td class="p-3 text-amber-700">${p.category}</td>
